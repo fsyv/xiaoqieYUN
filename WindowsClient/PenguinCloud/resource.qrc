@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resource/penguin/penguin_linux_16px.ico</file>
+        <file>resource/penguin/penguin_linux_16px.png</file>
+        <file>resource/penguin/penguin_linux_24px.ico</file>
+        <file>resource/penguin/penguin_linux_24px.png</file>
+        <file>resource/penguin/penguin_linux_32px.ico</file>
+        <file>resource/penguin/penguin_linux_32px.png</file>
+        <file>resource/penguin/penguin_linux_48px.ico</file>
+        <file>resource/penguin/penguin_linux_48px.png</file>
+        <file>resource/penguin/penguin_linux_64px.ico</file>
+        <file>resource/penguin/penguin_linux_64px.png</file>
+        <file>resource/penguin/penguin_linux_72px.ico</file>
+        <file>resource/penguin/penguin_linux_72px.png</file>
+        <file>resource/penguin/penguin_linux_96px.ico</file>
+        <file>resource/penguin/penguin_linux_96px.png</file>
+        <file>resource/penguin/penguin_linux_128px.ico</file>
+        <file>resource/penguin/penguin_linux_128px.png</file>
+    </qresource>
+</RCC>

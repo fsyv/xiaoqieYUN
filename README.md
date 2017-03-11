@@ -1,1 +1,4 @@
 #xiaoqieYUN
+LinuxServer文件夹下是Linux服务端代码
+WindowsClient文件夹下是Windows客户端代码
+文档目录存放整个系统设计的文档
