@@ -16,5 +16,18 @@
         <file>resource/penguin/penguin_linux_96px.png</file>
         <file>resource/penguin/penguin_linux_128px.ico</file>
         <file>resource/penguin/penguin_linux_128px.png</file>
+        <file>resource/image/comboboxitem_delete.png</file>
+        <file>resource/image/password.png</file>
+        <file>resource/image/username.png</file>
+        <file>resource/image/close.png</file>
+        <file>resource/image/title.png</file>
+        <file>resource/qss/login.qss</file>
+        <file>resource/image/checkbox/checkbox_hover.png</file>
+        <file>resource/image/checkbox/checkbox_normal.png</file>
+        <file>resource/image/checkbox/checkbox_press.png</file>
+        <file>resource/image/checkbox/checkbox_selected_hover.png</file>
+        <file>resource/image/checkbox/checkbox_selected_normal.png</file>
+        <file>resource/image/checkbox/checkbox_selected_press.png</file>
+        <file>password.txt</file>
     </qresource>
 </RCC>

@@ -1,0 +1,46 @@
+﻿QPushButton#login_button {
+    background-color: #f0f4f8;
+    border-width: 1px;
+    border-radius: 15px;
+    border-color: beige;
+    font: bold 20px;
+    color:#0698f5;
+}
+QPushButton#login_button:pressed{
+    background-color: rgb(226, 238, 246);
+}
+QCheckBox {
+    spacing: 5px;
+    color:white;
+}
+
+QCheckBox::indicator {
+    width: 13px;
+    height: 13px;
+}
+QCheckBox::indicator:unchecked {
+    image: url(:/resource/image/checkbox/checkbox_normal.png);
+}
+
+QCheckBox::indicator:unchecked:hover {
+    image: url(:/resource/image/checkbox/checkbox_hover.png);
+}
+
+QCheckBox::indicator:unchecked:pressed {
+    image: url(:/resource/image/checkbox/checkbox_press.png);
+}
+
+QCheckBox::indicator:checked {
+    image: url(:/resource/image/checkbox/checkbox_selected_normal.png);
+}
+
+QCheckBox::indicator:checked:hover {
+    image: url(:/resource/image/checkbox/checkbox_selected_hover.png);
+}
+
+QCheckBox::indicator:checked:pressed {
+    image: url(:/resource/image/checkbox/checkbox_selected_press.png);
+}
+QLabel#find_passord{
+    color:white;
+}
