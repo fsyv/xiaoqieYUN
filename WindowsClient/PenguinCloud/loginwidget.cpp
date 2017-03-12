@@ -39,10 +39,10 @@ void LoginWidget::init()
     username_input->setLeftPixmap(":/resource/image/username.png");
     password_input = new LineEdit(this);
     password_input->setLeftPixmap(":/resource/image/password.png");
-    login_button = new QPushButton(QString::fromLocal8Bit("登录"),this);
+    login_button = new QPushButton("登录",this);
     login_button->resize(200,30);
-    remember_password = new QCheckBox(QString::fromLocal8Bit("记住密码"), this);
-    find_passord = new QLabel(QString::fromLocal8Bit("找回密码"), this);
+    remember_password = new QCheckBox("记住密码", this);
+    find_passord = new QLabel("找回密码", this);
 
     //绝对定位
     username_input->move((this->width() - username_input->width()) /2, 150);
@@ -52,8 +52,8 @@ void LoginWidget::init()
     find_passord->move(180, 225);
     find_passord->setObjectName("find_passord");
     //默认配置
-    username_input->setPlaceholderText(QString::fromLocal8Bit("账号"));
-    password_input->setPlaceholderText(QString::fromLocal8Bit("密码"));
+    username_input->setPlaceholderText("账号");
+    password_input->setPlaceholderText("密码");
     password_input->setEchoMode(QLineEdit::Password);
     login_button->setObjectName("login_button");
 
