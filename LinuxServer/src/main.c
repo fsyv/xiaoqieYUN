@@ -5,11 +5,12 @@
  */
 
 #include <stdio.h>
-#include <pthread.h>
 
+#include "socket/serverSocket.h"
 
 int main(int argc, char **argv)
 {
-    printf("Server Running\n");
+    int sockfd = createSocketServer();
+    listenClient(sockfd);
     return 0;
 }

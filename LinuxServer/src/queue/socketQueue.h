@@ -10,6 +10,8 @@
 
 #include <netinet/in.h>
 
+#define SERVER_PORT 36975
+
 typedef struct _SocketInfo{
     int m_iClientSocketfd;                  //客户端描述字
     struct sockaddr_in m_stClientAddr;      //客户端地址和端口
