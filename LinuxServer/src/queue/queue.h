@@ -20,5 +20,13 @@ typedef struct _Queue{
 pQueue createQueue();
 //销毁队列
 void destroyQueue(pQueue *queue);
+//判断队列是否空
+int isEmpty(pQueue queue);
+//判断队列是否满
+int isFull(pQueue queue);
+//入队
+void enQueue(pQueue queue, void *newData);
+//出队
+void *deQueue(pQueue queue);
 
 #endif

@@ -17,9 +17,9 @@ pQueue createQueue()
     {
         //申请内存失败
 
-#ifdef DEBUG
+#ifdef Debug
         int errno;
-        fprintf(stderr, "createQueue : %s", strerror(errno));
+        fprintf(stderr, "createQueue : %s\n", strerror(errno));
 #endif
         return NULL;
     }
@@ -43,11 +43,60 @@ void destroyQueue(pQueue *queue)
 
     if ((*queue)->m_iQueueLen)
     {
-#ifdef DEBUG
+#ifdef Debug
         int errno;
-        fprintf(stderr, "createQueue : %s", strerror(errno));
+        fprintf(stderr, "destroyQueue : %s\n", strerror(errno));
 #endif
     }
     free(*queue);
     *queue = NULL;
+}
+
+/**
+ * 判断队列是否空
+ * @param queue 队列指针
+ * @return 1为空，0为不空
+ */
+int isEmpty(pQueue queue)
+{
+    return queue->m_iQueueLen == 0;
+}
+
+/**
+ * 判断队列是否满
+ * @param queue 队列指针
+ * @return 1为满，0为不满
+ */
+int isFull(pQueue queue)
+{
+    return queue->m_iQueueLen >= queue->m_iMaxQueueLen;
+}
+
+/**
+ * 入队
+ * @param queue 队列指针
+ * @param newData 入队数据
+ */
+void enQueue(pQueue queue, void *newData)
+{
+    if(isFull(queue))
+    {
+        //锁住
+    }
+    ++(queue->m_iQueueLen);
+    queue->p_vRear = newData;
+}
+//出队
+void *deQueue(pQueue queue)
+{
+    if(!isEmpty(queue))
+    {
+        --(queue->m_iQueueLen);
+        return queue->p_vFront;
+    }
+
+#ifdef Debug
+    fprintf(stderr, "deQueue : %s\n", "queue isEmpty!");
+#endif
+    return NULL;
 }

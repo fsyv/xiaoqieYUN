@@ -8,8 +8,15 @@
 
 #include "queue.h"
 
+#include <netinet/in.h>
+
+typedef struct _SocketInfo{
+    int m_iClientSocketfd;
+    struct sockaddr_in m_stClientAddr;
+}SocketInfo;
+
 typedef struct _SocketQueue{
-    int socketClient;                   //客户端的socket
+    SocketInfo m_stClient;                   //客户端的socket
     struct _SocketQueue *p_stNext;
 }SocketQueue;
 
@@ -17,5 +24,9 @@ typedef struct _SocketQueue{
 pQueue createSocketQueue();
 //销毁队列
 void destroySocketQueue(pQueue *queue);
+//入队
+void enSocketQueue(pQueue *queue, SocketInfo socketInfo);
+//出队
+SocketInfo deSocketQueue(pQueue *queue);
 
 #endif
