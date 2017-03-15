@@ -8,6 +8,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#include <pthread.h>
+
 #include "../queue/socketQueue.h"
 
 #define MAX_LISTEN MAX_QUEUE_SIZE
@@ -20,6 +22,19 @@ void closeServersocketfd(int serverSocketfd)
 {
     shutdown(serverSocketfd, SHUT_RDWR);
     close(serverSocketfd);
+}
+
+/**
+ * 定时从队列中取用户队列
+ * @param arg 队列的指针
+ */
+void *queueThread(void *arg)
+{
+    while(1)
+    {
+        printf("Thread Create!\n");
+        usleep(1);
+    }
 }
 
 /**
@@ -79,6 +94,12 @@ void listenClient(int serverSocketfd)
 {
     int errno;
 
+    //创建socket队列
+    pQueue sQ = createSocketQueue();
+    //从队列中读取clientSocket的线程
+    pthread_t sQtoSoctet;
+    pthread_create(&sQtoSoctet, NULL, queueThread, (void *)sQ);
+
     errno = listen(serverSocketfd, MAX_LISTEN);
     if(errno)
     {
@@ -96,6 +117,8 @@ void listenClient(int serverSocketfd)
     int clientSocketfd;
     struct sockaddr_in clientAddress;
     int clientAddressLen = sizeof(struct sockaddr_in);
+
+    SocketInfo clientSocketInfo;
     while(1)
     {
         clientSocketfd = accept(serverSocketfd, (struct sockaddr *)&clientAddress, &clientAddressLen);
@@ -108,7 +131,10 @@ void listenClient(int serverSocketfd)
             continue;
         }
 
+        clientSocketInfo.m_iClientSocketfd = clientSocketfd;
+        clientSocketInfo.m_stClientAddr = clientAddress;
         //加入队列
+        enSocketQueue(sQ, clientSocketInfo);
     }
 
 }

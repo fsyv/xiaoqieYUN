@@ -10,6 +10,8 @@
 
 //关闭服务端socketfd
 void closeServersocketfd(int serverSocketfd);
+//定时从队列中取用户队列
+void *queueThread(void *arg);
 //创建服务器socket
 int createSocketServer();
 //监听socket然后创建用户线程
