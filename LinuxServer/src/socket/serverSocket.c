@@ -32,7 +32,6 @@ void *queueThread(void *arg)
 {
     while(1)
     {
-        printf("Thread Create!\n");
         usleep(1);
     }
 }
@@ -64,7 +63,7 @@ int createSocketServer()
 
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
-    serverAddress.sin_port = htonl(SERVER_PORT);
+    serverAddress.sin_port = htons(SERVER_PORT);
 
 #ifdef Debug
     fprintf(stdout, "Server Port at %d\n", SERVER_PORT);
@@ -121,6 +120,7 @@ void listenClient(int serverSocketfd)
     SocketInfo clientSocketInfo;
     while(1)
     {
+        printf("wait!!\n");
         clientSocketfd = accept(serverSocketfd, (struct sockaddr *)&clientAddress, &clientAddressLen);
         if(clientSocketfd < 0)
         {
