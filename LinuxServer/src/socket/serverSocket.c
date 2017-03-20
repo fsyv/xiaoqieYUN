@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -42,7 +43,7 @@ void *queueThread(void *arg)
  */
 int createSocketServer()
 {
-    int errno = 0;
+    int err = 0;
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if(sockfd < 0)
     {
@@ -69,8 +70,8 @@ int createSocketServer()
     fprintf(stdout, "Server Port at %d\n", SERVER_PORT);
 #endif
 
-    errno = bind(sockfd, (struct sockaddr *)&serverAddress, serverAddressLen);
-    if(errno < 0)
+    err = bind(sockfd, (struct sockaddr *)&serverAddress, serverAddressLen);
+    if(err < 0)
     {
 #ifdef Debug
         fprintf(stderr, "createSocketServer : %s \n", strerror(errno));
@@ -91,7 +92,22 @@ int createSocketServer()
  */
 void listenClient(int serverSocketfd)
 {
-    int errno;
+    int err;
+
+    err = listen(serverSocketfd, MAX_LISTEN);
+    if(err)
+    {
+#ifdef Debug
+        fprintf(stderr, "listenClient : %s \n", strerror(errno));
+#endif
+        fprintf(stdout, "listen faild!!\n");
+        closeServersocketfd(serverSocketfd);
+        exit(-1);
+    }
+
+#ifdef Debug
+    fprintf(stdout, "Max Listen : %d \n", MAX_LISTEN);
+#endif
 
     //创建socket队列
     pSocketQueue sQ = createSocketQueue();
@@ -99,41 +115,27 @@ void listenClient(int serverSocketfd)
     pthread_t sQtoSoctetThread;
     pthread_create(&sQtoSoctetThread, NULL, queueThread, (void *)sQ);
 
-    errno = listen(serverSocketfd, MAX_LISTEN);
-    if(errno)
-    {
-#ifdef Debug
-        fprintf(stderr, "listenClient : %s \n", strerror(errno));
-#endif
-        fprintf(stdout, "listen faild!!\n");
-        closeServersocketfd(serverSocketfd);
-    }
-
-#ifdef Debug
-    fprintf(stdout, "Max Listen : %d \n", MAX_LISTEN);
-#endif
-
     int clientSocketfd;
     struct sockaddr_in clientAddress;
     int clientAddressLen = sizeof(struct sockaddr_in);
     memset(&clientAddress, 0, clientAddressLen);
 
     ClientInfo clientSocketInfo;
-    while(1)
+    while(clientSocketfd = accept(serverSocketfd, (struct sockaddr *)&clientAddress, &clientAddressLen))
     {
-        clientSocketfd = accept(serverSocketfd, (struct sockaddr *)&clientAddress, &clientAddressLen);
         if(clientSocketfd < 0)
         {
 #ifdef Debug
             fprintf(stderr, "listenClient : %s \n", strerror(errno));
 #endif
-            fprintf(stdout, "listen faild!!\n");
-            continue;
+            fprintf(stdout, "accept faild!!\n");
+            break;
         }
 
         clientSocketInfo.m_iClientSocketfd = clientSocketfd;
         clientSocketInfo.m_uiNetworkAddr = clientAddress.sin_addr.s_addr;
         clientSocketInfo.m_usNetworkPort = clientAddress.sin_port;
+
         //加入队列
         enSocketQueue(sQ, clientSocketInfo);
     }
