@@ -94,10 +94,10 @@ void listenClient(int serverSocketfd)
     int errno;
 
     //创建socket队列
-    pQueue sQ = createSocketQueue();
+    pSocketQueue sQ = createSocketQueue();
     //从队列中读取clientSocket的线程
-    pthread_t sQtoSoctet;
-    pthread_create(&sQtoSoctet, NULL, queueThread, (void *)sQ);
+    pthread_t sQtoSoctetThread;
+    pthread_create(&sQtoSoctetThread, NULL, queueThread, (void *)sQ);
 
     errno = listen(serverSocketfd, MAX_LISTEN);
     if(errno)
@@ -116,11 +116,11 @@ void listenClient(int serverSocketfd)
     int clientSocketfd;
     struct sockaddr_in clientAddress;
     int clientAddressLen = sizeof(struct sockaddr_in);
+    memset(&clientAddress, 0, clientAddressLen);
 
-    SocketInfo clientSocketInfo;
+    ClientInfo clientSocketInfo;
     while(1)
     {
-        printf("wait!!\n");
         clientSocketfd = accept(serverSocketfd, (struct sockaddr *)&clientAddress, &clientAddressLen);
         if(clientSocketfd < 0)
         {
@@ -132,11 +132,16 @@ void listenClient(int serverSocketfd)
         }
 
         clientSocketInfo.m_iClientSocketfd = clientSocketfd;
-        clientSocketInfo.m_stClientAddr = clientAddress;
+        clientSocketInfo.m_uiNetworkAddr = clientAddress.sin_addr.s_addr;
+        clientSocketInfo.m_usNetworkPort = clientAddress.sin_port;
         //加入队列
         enSocketQueue(sQ, clientSocketInfo);
     }
 
+    //关闭队列线程
+    pthread_kill(sQtoSoctetThread, 0);
+    //清除队列
+    destroySocketQueue(&sQ);
 }
 
 

@@ -8,9 +8,12 @@
 
 #include "socket/serverSocket.h"
 
+#include <sys/time.h>
+
 int main(int argc, char **argv)
 {
     int sockfd = createSocketServer();
     listenClient(sockfd);
+    closeServersocketfd(sockfd);
     return 0;
 }
