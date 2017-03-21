@@ -1,6 +1,6 @@
 ﻿set(MAIN_SOURCE_FILES main.c)
 
-
+add_subdirectory(message)
 add_subdirectory(queue)
 add_subdirectory(socket)
 
