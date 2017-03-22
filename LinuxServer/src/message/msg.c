@@ -4,7 +4,7 @@
 #include <string.h>
 
 //确定成功消息
-int ackOkMsg(int sockfd)
+int sendAckOkMsg(int sockfd)
 {
     Msg msg;
     bzero(&msg, sizeof(Msg));
@@ -16,7 +16,7 @@ int ackOkMsg(int sockfd)
 }
 
 //确定失败消息
-int ackErrorMsg(int sockfd)
+int sendAckErrorMsg(int sockfd)
 {
     Msg msg;
     bzero(&msg, sizeof(Msg));
@@ -32,4 +32,10 @@ int sendMsg(int sockfd, Msg *msg)
 {
     msg->m_uiCheckCrc = 0xAFAFAFAF;
     return write(sockfd, (void *)msg, sizeof(Msg) + msg->m_iMsgLen);
+}
+
+//收到消息
+int recvMsg(Msg *msg)
+{
+
 }

@@ -15,11 +15,14 @@ typedef struct _Msg{
 }Msg, *pMsg;
 
 //确定成功消息
-int ackOkMsg(int sockfd);
+int sendAckOkMsg(int sockfd);
 //确定失败消息
-int ackErrorMsg(int sockfd);
+int sendAckErrorMsg(int sockfd);
 
 //发送消息
 int sendMsg(int sockfd, Msg *msg);
+
+//收到消息
+int recvMsg(Msg *msg);
 
 #endif //MESSAGE_LINUXSERVER_MSG_H
