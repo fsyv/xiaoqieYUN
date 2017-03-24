@@ -39,7 +39,7 @@ int recvReadyMsg(int sockfd, Msg *msg, void *arg)
     ReadyMsg readyMsg;
     memcpy(&readyMsg, msg->m_aMsgData, msg->m_iMsgLen);
 
-    extern pSocketQueue sQ;
+    pSocketQueue sQ = (pSocketQueue)arg;
 
     //将这条数据入队
     enSocketQueue(sQ, readyMsg.m_stClientInfo);

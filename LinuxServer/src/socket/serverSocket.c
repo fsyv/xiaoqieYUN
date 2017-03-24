@@ -18,6 +18,9 @@
 
 #define MAX_LISTEN MAX_QUEUE_SIZE
 
+//队列锁
+pthread_mutex_t queue_mutex;
+
 /**
  * 关闭服务端soc关闭服务端socketfdketfd
  * @param serverSocketfd 服务器描述字
@@ -36,7 +39,9 @@ void *queueThread(void *arg)
 {
     while(1)
     {
-        usleep(1);
+        pthread_mutex_lock(&queue_mutex);
+
+        pthread_mutex_unlock(&queue_mutex);
     }
 }
 
@@ -137,6 +142,8 @@ void listenClient(int serverSocketfd)
     //注册epoll事件
     epoll_ctl(epfd, EPOLL_CTL_ADD, serverSocketfd, &ev);
 
+    //初始化队列锁
+    pthread_mutex_init(&queue_mutex, 0);
     //创建监听处理队列
     extern pSocketQueue sQ;
     pthread_t sQtoSoctetThread;
@@ -271,7 +278,9 @@ void recvNewConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
 
     }
 
+    pthread_mutex_lock(&queue_mutex);
     //继续提交消息
     extern pSocketQueue sQ;
     recvMsg(clientSocketfd, msg, (void *)sQ);
+    pthread_mutex_unlock(&queue_mutex);
 }
