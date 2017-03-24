@@ -10,12 +10,12 @@
 #include "socket/serverSocket.h"
 
 //全局队列指针
-static pSocketQueue sQ;
+pSocketQueue sQ;
 
 int main(int argc, char **argv)
 {
     //创建socket队列
-    extern pSocketQueue sQ = createSocketQueue();
+    sQ = createSocketQueue();
 
     int sockfd = createSocketServer();
     listenClient(sockfd);

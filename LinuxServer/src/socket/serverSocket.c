@@ -9,13 +9,12 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <sys/epoll.h>
 #include <netinet/in.h>
 
 #include <pthread.h>
 
 #include "../queue/socketQueue.h"
-#include "../message/msg.h"
+#include "../message/nstdmsgio.h"
 
 #define MAX_LISTEN MAX_QUEUE_SIZE
 
@@ -189,6 +188,7 @@ void listenClient(int serverSocketfd)
     pthread_kill(sQtoSoctetThread, 0);
 }
 
+
 /**
  * 服务器监听到新的Tcp socket请求
  * @param socketfd 服务器描述字
@@ -205,7 +205,7 @@ void newConnection(int socketfd, int epfd, struct epoll_event *ev)
         fprintf(stderr, "listenClient : %s \n", strerror(errno));
 #endif
         fprintf(stdout, "accept faild!!\n");
-        closeServersocketfd(serverSocketfd);
+        closeServersocketfd(socketfd);
         exit(-1);
     }
 
@@ -272,6 +272,6 @@ void recvNewConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
     }
 
     //继续提交消息
-    recvMsg(clientSocketfd, msg);
+    extern pSocketQueue sQ;
+    recvMsg(clientSocketfd, msg, (void *)sQ);
 }
-

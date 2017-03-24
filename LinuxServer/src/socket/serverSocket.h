@@ -7,6 +7,9 @@
  * @date 2017年 3月 14日
  * @version 1.0
  */
+
+#include <sys/epoll.h>
+
 #define EPOLL_TIME_OUT 500
 
 //接收Buf最大缓存

@@ -6,7 +6,6 @@
  * @version 1.0
  */
 
-#include <netinet/in.h>
 
 //最大队列数量
 #define MAX_QUEUE_SIZE 256
@@ -14,7 +13,7 @@
 
 typedef struct _ClientInfo{
     int m_iClientSocketfd;                  //客户端描述字
-    u_int32_t m_uiNetworkAddr;              //网络地址
+    unsigned int m_uiNetworkAddr;              //网络地址
 }ClientInfo;
 
 typedef struct _SocketInfo{

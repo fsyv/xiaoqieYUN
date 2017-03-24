@@ -1,9 +1,8 @@
-//
-// Created by cjy on 2017/3/21.
-//
-
 #ifndef LINUXSERVER_MESSAGE_MSGTYPE_H
 #define LINUXSERVER_MESSAGE_MSGTYPE_H
+
+
+#include "../queue/socketQueue.h"
 
 //消息类型
 typedef enum _MsgType{
@@ -12,6 +11,11 @@ typedef enum _MsgType{
     Ack_Ready,         //准备就绪
     Login_Msg           //登录消息
 }MsgType;
+
+//准备就绪得消息结构
+typedef struct _ReadyMsg{
+    ClientInfo m_stClientInfo;
+}ReadyMsg, *pReadyMsg;
 
 
 #endif //LINUXSERVER_MESSAGE_MSGTYPE_H
