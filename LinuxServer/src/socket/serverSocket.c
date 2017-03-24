@@ -214,6 +214,7 @@ void listenClient(int serverSocketfd)
                 //收到消息
                 clientSocketfd = events[i].data.fd;
                 //如果收到得是确定连接消息，则把这个添加到socket队列里
+                
             }
         }
     }

@@ -2,8 +2,8 @@
 // Created by cjy on 2017/3/21.
 //
 
-#ifndef MESSAGE_LINUXSERVER_MSGTYPE_H_H
-#define MESSAGE_LINUXSERVER_MSGTYPE_H_H
+#ifndef LINUXSERVER_MESSAGE_MSGTYPE_H
+#define LINUXSERVER_MESSAGE_MSGTYPE_H
 
 //消息类型
 typedef enum _MsgType{
@@ -12,4 +12,4 @@ typedef enum _MsgType{
 }MsgType;
 
 
-#endif //MESSAGE_LINUXSERVER_MSGTYPE_H_H
+#endif //LINUXSERVER_MESSAGE_MSGTYPE_H

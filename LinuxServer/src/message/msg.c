@@ -1,7 +1,8 @@
 #include "msg.h"
 
-#include <unistd.h>
 #include <string.h>
+
+#include "../socket/sendMsg.h"
 
 //确定成功消息
 int sendAckOkMsg(int sockfd)
@@ -25,17 +26,4 @@ int sendAckErrorMsg(int sockfd)
     msg.m_iMsgLen = 0;
 
     return sendMsg(sockfd, &msg);
-}
-
-//发送消息
-int sendMsg(int sockfd, Msg *msg)
-{
-    msg->m_uiCheckCrc = 0xAFAFAFAF;
-    return write(sockfd, (void *)msg, sizeof(Msg) + msg->m_iMsgLen);
-}
-
-//收到消息
-int recvMsg(Msg *msg)
-{
-
 }

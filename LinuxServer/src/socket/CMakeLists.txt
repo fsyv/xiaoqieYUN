@@ -1,4 +1,3 @@
-
 set(SERVERSOCKET_SOURCE_FILES serverSocket.h serverSocket.c)
 
 link_libraries(socketQueue)
