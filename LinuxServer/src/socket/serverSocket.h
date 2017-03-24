@@ -9,6 +9,9 @@
  */
 #define EPOLL_TIME_OUT 500
 
+//接收Buf最大缓存
+#define RECV_BUF_MAX_SIZE 64 * 1024
+
 //关闭服务端socketfd
 void closeServersocketfd(int serverSocketfd);
 //定时从队列中取用户队列
@@ -19,5 +22,9 @@ void setnblocking(int sockfd);
 int createSocketServer();
 //监听socket然后创建用户线程
 void listenClient(int serverSocketfd);
+//服务器监听到新的Tcp socket请求
+void newConnection(int socketfd, int epfd, struct epoll_event *ev);
+//还没入队得新连接收到确定连接得消息
+void recvNewConnectionMsg(int socketfd, int epfd, struct epoll_event *ev);
 
 #endif //SOCKET_SERVERSOCKET
