@@ -15,7 +15,6 @@
 typedef struct _ClientInfo{
     int m_iClientSocketfd;                  //客户端描述字
     u_int32_t m_uiNetworkAddr;              //网络地址
-    u_int16_t m_usNetworkPort;              //网络端口
 }ClientInfo;
 
 typedef struct _SocketInfo{

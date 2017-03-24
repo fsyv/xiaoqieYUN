@@ -6,14 +6,22 @@
 
 #include <stdio.h>
 
+#include "queue/socketQueue.h"
 #include "socket/serverSocket.h"
 
-#include <sys/time.h>
+//全局队列指针
+static pSocketQueue sQ;
 
 int main(int argc, char **argv)
 {
+    //创建socket队列
+    extern pSocketQueue sQ = createSocketQueue();
+
     int sockfd = createSocketServer();
     listenClient(sockfd);
     closeServersocketfd(sockfd);
+
+    //清除队列
+    destroySocketQueue(&sQ);
     return 0;
 }
