@@ -173,6 +173,8 @@ void listenClient(int serverSocketfd)
         //等待
         numberFds = epoll_wait(epfd, events, MAX_LISTEN, EPOLL_TIME_OUT);
 
+        printf("numberFds  = %d\n", numberFds);
+
         //处理EPOLL_TIME_OUT内发生的所有事件
         //这里处理了能够正确入队socket，不能正确
         //入队得socket还没有想好怎么处理
@@ -183,10 +185,17 @@ void listenClient(int serverSocketfd)
                 //新连接
                 newConnection(events[i].data.fd, epfd, &ev);
             }
+            else if (events[i].events & EPOLLOUT)
+            {
+                //发送消息
+                printf("send Msg\n");
+                sendReplyMessage(events[i].data.fd, epfd, &ev);
+            }
             else if (events[i].events & EPOLLIN)
             {
                 //收到消息
-                recvNewConnectionMsg(events[i].events, epfd, &ev);
+                printf("recv Msg events[i].data.fd = %d\n", events[i].data.fd);
+                recvNewConnectionMsg(events[i].data.fd, epfd, &ev);
             }
         }
     }
@@ -204,8 +213,13 @@ void listenClient(int serverSocketfd)
  */
 void newConnection(int socketfd, int epfd, struct epoll_event *ev)
 {
+    struct sockaddr adr;
+
     //新连接
     int clientSocketfd = accept(socketfd, NULL, NULL);
+
+    printf("clientSocketfd = %d\n", clientSocketfd);
+
     if(clientSocketfd < 0)
     {
 #ifdef Debug
@@ -220,9 +234,19 @@ void newConnection(int socketfd, int epfd, struct epoll_event *ev)
     ev->data.fd = clientSocketfd;
     //EPOLLIN 设置用于注册的读操作事件
     //EPOLLONESHOT 这个事件只会被触发一次，然后就会清除出事件队列
-    ev->events = EPOLLIN|EPOLLONESHOT;
+    ev->events = EPOLLOUT | EPOLLET;
     epoll_ctl(epfd, EPOLL_CTL_ADD, clientSocketfd, ev);
+}
 
+/**
+ * 给新连接发送一个应答
+ * @param socketfd 客户端描述字
+ * @param epfd epoll描述字
+ * @param ev epoll事件
+ */
+void sendReplyMessage(int socketfd, int epfd, struct epoll_event *ev)
+{
+    int clientSocketfd = socketfd;
     //给客户端发送确认连接消息
     if(sendAckOkMsg(clientSocketfd) < 0)
     {
@@ -231,6 +255,10 @@ void newConnection(int socketfd, int epfd, struct epoll_event *ev)
 #endif
         fprintf(stdout, "sendAckOkMsg faild!!\n");
     }
+
+    ev->data.fd = socketfd;
+    ev->events=EPOLLIN|EPOLLET;
+    epoll_ctl(epfd,EPOLL_CTL_MOD,socketfd,&ev); //修改标识符，等待下一个循环时接收数据
 }
 
 /**
@@ -250,6 +278,9 @@ void recvNewConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
     //如果收到得是确定连接消息，则把这个添加到socket队列里
 
     recvRet = recv(clientSocketfd, recvBuf, RECV_BUF_MAX_SIZE, 0);
+
+    ev->events=EPOLLOUT|EPOLLET;
+    epoll_ctl(epfd, EPOLL_CTL_MOD, socketfd, &ev);//修改标识符，等待下一个循环时发送数据，异步处理的精髓
 
     //读数据错误
     if(recvRet < 0)

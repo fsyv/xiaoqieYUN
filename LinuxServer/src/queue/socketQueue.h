@@ -8,8 +8,7 @@
 
 
 //最大队列数量
-#define MAX_QUEUE_SIZE 256
-#define SERVER_PORT 36975
+#define MAX_QUEUE_SIZE 1024
 
 typedef struct _ClientInfo{
     int m_iClientSocketfd;                  //客户端描述字
