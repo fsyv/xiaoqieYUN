@@ -2,7 +2,7 @@
 #define LINUXSERVER_MESSAGE_MSGTYPE_H
 
 
-#include "../queue/socketQueue.h"
+#include <elf.h>
 
 //消息类型
 typedef enum _MsgType{
@@ -14,7 +14,8 @@ typedef enum _MsgType{
 
 //准备就绪得消息结构
 typedef struct _ReadyMsg{
-    ClientInfo m_stClientInfo;
+    int m_iClientSockfd;           //客户端描述字
+    uint32_t m_uiClientnaddress;   //客户端网络地址
 }ReadyMsg, *pReadyMsg;
 
 

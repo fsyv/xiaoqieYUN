@@ -16,10 +16,10 @@
 //接收Buf最大缓存
 #define RECV_BUF_MAX_SIZE 64 * 1024
 
+#define MAX_LISTEN 64 * 1024
+
 //关闭服务端socketfd
 void closeServersocketfd(int serverSocketfd);
-//定时从队列中取用户队列
-void *queueThread(void *arg);
 //设置socket为非拥塞
 void setnblocking(int sockfd);
 //创建服务器socket
@@ -32,7 +32,5 @@ void newConnection(int socketfd, int epfd, struct epoll_event *ev);
 void sendReplyMessage(int socketfd, int epfd, struct epoll_event *ev);
 //还没入队得新连接收到确定连接得消息
 void recvNewConnectionMsg(int socketfd, int epfd, struct epoll_event *ev);
-//用户线程
-void *userThread(void *arg);
 
 #endif //SOCKET_SERVERSOCKET

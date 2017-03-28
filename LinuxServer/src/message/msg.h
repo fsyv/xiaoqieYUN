@@ -3,8 +3,6 @@
 
 #include "msgType.h"
 
-#include "../queue/socketQueue.h"
-
 typedef struct _Msg{
     unsigned int m_uiCheckCrc;            //消息校验 0xAFAFAFAF
     MsgType m_eMsgType;				   		//消息类型

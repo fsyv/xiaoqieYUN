@@ -11,18 +11,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#include <pthread.h>
-#include <semaphore.h>
-
-#include "../queue/socketQueue.h"
 #include "../message/nstdmsgio.h"
-
-#define MAX_LISTEN MAX_QUEUE_SIZE
-
-////队列锁
-//pthread_mutex_t queue_mutex;
-//队列信号量
-sem_t queue_sem;
 
 /**
  * 关闭服务端soc关闭服务端socketfdketfd
@@ -32,31 +21,6 @@ void closeServersocketfd(int serverSocketfd)
 {
     shutdown(serverSocketfd, SHUT_RDWR);
     close(serverSocketfd);
-}
-
-/**
- * 定时从队列中取用户队列
- * @param arg 队列的指针
- */
-void *queueThread(void *arg)
-{
-    pSocketQueue sQ = (pSocketQueue)arg;
-    ClientInfo clientInfo;
-    int sockfd;
-
-    while(1)
-    {
-//        pthread_mutex_lock(&queue_mutex);
-        printf("waitting!\n");
-        sem_wait(&queue_sem);
-        clientInfo = deSocketQueue(sQ);
-        sockfd = clientInfo.m_iClientSocketfd;
-
-        pthread_t user;
-        pthread_create(&user, NULL, userThread, (void *)&sockfd);
-
-//        pthread_mutex_unlock(&queue_mutex);
-    }
 }
 
 /**
@@ -151,19 +115,10 @@ void listenClient(int serverSocketfd)
     int epfd = epoll_create(MAX_LISTEN + 1);
 
     ev.data.fd = serverSocketfd;
-    ev.events = EPOLLIN|EPOLLET;
+    ev.events = EPOLLIN;
 
     //注册epoll事件
     epoll_ctl(epfd, EPOLL_CTL_ADD, serverSocketfd, &ev);
-
-    //初始化队列锁
-//    pthread_mutex_init(&queue_mutex, 0);
-    //初始化队列信号量
-    sem_init(&queue_sem, 0, 0);
-    //创建监听处理队列
-    extern pSocketQueue sQ;
-    pthread_t sQtoSoctetThread;
-    pthread_create(&sQtoSoctetThread, NULL, queueThread, (void *)sQ);
 
     //监听
     int err = listen(serverSocketfd, MAX_LISTEN);
@@ -198,8 +153,6 @@ void listenClient(int serverSocketfd)
         {
             if (events[i].data.fd == serverSocketfd)
             {
-                //新连接
-                sem_post(&queue_sem);
                 newConnection(events[i].data.fd, epfd, &ev);
             }
 //            else if (events[i].events & EPOLLOUT)
@@ -216,13 +169,6 @@ void listenClient(int serverSocketfd)
 //            }
         }
     }
-
-    //关闭队列
-    //pthread_mutex_destroy(&queue_mutex);
-    sem_destroy(&queue_sem);
-
-    //关闭队列线程
-    pthread_kill(sQtoSoctetThread, 0);
 }
 
 
@@ -252,11 +198,9 @@ void newConnection(int socketfd, int epfd, struct epoll_event *ev)
         exit(-1);
     }
 
-    ClientInfo clientInfo;
-    clientInfo.m_iClientSocketfd = clientSocketfd;
-    clientInfo.m_uiNetworkAddr = htonl(adress_client.sin_addr.s_addr);
-    extern pSocketQueue sQ;
-    enSocketQueue(sQ, clientInfo);
+    ReadyMsg readyMsg;
+    readyMsg.m_iClientSockfd = clientSocketfd;
+    readyMsg.m_uiClientnaddress = ntohl(adress_client.sin_addr.s_addr);
 
 //    //将新连接丢到epoll事件中
 //    ev->data.fd = clientSocketfd;
@@ -335,59 +279,5 @@ void recvNewConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
     if(msg->m_uiCheckCrc != (unsigned int)0xAFAFAFAF)
     {
 
-    }
-
-    //pthread_mutex_lock(&queue_mutex);
-    //继续提交消息
-    extern pSocketQueue sQ;
-    recvMsg(clientSocketfd, msg, (void *)sQ);
-    //pthread_mutex_unlock(&queue_mutex);
-}
-
-//用户线程
-void *userThread(void *arg)
-{
-    printf("userThread Created~~\n");
-
-    int sockfd = *((int *)arg);
-
-    int recvRet = 0;
-
-    char *recvBuf[RECV_BUF_MAX_SIZE + 1];
-    bzero(recvBuf, RECV_BUF_MAX_SIZE);
-
-    Msg *msg = NULL;
-
-    while(recvRet = recv(sockfd, recvBuf, RECV_BUF_MAX_SIZE, 0))
-    {
-        printf("recvRet = %d\n");
-        if(recvRet < 0)
-        {
-#ifdef Debug
-            fprintf(stderr, "recv : %s \n", strerror(errno));
-#endif
-            break;
-        }
-
-        //如果收到包长度小于结构体长度，暂定为丢弃
-        //实际可能会出现拆包情况，收到小于包长度得
-        //数据包
-        if(recvRet < sizeof(Msg))
-        {
-
-        }
-
-        recvBuf[recvRet] = '\0';
-
-        msg = (Msg *)recvBuf;
-
-        //校验位是否正确，如果正确则执行下一步
-        if(msg->m_uiCheckCrc != (unsigned int)0xAFAFAFAF)
-        {
-
-        }
-
-        //处理消息
-        recvMsg(sockfd, msg, NULL);
     }
 }

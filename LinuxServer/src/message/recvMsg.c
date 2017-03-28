@@ -2,8 +2,6 @@
 
 #include <string.h>
 
-#include "../queue/socketQueue.h"
-
 /**
  * 收到消息
  * @param sockfd
@@ -38,11 +36,6 @@ int recvReadyMsg(int sockfd, Msg *msg, void *arg)
 {
     ReadyMsg readyMsg;
     memcpy(&readyMsg, msg->m_aMsgData, msg->m_iMsgLen);
-
-    pSocketQueue sQ = (pSocketQueue)arg;
-
-    //将这条数据入队
-    enSocketQueue(sQ, readyMsg.m_stClientInfo);
 
     return 0;
 }
