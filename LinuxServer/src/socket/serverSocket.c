@@ -17,7 +17,7 @@
  * 关闭服务端soc关闭服务端socketfdketfd
  * @param serverSocketfd 服务器描述字
  */
-void closeServersocketfd(int serverSocketfd)
+void closeSocketfd(int serverSocketfd)
 {
     shutdown(serverSocketfd, SHUT_RDWR);
     close(serverSocketfd);
@@ -128,7 +128,7 @@ void listenClient(int serverSocketfd)
         fprintf(stderr, "listenClient : %s \n", strerror(errno));
 #endif
         fprintf(stdout, "listen faild!!\n");
-        closeServersocketfd(serverSocketfd);
+        closeSocketfd(serverSocketfd);
         exit(-1);
     }
 
@@ -153,20 +153,14 @@ void listenClient(int serverSocketfd)
         {
             if (events[i].data.fd == serverSocketfd)
             {
+                //新连接
                 newConnection(events[i].data.fd, epfd, &ev);
             }
-//            else if (events[i].events & EPOLLOUT)
-//            {
-//                //发送消息
-//                printf("send Msg\n");
-//                sendReplyMessage(events[i].data.fd, epfd, &ev);
-//            }
-//            else if (events[i].events & EPOLLIN)
-//            {
-//                //收到消息
-//                printf("recv Msg events[i].data.fd = %d\n", events[i].data.fd);
-//                recvNewConnectionMsg(events[i].data.fd, epfd, &ev);
-//            }
+            else if (events[i].events & EPOLLIN)
+            {
+                //收到消息
+                recvConnectionMsg(events[i].data.fd);
+            }
         }
     }
 }
@@ -186,98 +180,93 @@ void newConnection(int socketfd, int epfd, struct epoll_event *ev)
     //新连接
     int clientSocketfd = accept(socketfd, (struct sockaddr *)&adress_client, &len);
 
-    printf("clientSocketfd = %d\n", clientSocketfd);
-
     if(clientSocketfd < 0)
     {
 #ifdef Debug
         fprintf(stderr, "listenClient : %s \n", strerror(errno));
 #endif
-        fprintf(stdout, "accept faild!!\n");
-        closeServersocketfd(socketfd);
-        exit(-1);
+        return;
     }
+
+    setnblocking(clientSocketfd)
 
     ReadyMsg readyMsg;
     readyMsg.m_iClientSockfd = clientSocketfd;
     readyMsg.m_uiClientnaddress = ntohl(adress_client.sin_addr.s_addr);
 
-//    //将新连接丢到epoll事件中
-//    ev->data.fd = clientSocketfd;
-//    //EPOLLIN 设置用于注册的读操作事件
-//    //EPOLLONESHOT 这个事件只会被触发一次，然后就会清除出事件队列
-//    ev->events = EPOLLOUT | EPOLLET;
-//    epoll_ctl(epfd, EPOLL_CTL_ADD, clientSocketfd, ev);
+    //将新连接丢到epoll事件中
+    ev->data.fd = clientSocketfd;
+    //EPOLLIN 设置用于注册的读操作事件
+    ev->events = EPOLLOIN | EPOLLET;
+    epoll_ctl(epfd, EPOLL_CTL_ADD, clientSocketfd, ev);
 }
 
 /**
- * 给新连接发送一个应答
+ * 收到socket消息
  * @param socketfd 客户端描述字
- * @param epfd epoll描述字
- * @param ev epoll事件
  */
-void sendReplyMessage(int socketfd, int epfd, struct epoll_event *ev)
-{
-    int clientSocketfd = socketfd;
-    //给客户端发送确认连接消息
-    if(sendAckOkMsg(clientSocketfd) < 0)
-    {
-#ifdef Debug
-        fprintf(stderr, "listenClient : %s \n", strerror(errno));
-#endif
-        fprintf(stdout, "sendAckOkMsg faild!!\n");
-    }
-
-    ev->data.fd = socketfd;
-    ev->events=EPOLLIN|EPOLLET;
-    epoll_ctl(epfd,EPOLL_CTL_MOD,socketfd,&ev); //修改标识符，等待下一个循环时接收数据
-}
-
-/**
- * 还没入队得新连接收到确定连接得消息
- * @param socketfd 客户端描述字
- * @param epfd epoll描述字
- * @param ev epoll事件
- */
-void recvNewConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
+void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
 {
     //接收缓存
-    char recvBuf[RECV_BUF_MAX_SIZE + 1];
-    bzero(recvBuf, RECV_BUF_MAX_SIZE);
+    char *recvBuf = (char *)malloc((2 * RECV_BUF_MAX_SIZE + 1) * sizeof(char));
+    memset(recvBuf, 0, 2 * RECV_BUF_MAX_SIZE * sizeof(char));
+
+    //recvBuf指针
+    char *pPosBuf = recvBuf;
     //实际接收到得字节数量
     int recvRet = 0;
+    //消息长度
+    int msgLen = 0;
     int clientSocketfd = socketfd;
-    //如果收到得是确定连接消息，则把这个添加到socket队列里
 
-    recvRet = recv(clientSocketfd, recvBuf, RECV_BUF_MAX_SIZE, 0);
-
-    ev->events=EPOLLOUT|EPOLLET;
-    epoll_ctl(epfd, EPOLL_CTL_MOD, socketfd, &ev);//修改标识符，等待下一个循环时发送数据，异步处理的精髓
-
-    //读数据错误
-    if(recvRet < 0)
+    while(recvRet = recv(clientSocketfd, pPosBuf, RECV_BUF_MAX_SIZE, 0))
     {
+        //读数据错误
+        if(recvRet < 0)
+        {
 #ifdef Debug
-        fprintf(stderr, "recv : %s \n", strerror(errno));
+            fprintf(stderr, "recv : %s \n", strerror(errno));
 #endif
-        //从epoll里面清除这个事件
-    }
+            if(errno == EAGAIN)
+            {
+                //这次没有数据了，下次再来
+                break;
+            }
+            else
+            {
+                ev->data.fd = clientSocketfd;
+                epoll_ctl(epfd, EPOLL_CTL_DEL, clientSocketfd, ev);
+                closeSocketfd(clientSocketfd);
+                break;
+            }
+        }
 
-    //如果收到包长度小于结构体长度，暂定为丢弃
-    //实际可能会出现拆包情况，收到小于包长度得
-    //数据包
-    if(recvRet < sizeof(Msg))
-    {
+        msgLen += recvRet;
 
-    }
+        if (msgLen > 2 * RECV_BUF_MAX_SIZE)
+        {
+            //消息长度大于缓存长度
+        }
 
-    recvBuf[recvRet] = '\0';
+        //如果收到包长度小于结构体长度，暂定为丢弃
+        //实际可能会出现拆包情况，收到小于包长度得
+        //数据包
+        if(recvRet < sizeof(Msg))
+        {
+            //指正移到缓存后
+            pPosBuf += recvRet;
+        }
 
-    Msg *msg = (Msg *)recvBuf;
+        recvBuf[msgLen] = '\0';
 
-    //校验位是否正确，如果正确则执行下一步
-    if(msg->m_uiCheckCrc != (unsigned int)0xAFAFAFAF)
-    {
+        Msg *msg = (Msg *)recvBuf;
 
+        //校验位是否正确，如果正确则执行下一步
+        if(msg->m_uiCheckCrc != (unsigned int)0xAFAFAFAF)
+        {
+
+        }
+
+        if()
     }
 }

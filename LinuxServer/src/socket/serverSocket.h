@@ -19,7 +19,7 @@
 #define MAX_LISTEN 64 * 1024
 
 //关闭服务端socketfd
-void closeServersocketfd(int serverSocketfd);
+void closeSocketfd(int serverSocketfd);
 //设置socket为非拥塞
 void setnblocking(int sockfd);
 //创建服务器socket
@@ -28,9 +28,7 @@ int createSocketServer();
 void listenClient(int serverSocketfd);
 //服务器监听到新的Tcp socket请求
 void newConnection(int socketfd, int epfd, struct epoll_event *ev);
-//给新连接发送一个应答
-void sendReplyMessage(int socketfd, int epfd, struct epoll_event *ev);
-//还没入队得新连接收到确定连接得消息
-void recvNewConnectionMsg(int socketfd, int epfd, struct epoll_event *ev);
+//收到socket消息
+void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev);
 
 #endif //SOCKET_SERVERSOCKET
