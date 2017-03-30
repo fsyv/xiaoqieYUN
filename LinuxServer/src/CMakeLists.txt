@@ -3,6 +3,7 @@
 add_subdirectory(message)
 add_subdirectory(queue)
 add_subdirectory(socket)
+add_subdirectory(tools)
 
 link_libraries(pthread)
 link_libraries(serverSocket)

@@ -159,7 +159,7 @@ void listenClient(int serverSocketfd)
             else if (events[i].events & EPOLLIN)
             {
                 //收到消息
-                recvConnectionMsg(events[i].data.fd);
+                recvConnectionMsg(events[i].data.fd, epfd, &ev);
             }
         }
     }
@@ -188,11 +188,7 @@ void newConnection(int socketfd, int epfd, struct epoll_event *ev)
         return;
     }
 
-    setnblocking(clientSocketfd)
-
-    ReadyMsg readyMsg;
-    readyMsg.m_iClientSockfd = clientSocketfd;
-    readyMsg.m_uiClientnaddress = ntohl(adress_client.sin_addr.s_addr);
+    setnblocking(clientSocketfd);
 
     //将新连接丢到epoll事件中
     ev->data.fd = clientSocketfd;
@@ -207,6 +203,8 @@ void newConnection(int socketfd, int epfd, struct epoll_event *ev)
  */
 void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
 {
+    Msg *msg = NULL;
+
     //接收缓存
     char *recvBuf = (char *)malloc((2 * RECV_BUF_MAX_SIZE + 1) * sizeof(char));
     memset(recvBuf, 0, 2 * RECV_BUF_MAX_SIZE * sizeof(char));
@@ -218,6 +216,7 @@ void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
     //消息长度
     int msgLen = 0;
     int clientSocketfd = socketfd;
+    int msgStructLen = sizeof(Msg);
 
     while(recvRet = recv(clientSocketfd, pPosBuf, RECV_BUF_MAX_SIZE, 0))
     {
@@ -246,27 +245,46 @@ void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
         if (msgLen > 2 * RECV_BUF_MAX_SIZE)
         {
             //消息长度大于缓存长度
+            exit(-1);
         }
 
         //如果收到包长度小于结构体长度，暂定为丢弃
         //实际可能会出现拆包情况，收到小于包长度得
         //数据包
-        if(recvRet < sizeof(Msg))
+        if(recvRet < msgStructLen)
         {
             //指正移到缓存后
             pPosBuf += recvRet;
+            continue;
         }
 
         recvBuf[msgLen] = '\0';
 
-        Msg *msg = (Msg *)recvBuf;
+        msg = (Msg *)recvBuf;
 
         //校验位是否正确，如果正确则执行下一步
         if(msg->m_uiCheckCrc != (unsigned int)0xAFAFAFAF)
         {
-
+            //矫正
+//            unsigned char crc[5];
+//            memset(crc, 0xAF, 4);
         }
 
-        if()
+        if(msgLen < msgStructLen + msg->m_iMsgLen)
+        {
+            //拆包
+            pPosBuf += recvRet;
+            continue;
+        }
+
+        if(msgLen > msgStructLen + msg->m_iMsgLen)
+        {
+            //黏包
+        }
+
+        msgLen -= msgStructLen + msg->m_iMsgLen;
+
+        //投递数据包
+        recvMsg(clientSocketfd, msg, NULL);
     }
 }
