@@ -13,6 +13,6 @@ int main(int argc, char **argv)
 {
     int sockfd = createSocketServer();
     listenClient(sockfd);
-    closeServersocketfd(sockfd);
+    closeSockfd(sockfd);
     return 0;
 }

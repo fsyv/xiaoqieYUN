@@ -7,7 +7,7 @@
 //确定成功消息
 int sendAckOkMsg(int sockfd);
 //确定失败消息
-int sendAckErrorMsg(int sockfd);
+int sendAckErrorMsg(int sockfd, ErrorMsg errorMsg);
 
 //发送消息
 int sendMsg(int sockfd, Msg *msg);

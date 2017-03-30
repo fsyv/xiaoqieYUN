@@ -19,7 +19,7 @@
 #define MAX_LISTEN 64 * 1024
 
 //关闭服务端socketfd
-void closeSocketfd(int serverSocketfd);
+void closeSockfd(int sockfd);
 //设置socket为非拥塞
 void setnblocking(int sockfd);
 //创建服务器socket

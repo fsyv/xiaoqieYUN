@@ -1,7 +1,10 @@
 #include "sendMsg.h"
 
-#include <sys/socket.h>
+#include <stdlib.h>
 #include <string.h>
+
+#include <sys/socket.h>
+
 
 //确定成功消息
 int sendAckOkMsg(int sockfd)
@@ -16,15 +19,19 @@ int sendAckOkMsg(int sockfd)
 }
 
 //确定失败消息
-int sendAckErrorMsg(int sockfd)
+int sendAckErrorMsg(int sockfd, ErrorMsg errorMsg)
 {
-    Msg msg;
-    bzero(&msg, sizeof(Msg));
+    Msg *msg = (Msg *)malloc(sizeof(Msg) + sizeof(ErrorMsg));
+    bzero(msg, sizeof(Msg) + sizeof(ErrorMsg));
 
-    msg.m_eMsgType = Ack_Error;
-    msg.m_iMsgLen = 0;
+    msg->m_eMsgType = Ack_Error;
+    msg->m_iMsgLen = sizeof(ErrorMsg);
+    memcpy(msg->m_aMsgData, (void *)&errorMsg, msg->m_iMsgLen);
 
-    return sendMsg(sockfd, &msg);
+    int ret = sendMsg(sockfd, &msg);
+
+    free(msg);
+    return ret;
 }
 
 //发送消息

@@ -5,21 +5,9 @@
  * @param src 源
  * @param src_len 源长度
  * @param des 目的
- * @return
+ * @return 能找到返回一个大于0的值，否则返回0
  */
-void *memstr(const void *src, u_int64_t src_len, const char *des)
+void *memstr(const void *src, memlen_t src_len, const void *des)
 {
-
-}
-
-/**
- * 内存查找unsigned
- * @param src 源
- * @param src_len 源长度
- * @param des 目的
- * @return
- */
-void *memustr(const void *src, u_int64_t src_len, const unsigned char *des)
-{
-
+    return NULL;
 }

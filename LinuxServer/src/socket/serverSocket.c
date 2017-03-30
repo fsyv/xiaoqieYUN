@@ -12,15 +12,16 @@
 #include <netinet/in.h>
 
 #include "../message/nstdmsgio.h"
+#include "../tools/tools.h"
 
 /**
  * 关闭服务端soc关闭服务端socketfdketfd
  * @param serverSocketfd 服务器描述字
  */
-void closeSocketfd(int serverSocketfd)
+void closeSockfd(int sockfd)
 {
-    shutdown(serverSocketfd, SHUT_RDWR);
-    close(serverSocketfd);
+    shutdown(sockfd, SHUT_RDWR);
+    close(sockfd);
 }
 
 /**
@@ -128,7 +129,7 @@ void listenClient(int serverSocketfd)
         fprintf(stderr, "listenClient : %s \n", strerror(errno));
 #endif
         fprintf(stdout, "listen faild!!\n");
-        closeSocketfd(serverSocketfd);
+        closeSockfd(serverSocketfd);
         exit(-1);
     }
 
@@ -144,11 +145,7 @@ void listenClient(int serverSocketfd)
         //等待
         numberFds = epoll_wait(epfd, events, MAX_LISTEN, EPOLL_TIME_OUT);
 
-        printf("numberFds  = %d\n", numberFds);
-
         //处理EPOLL_TIME_OUT内发生的所有事件
-        //这里处理了能够正确入队socket，不能正确
-        //入队得socket还没有想好怎么处理
         for(i = 0; i < numberFds; ++i)
         {
             if (events[i].data.fd == serverSocketfd)
@@ -193,7 +190,7 @@ void newConnection(int socketfd, int epfd, struct epoll_event *ev)
     //将新连接丢到epoll事件中
     ev->data.fd = clientSocketfd;
     //EPOLLIN 设置用于注册的读操作事件
-    ev->events = EPOLLOIN | EPOLLET;
+    ev->events = EPOLLIN | EPOLLET;
     epoll_ctl(epfd, EPOLL_CTL_ADD, clientSocketfd, ev);
 }
 
@@ -209,8 +206,10 @@ void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
     char *recvBuf = (char *)malloc((2 * RECV_BUF_MAX_SIZE + 1) * sizeof(char));
     memset(recvBuf, 0, 2 * RECV_BUF_MAX_SIZE * sizeof(char));
 
-    //recvBuf指针
-    char *pPosBuf = recvBuf;
+    //recvBuf尾部指针，用于接收数据
+    char *pRearBuf = recvBuf;
+    //recvBuf头部指针，用于传递数据
+    char *pHeadBuf = recvBuf;
     //实际接收到得字节数量
     int recvRet = 0;
     //消息长度
@@ -218,7 +217,10 @@ void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
     int clientSocketfd = socketfd;
     int msgStructLen = sizeof(Msg);
 
-    while(recvRet = recv(clientSocketfd, pPosBuf, RECV_BUF_MAX_SIZE, 0))
+    //发送的数据包不会超过RECV_BUF_MAX_SIZE
+    //如果超过RECV_BUF_MAX_SIZE可能出现了TCP
+    //粘包现象
+    while(recvRet = recv(clientSocketfd, pRearBuf, RECV_BUF_MAX_SIZE, 0))
     {
         //读数据错误
         if(recvRet < 0)
@@ -235,7 +237,7 @@ void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
             {
                 ev->data.fd = clientSocketfd;
                 epoll_ctl(epfd, EPOLL_CTL_DEL, clientSocketfd, ev);
-                closeSocketfd(clientSocketfd);
+                closeSockfd(clientSocketfd);
                 break;
             }
         }
@@ -248,43 +250,111 @@ void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
             exit(-1);
         }
 
+        //接收到总数据已经大于了RECV_BUF_MAX_SIZE
+        //为了安全做一定处理
+        if(msgLen > RECV_BUF_MAX_SIZE)
+        {
+            unsigned char crc[5];
+            memset(crc, 0xAF, 4);
+            //在收到得buf中查找0xAFAFAFAF标志位
+            void *findMove = memstr(pHeadBuf, (memlen_t)msgLen, (void *)crc);
+
+            if(findMove)
+            {
+                int move = (char *)findMove - recvBuf;
+                msgLen -= move;
+                memcpy(recvBuf, findMove, msgLen);
+                pHeadBuf = recvBuf;
+                pRearBuf += msgLen;
+            }
+            else
+            {
+                ErrorMsg errorMsg;
+                errorMsg.m_eErrorType = DataPackError;
+                sendAckErrorMsg(clientSocketfd, errorMsg);
+                break;
+            }
+
+
+        }
+
         //如果收到包长度小于结构体长度，暂定为丢弃
         //实际可能会出现拆包情况，收到小于包长度得
         //数据包
-        if(recvRet < msgStructLen)
+        if(msgLen < msgStructLen)
         {
             //指正移到缓存后
-            pPosBuf += recvRet;
+            pRearBuf += msgLen;
             continue;
         }
 
         recvBuf[msgLen] = '\0';
 
-        msg = (Msg *)recvBuf;
+        //暂时没有想到好的解决方法
+        //当且仅当发生TCP粘包时会执行这个loop
+        //其它情况都无视这个loop
+        stickyPackageLoop:
+
+        //翻译buf
+        msg = (Msg *)pHeadBuf;
 
         //校验位是否正确，如果正确则执行下一步
         if(msg->m_uiCheckCrc != (unsigned int)0xAFAFAFAF)
         {
             //矫正
-//            unsigned char crc[5];
-//            memset(crc, 0xAF, 4);
+            //尽量校正，校正成功则继续
+            //否则continue，直到这个数据包被放弃
+            unsigned char crc[5];
+            memset(crc, 0xAF, 4);
+            //在收到得buf中查找0xAFAFAFAF标志位
+            void *findMove = memstr(pHeadBuf, msgLen, (void *)crc);
+
+            if(findMove)
+            {
+                //找到标志位
+                pHeadBuf = (char *)findMove;
+                msgLen -= (pRearBuf - pHeadBuf);
+
+                //重新翻译buf
+                msg = (Msg *)pHeadBuf;
+            }
+            else
+            {
+                //没有找到标志位
+                continue;
+            }
+
+        }
+
+        //一个错误得包
+        if(msg->m_iMsgLen > RECV_BUF_MAX_SIZE - msgStructLen || msg->m_iMsgLen < 0)
+        {
+            ErrorMsg errorMsg;
+            errorMsg.m_eErrorType = DataPackError;
+            sendAckErrorMsg(clientSocketfd, errorMsg);
+            break;
         }
 
         if(msgLen < msgStructLen + msg->m_iMsgLen)
         {
             //拆包
-            pPosBuf += recvRet;
+            pRearBuf += msgLen;
             continue;
         }
 
-        if(msgLen > msgStructLen + msg->m_iMsgLen)
-        {
-            //黏包
-        }
-
-        msgLen -= msgStructLen + msg->m_iMsgLen;
-
         //投递数据包
         recvMsg(clientSocketfd, msg, NULL);
+        msgLen -= msgStructLen + msg->m_iMsgLen;
+
+        if(msgLen > 0)
+        {
+            //黏包
+            pHeadBuf = pHeadBuf + msgStructLen + msg->m_iMsgLen;
+            goto stickyPackageLoop;
+        }
+
+        //一轮结束pRearBuf和pHeadBuf指针重新指向recvBuf
+        pRearBuf = recvBuf;
+        pHeadBuf = recvBuf;
     }
 }
