@@ -1,0 +1,122 @@
+﻿#include "mainwidget.h"
+#include <QtWidgets>
+
+MainWidget::MainWidget(QWidget *parent) : BasicWidget(parent)
+{
+    resize(800, 600);
+    init();
+    setListViewItem();
+    setTableView();
+    this->setBackgroundColor(Qt::white);
+
+
+}
+
+void MainWidget::setTableView()
+{
+//    tableView = new QTableView(this);
+//    tableView->setAlternatingRowColors(true);
+//    QStringList headers;
+//    headers << "" <<"文件名" << "文件大小" << "修改时间";
+//    QHeaderView *hv = new QHeaderView(Qt::Horizontal, tableView);
+//    hv->setSortIndicatorShown(true);
+//    tableView->setHorizontalHeader(hv);
+//    tableView->setShowGrid(false);
+//    tableView->verticalHeader()->hide();   // 隐藏左侧header
+//    tableView->setSelectionBehavior(QAbstractItemView::SelectRows); //选中行
+//    tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);// 不可编辑
+//    FileTableModel *model = new FileTableModel;
+
+
+//    model->setHorizontalHeaderLabels(headers);
+
+//    for(int i = 0 ; i < 100; ++i)
+//    {
+//        model->setItem(i , 1, new QStandardItem("未来的自己.mp3"));
+//        model->setItem(i , 2, new QStandardItem("5.9MB"));
+//        model->setItem(i , 3, new QStandardItem("2017-03-26 21:31"));
+//    }
+
+//    tableView->setModel(model);
+//    tableView->resize(650, 480);
+//    tableView->move(150, 120);
+
+//    CheckBoxDelegate *c = new CheckBoxDelegate;
+//    tableView->setItemDelegateForColumn(0,c);
+}
+
+
+void MainWidget::setListViewItem()
+{
+    listView = new QListView(this);
+    QStandardItemModel *model = new QStandardItemModel(this);
+
+    QStringList itemsicon, itemsname;
+    itemsicon << ":/resource/image/MainWidget/allfile.png" << ":/resource/image/MainWidget/photo.png" <<
+          ":/resource/image/MainWidget/doc.png"<< ":/resource/image/MainWidget/film.png" << ":/resource/image/MainWidget/music.png";
+    itemsname << "全部文件" << "图片" << "文档" << "视频" << "音乐";
+
+    for(int i = 0; i < itemsname.size(); ++i)
+    {
+        QStandardItem *item = new QStandardItem(QIcon(itemsicon[i]), itemsname[i]);
+        item->setSizeHint(QSize(70, 35));
+        model->appendRow(item);
+        item->setEditable(false);
+    }
+
+    listView->setModel(model);
+    listView->move(0, 120);
+    listView->resize(150, 480);
+}
+
+void MainWidget::init()
+{
+    label = new QLabel(this);
+    label->setPixmap(QPixmap(":/resource/image/title.png"));
+
+    download = new QPushButton(QIcon(":/resource/image/MainWidget/download.png"),
+                               tr(" 下载"), this);
+    upload = new QPushButton(QIcon(":/resource/image/MainWidget/upload.png"),
+                               tr(" 上传"), this);
+    share = new QPushButton(QIcon(":/resource/image/MainWidget/share.png"),
+                               tr(" 分享"), this);
+    dele = new QPushButton(QIcon(":/resource/image/MainWidget/delete.png"),
+                               tr(" 删除"), this);
+
+
+    download->setIconSize(QSize(16,16));
+    upload->setIconSize(QSize(16,16));
+    share->setIconSize(QSize(16,16));
+    dele->setIconSize(QSize(16,16));
+
+    download->move(5, 81);
+    upload->move(80, 81);
+    share->move(155, 81);
+    dele->move(230, 81);
+
+    download->resize(75, 35);
+    upload->resize(75, 35);
+    share->resize(75, 35);
+    dele->resize(75, 35);
+
+    download->setObjectName("MainWidget_PushButton");
+    upload->setObjectName("MainWidget_PushButton");
+    share->setObjectName("MainWidget_PushButton");
+    dele->setObjectName("MainWidget_PushButton");
+}
+
+void MainWidget::paintEvent(QPaintEvent *event)
+{
+    QPainter p(this);
+
+    p.save();
+    p.setPen(Qt::NoPen);
+    p.setBrush(QBrush("#0698f5"));
+    p.drawRect(0, 0, this->width(), 80);
+    p.restore();
+    p.save();
+    p.setPen(Qt::NoPen);
+    p.drawRect(0, 80, this->width(), 40);
+    p.restore();
+    p.drawRect(0, 0, width() - 1, height() - 1);
+}
