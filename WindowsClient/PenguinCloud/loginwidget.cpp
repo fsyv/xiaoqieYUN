@@ -4,8 +4,10 @@
 #include <QFile>
 #include <QDebug>
 #include <QCheckBox>
-
+#include <QTcpSocket>
 #include "logic/rwfile.h"
+#include "logic/login.h"
+
 LoginWidget::LoginWidget(QWidget *parent) : BasicWidget(parent)
 {
 
@@ -57,6 +59,9 @@ void LoginWidget::init()
     password_input->setEchoMode(QLineEdit::Password);
     login_button->setObjectName("login_button");
 
+
+    connect(login_button, &QPushButton::clicked, this, &LoginWidget::conn);
+
 }
 void LoginWidget::setStyleSheetFromFile(const QString &filename)
 {
@@ -66,4 +71,34 @@ void LoginWidget::setStyleSheetFromFile(const QString &filename)
         this->setStyleSheet(file.readAll());
         qDebug() << this->styleSheet();
     }
+}
+void LoginWidget::conn()
+{
+   // sock = ConnectToServer::getInstance();
+    login_button->setText(tr("login..."));
+   // connect(sock, &ConnectToServer::readyRead, this, &LoginWidget::login_success);
+   // if(sock->state() != QAbstractSocket::UnconnectedState)
+    //{
+        QString data = username_input->text() + "@" + password_input->text();
+        Login *login = new Login();
+        login->sendUserInfo(data);
+
+  //  }else
+    //{
+       // login_button->setText("Check NetWork");
+      //  return;
+   // }
+   // connect(sock, &ConnectToServer::readyRead, this, &LoginWidget::login_success);
+}
+
+void LoginWidget::login_success()
+{
+    QString str = sock->readAll();
+    if(str != "")
+    {
+        login_button->setText(tr("login success"));
+        sock->close();
+    }
+
+    disconnect(sock, &ConnectToServer::readyRead, this, &LoginWidget::login_success);
 }
