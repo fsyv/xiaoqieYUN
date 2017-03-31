@@ -20,6 +20,4 @@ void Login::sendUserInfo(QString str)
 
     char *pmsg = (char*)msg;
     conn->write(pmsg, sizeof(Msg) + str.length() + 1);
-
-
 }
