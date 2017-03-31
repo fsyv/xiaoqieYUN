@@ -29,5 +29,15 @@
         <file>resource/image/checkbox/checkbox_selected_normal.png</file>
         <file>resource/image/checkbox/checkbox_selected_press.png</file>
         <file>password.txt</file>
+        <file>resource/qss/style.qss</file>
+        <file>resource/image/MainWidget/music.png</file>
+        <file>resource/image/MainWidget/allfile.png</file>
+        <file>resource/image/MainWidget/delete.png</file>
+        <file>resource/image/MainWidget/doc.png</file>
+        <file>resource/image/MainWidget/download.png</file>
+        <file>resource/image/MainWidget/film.png</file>
+        <file>resource/image/MainWidget/photo.png</file>
+        <file>resource/image/MainWidget/share.png</file>
+        <file>resource/image/MainWidget/upload.png</file>
     </qresource>
 </RCC>

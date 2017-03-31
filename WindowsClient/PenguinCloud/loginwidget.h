@@ -10,6 +10,7 @@ class QLineEdit;
 class QComboBox;
 class QLabel;
 class QCheckBox;
+class QTcpSocket;
 class LoginWidget : public BasicWidget
 {
     Q_OBJECT
@@ -17,6 +18,10 @@ public:
     LoginWidget(QWidget *parent = 0);
     ~LoginWidget();
 
+
+public slots:
+    void conn();
+    void login_success();
 private:
     void init(); // 设置窗口属性以及变量的初始化
     void setStyleSheetFromFile(const QString &filename);
@@ -26,6 +31,7 @@ private:
     QLabel *label_title;
     QCheckBox *remember_password;
     QLabel *find_passord;
+    QTcpSocket *sock ;
 };
 
 #endif // LOGINWIDGET_H
