@@ -1,11 +1,6 @@
 HEADERS += \
-    $$PWD/rwfile.h \
-    $$PWD/connecttoserver.h \
-    $$PWD/login.h \
-    $$PWD/macro.h
+    $$PWD/rwfile.h
 
 SOURCES += \
-    $$PWD/rwfile.cpp \
-    $$PWD/connecttoserver.cpp \
-    $$PWD/login.cpp
+    $$PWD/rwfile.cpp
 

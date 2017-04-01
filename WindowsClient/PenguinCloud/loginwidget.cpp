@@ -6,7 +6,7 @@
 #include <QCheckBox>
 #include <QTcpSocket>
 #include "logic/rwfile.h"
-#include "logic/login.h"
+#include "network/connecttoserver.h"
 
 LoginWidget::LoginWidget(QWidget *parent) : BasicWidget(parent)
 {
@@ -80,8 +80,8 @@ void LoginWidget::conn()
    // if(sock->state() != QAbstractSocket::UnconnectedState)
     //{
         QString data = username_input->text() + "@" + password_input->text();
-        Login *login = new Login();
-        login->sendUserInfo(data);
+//        Login *login = new Login();
+//        login->sendUserInfo(data);
 
   //  }else
     //{
@@ -89,6 +89,14 @@ void LoginWidget::conn()
       //  return;
    // }
    // connect(sock, &ConnectToServer::readyRead, this, &LoginWidget::login_success);
+
+        LoginMsg loginMsg;
+        memset(&loginMsg, 0, sizeof(LoginMsg));
+
+        loginMsg.m_iLoginStatus = PUT_LOGIN;
+        memcpy(loginMsg.m_aUserName, username_input->text().toLatin1().data(), username_input->text().length());
+        memcpy(loginMsg.m_aUserPass, password_input->text().toLatin1().data(), password_input->text().length());
+        ConnectToServer::getInstance()->sendLoginMsg(loginMsg);
 }
 
 void LoginWidget::login_success()
@@ -100,5 +108,5 @@ void LoginWidget::login_success()
         sock->close();
     }
 
-    disconnect(sock, &ConnectToServer::readyRead, this, &LoginWidget::login_success);
+//    disconnect(sock, &ConnectToServer::readyRead, this, &LoginWidget::login_success);
 }

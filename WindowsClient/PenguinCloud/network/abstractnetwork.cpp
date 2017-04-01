@@ -5,6 +5,11 @@
 AbstractNetwork::AbstractNetwork(QObject *parent):
     QObject(parent)
 {
+    m_iMsgStructLen = sizeof(Msg);
+}
+
+AbstractNetwork::~AbstractNetwork()
+{
 
 }
 
@@ -12,7 +17,7 @@ int AbstractNetwork::sendAckOkMsg()
 {
     Msg msg;
 
-    memset(&msg, 0, sizeof(Msg));
+    memset(&msg, 0, m_iMsgStructLen);
 
     msg.m_eMsgType = Ack_OK;
     msg.m_iMsgLen = 0;
@@ -22,8 +27,8 @@ int AbstractNetwork::sendAckOkMsg()
 
 int AbstractNetwork::sendAckErrorMsg(ErrorMsg errorMsg)
 {
-    Msg *msg = (Msg *)new char[sizeof(Msg) + sizeof(ErrorMsg)];
-    memset(msg, 0, sizeof(Msg) + sizeof(ErrorMsg));
+    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(ErrorMsg) + 1];
+    memset(msg, 0, m_iMsgStructLen + sizeof(ErrorMsg));
 
     msg->m_eMsgType = Ack_Error;
     msg->m_iMsgLen = sizeof(ErrorMsg);
@@ -40,7 +45,7 @@ int AbstractNetwork::sendReadyMsg()
 {
     Msg msg;
 
-    memset(&msg, 0, sizeof(Msg));
+    memset(&msg, 0, m_iMsgStructLen);
 
     msg.m_eMsgType = Ack_Ready;
     msg.m_iMsgLen = 0;
@@ -50,8 +55,8 @@ int AbstractNetwork::sendReadyMsg()
 
 int AbstractNetwork::sendLoginMsg(LoginMsg loginMsg)
 {
-    Msg *msg = (Msg *)new char[sizeof(Msg) + sizeof(LoginMsg)];
-    memset(msg, 0, sizeof(Msg) + sizeof(LoginMsg));
+    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(LoginMsg) + 1];
+    memset(msg, 0, m_iMsgStructLen + sizeof(LoginMsg));
 
     msg->m_eMsgType = Put_Login;
     msg->m_iMsgLen = sizeof(LoginMsg);
@@ -66,8 +71,8 @@ int AbstractNetwork::sendLoginMsg(LoginMsg loginMsg)
 
 int AbstractNetwork::sendFileListMsg(FileListsMsg fileListsMsg)
 {
-    Msg *msg = (Msg *)new char[sizeof(Msg) + sizeof(FileListsMsg)];
-    memset(msg, 0, sizeof(Msg) + sizeof(FileListsMsg));
+    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(FileListsMsg) + 1];
+    memset(msg, 0, m_iMsgStructLen + sizeof(FileListsMsg));
 
     msg->m_eMsgType = Get_FileLists;
     msg->m_iMsgLen = sizeof(FileListsMsg);
@@ -82,8 +87,8 @@ int AbstractNetwork::sendFileListMsg(FileListsMsg fileListsMsg)
 
 int AbstractNetwork::sendPreviewMsg(PreviewMsg previewMsg)
 {
-    Msg *msg = (Msg *)new char[sizeof(Msg) + sizeof(PreviewMsg)];
-    memset(msg, 0, sizeof(Msg) + sizeof(PreviewMsg));
+    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(PreviewMsg) + 1];
+    memset(msg, 0, m_iMsgStructLen + sizeof(PreviewMsg));
 
     msg->m_eMsgType = Get_Preview;
     msg->m_iMsgLen = sizeof(PreviewMsg);
@@ -98,8 +103,8 @@ int AbstractNetwork::sendPreviewMsg(PreviewMsg previewMsg)
 
 int AbstractNetwork::sendDownloadMsg(DownloadMsg downloadMsg)
 {
-    Msg *msg = (Msg *)new char[sizeof(Msg) + sizeof(DownloadMsg)];
-    memset(msg, 0, sizeof(Msg) + sizeof(DownloadMsg));
+    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(DownloadMsg) + 1];
+    memset(msg, 0, m_iMsgStructLen + sizeof(DownloadMsg));
 
     msg->m_eMsgType = Get_Download;
     msg->m_iMsgLen = sizeof(DownloadMsg);
@@ -114,8 +119,8 @@ int AbstractNetwork::sendDownloadMsg(DownloadMsg downloadMsg)
 
 int AbstractNetwork::sendMoveMsg(MoveMsg moveMsg)
 {
-    Msg *msg = (Msg *)new char[sizeof(Msg) + sizeof(MoveMsg)];
-    memset(msg, 0, sizeof(Msg) + sizeof(MoveMsg));
+    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(MoveMsg) + 1];
+    memset(msg, 0, m_iMsgStructLen + sizeof(MoveMsg));
 
     msg->m_eMsgType = Put_Move;
     msg->m_iMsgLen = sizeof(MoveMsg);
@@ -130,8 +135,8 @@ int AbstractNetwork::sendMoveMsg(MoveMsg moveMsg)
 
 int AbstractNetwork::sendNewFolderMsg(NewFolderMsg newFolderMsg)
 {
-    Msg *msg = (Msg *)new char[sizeof(Msg) + sizeof(NewFolderMsg)];
-    memset(msg, 0, sizeof(Msg) + sizeof(NewFolderMsg));
+    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(NewFolderMsg) + 1];
+    memset(msg, 0, m_iMsgStructLen + sizeof(NewFolderMsg));
 
     msg->m_eMsgType = Put_NewFolder;
     msg->m_iMsgLen = sizeof(NewFolderMsg);
@@ -146,8 +151,8 @@ int AbstractNetwork::sendNewFolderMsg(NewFolderMsg newFolderMsg)
 
 int AbstractNetwork::sendUploadMsg(UploadMsg uploadMsg)
 {
-    Msg *msg = (Msg *)new char[sizeof(Msg) + sizeof(UploadMsg)];
-    memset(msg, 0, sizeof(Msg) + sizeof(UploadMsg));
+    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(UploadMsg) + 1];
+    memset(msg, 0, m_iMsgStructLen + sizeof(UploadMsg));
 
     msg->m_eMsgType = Put_Upload;
     msg->m_iMsgLen = sizeof(UploadMsg);
@@ -162,8 +167,8 @@ int AbstractNetwork::sendUploadMsg(UploadMsg uploadMsg)
 
 int AbstractNetwork::sendDeleteMsg(DeleteMsg deleteMsg)
 {
-    Msg *msg = (Msg *)new char[sizeof(Msg) + sizeof(DeleteMsg)];
-    memset(msg, 0, sizeof(Msg) + sizeof(DeleteMsg));
+    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(DeleteMsg) + 1];
+    memset(msg, 0, m_iMsgStructLen + sizeof(DeleteMsg));
 
     msg->m_eMsgType = Put_Delete;
     msg->m_iMsgLen = sizeof(DeleteMsg);
@@ -178,8 +183,8 @@ int AbstractNetwork::sendDeleteMsg(DeleteMsg deleteMsg)
 
 int AbstractNetwork::sendShareMsg(ShareMsg shareMsg)
 {
-    Msg *msg = (Msg *)new char[sizeof(Msg) + sizeof(ShareMsg)];
-    memset(msg, 0, sizeof(Msg) + sizeof(ShareMsg));
+    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(ShareMsg) + 1];
+    memset(msg, 0, m_iMsgStructLen + sizeof(ShareMsg));
 
     msg->m_eMsgType = Put_Share;
     msg->m_iMsgLen = sizeof(ShareMsg);
@@ -194,8 +199,8 @@ int AbstractNetwork::sendShareMsg(ShareMsg shareMsg)
 
 int AbstractNetwork::sendExitMsg(ExitMsg exitMsg)
 {
-    Msg *msg = (Msg *)new char[sizeof(Msg) + sizeof(ExitMsg)];
-    memset(msg, 0, sizeof(Msg) + sizeof(ExitMsg));
+    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(ExitMsg) + 1];
+    memset(msg, 0, m_iMsgStructLen + sizeof(ExitMsg));
 
     msg->m_eMsgType = Ack_Exit;
     msg->m_iMsgLen = sizeof(ExitMsg);

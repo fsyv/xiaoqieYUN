@@ -33,6 +33,11 @@ typedef struct _ReadyMsg{
     unsigned int m_uiClientnaddress;     //客户端网络地址
 }ReadyMsg, *pReadyMsg;
 
+
+#define LOGIN_SUCCESS 1
+#define PUT_LOGIN 0
+#define LOGIN_FAILED_PASSWD -1
+#define LOGIN_FAILED_USERNAME -2
 //登录消息结构
 typedef struct _LoginMsg{
     int m_iLoginStatus;         //登录状态
