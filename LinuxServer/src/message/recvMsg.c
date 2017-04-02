@@ -1,8 +1,8 @@
 #include "recvMsg.h"
 
 #include <stdio.h>
-
 #include <string.h>
+
 
 /**
  * 收到消息
@@ -40,6 +40,7 @@ void recvMsg(int sockfd, Msg *msg)
             fprintf(stdout, "Put_Login\n");
 #endif
             //登录消息
+            recvLoginMsg(sockfd, msg);
             break;
     }
 }
@@ -48,13 +49,23 @@ void recvMsg(int sockfd, Msg *msg)
  * 收到准备就绪消息
  * @param sockfd 消息得句柄
  * @param msg 消息结构体
- * @param arg 传参
  * @return
  */
 void recvReadyMsg(int sockfd, Msg *msg)
 {
     ReadyMsg readyMsg;
     memcpy(&readyMsg, msg->m_aMsgData, msg->m_iMsgLen);
+}
 
-    return 0;
+/**
+ * 登录消息
+ * @param sockfd
+ * @param msg
+ */
+void recvLoginMsg(int sockfd, Msg *msg)
+{
+    LoginMsg loginMsg;
+    memset(&loginMsg, 0, sizeof(LoginMsg));
+    loginMsg.m_iLoginStatus = LOGIN_SUCCESS;
+    sendLoginMsg(sockfd, loginMsg);
 }

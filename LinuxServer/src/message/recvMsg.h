@@ -4,6 +4,8 @@
 #include "msg.h"
 #include "msgType.h"
 
+#include "sendMsg.h"
+
 
 //收到消息
 void recvMsg(int sockfd, Msg *msg);
