@@ -2,6 +2,7 @@
 #define LOGINWIDGET_H
 #include "basicwidget/basicwidget.h"
 #include "basiccontrol/lineedit.h"
+#include "network/msgtype.h"
 
 //前置类声明
 
