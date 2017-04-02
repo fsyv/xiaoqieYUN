@@ -75,6 +75,21 @@ public:
     //退出消息
     virtual void recvExitMsg(Msg *msg);
 
+signals:
+    //消息信号
+    void readyReadAckOKMsg();
+    void readyReadAckErrorMsg(ErrorMsg errorMsg);
+    void readyReadReadyMsg(ReadyMsg readyMsg);
+    void readyReadLoginMsg(LoginMsg loginMsg);
+    void readyReadFileListMsg(FileListsMsg fileListsMsg);
+    void readyReadPreviewMsg(PreviewMsg previewMsg);
+    void readyReadDownloadMsg(DownloadMsg downloadMsg);
+    void readyReadMoveMsg(MoveMsg moveMsg);
+    void readyReadNewFolderMsg(NewFolderMsg newFolderMsg);
+    void readyReadUploadMsg(UploadMsg uploadMsg);
+    void readyReadDeleteMsg(DeleteMsg deleteMsg);
+    void readyReadShareMsg(ShareMsg shareMsg);
+    void readyReadExitMsg(ExitMsg exitMsg);
 
 protected:
     //sendMsg是纯虚函数，需要在子类中实现

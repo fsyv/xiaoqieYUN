@@ -215,79 +215,92 @@ int AbstractNetwork::sendExitMsg(ExitMsg exitMsg)
 
 void AbstractNetwork::recvAckOkMsg(Msg *msg)
 {
-
+    emit readyReadAckOKMsg();
 }
 
 void AbstractNetwork::recvAckErrorMsg(Msg *msg)
 {
     ErrorMsg errorMsg;
     memcpy(&errorMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    readyReadAckErrorMsg(errorMsg);
+    emit readyReadAckErrorMsg(errorMsg);
 }
 
 void AbstractNetwork::recvReadyMsg(Msg *msg)
 {
     ReadyMsg readyMsg;
     memcpy(&readyMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    emit readyReadReadyMsg(readyMsg);
 }
 
 void AbstractNetwork::recvLoginMsg(Msg *msg)
 {
     LoginMsg loginMsg;
     memcpy(&loginMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    emit readyReadLoginMsg(loginMsg);
 }
 
 void AbstractNetwork::recvFileListMsg(Msg *msg)
 {
     FileListsMsg fileListsMsg;
     memcpy(&fileListsMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    emit readyReadFileListMsg(fileListsMsg);
 }
 
 void AbstractNetwork::recvPreviewMsg(Msg *msg)
 {
     PreviewMsg previewMsg;
     memcpy(&previewMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    emit readyReadPreviewMsg(previewMsg);
 }
 
 void AbstractNetwork::recvDownloadMsg(Msg *msg)
 {
     DownloadMsg downloadMsg;
     memcpy(&downloadMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    emit readyReadDownloadMsg(downloadMsg);
 }
 
 void AbstractNetwork::recvMoveMsg(Msg *msg)
 {
     MoveMsg moveMsg;
     memcpy(&moveMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    emit readyReadMoveMsg(moveMsg);
 }
 
 void AbstractNetwork::recvNewFolderMsg(Msg *msg)
 {
     NewFolderMsg newFolderMsg;
     memcpy(&newFolderMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    emit readyReadNewFolderMsg(newFolderMsg);
 }
 
 void AbstractNetwork::recvUploadMsg(Msg *msg)
 {
     UploadMsg uploadMsg;
     memcpy(&uploadMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    emit readyReadUploadMsg(uploadMsg);
 }
 
 void AbstractNetwork::recvDeleteMsg(Msg *msg)
 {
     DeleteMsg deleteMsg;
     memcpy(&deleteMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    emit readyReadDeleteMsg(deleteMsg);
 }
 
 void AbstractNetwork::recvShareMsg(Msg *msg)
 {
     ShareMsg shareMsg;
     memcpy(&shareMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    emit readyReadShareMsg(shareMsg);
 }
 
 void AbstractNetwork::recvExitMsg(Msg *msg)
 {
     ExitMsg exitMsg;
     memcpy(&exitMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    emit readyReadExitMsg(exitMsg);
 }
 
 void AbstractNetwork::recvMsg(Msg *msg)
