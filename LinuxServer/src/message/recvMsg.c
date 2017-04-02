@@ -13,8 +13,6 @@
  */
 void recvMsg(int sockfd, Msg *msg)
 {
-    printf("type : %d\n", msg->m_eMsgType);
-
     switch (msg->m_eMsgType){
         case Ack_OK:
 #ifdef Debug
@@ -42,6 +40,13 @@ void recvMsg(int sockfd, Msg *msg)
             //登录消息
             recvLoginMsg(sockfd, msg);
             break;
+        case Get_FileLists:
+#ifdef Debug
+            fprintf(stdout, "Get_FileLists\n");
+#endif
+            //登录消息
+            recvFileListMsg(sockfd, msg);
+            break;
     }
 }
 
@@ -66,6 +71,19 @@ void recvLoginMsg(int sockfd, Msg *msg)
 {
     LoginMsg loginMsg;
     memset(&loginMsg, 0, sizeof(LoginMsg));
+
+    memcpy(&loginMsg, msg->m_aMsgData, msg->m_iMsgLen);
     loginMsg.m_iLoginStatus = LOGIN_SUCCESS;
     sendLoginMsg(sockfd, loginMsg);
+}
+
+//文件列表消息
+void recvFileListMsg(int sockfd, Msg *msg)
+{
+    FileListsMsg fileListsMsg;
+    memset(&fileListsMsg, 0, sizeof(FileListsMsg));
+
+    memcpy(&fileListsMsg, msg->m_aMsgData, msg->m_iMsgLen);
+
+    printf("FolderPath = %s\n", fileListsMsg.m_aFolderPath);
 }
