@@ -107,7 +107,7 @@ void LoginWidget::conn()
     loginMsg.m_iLoginStatus = PUT_LOGIN;
     memcpy(loginMsg.m_aUserName, username_input->text().toLatin1().data(), username_input->text().length());
     memcpy(loginMsg.m_aUserPass, password_input->text().toLatin1().data(), password_input->text().length());
-    ConnectToServer::getInstance()->sendLoginMsg(loginMsg);
+    m_pConnectToServer->sendLoginMsg(loginMsg);
 }
 
 void LoginWidget::login_success(LoginMsg loginMsg)
@@ -122,6 +122,7 @@ void LoginWidget::login_success(LoginMsg loginMsg)
             delete m_pMainWidget;
 
         m_pMainWidget = new MainWidget;
+        m_pMainWidget->setUserName(QString(loginMsg.m_aUserName));
 
         m_pMainWidget->show();
     }

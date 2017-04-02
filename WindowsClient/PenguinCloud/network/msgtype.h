@@ -41,13 +41,16 @@ typedef struct _ReadyMsg{
 //登录消息结构
 typedef struct _LoginMsg{
     int m_iLoginStatus;         //登录状态
-    char m_aUserName[10];       //用户名
-    char m_aUserPass[16];       //登录密码
+    char m_aUserName[11];       //用户名
+    char m_aUserPass[17];       //登录密码
 }LoginMsg, *pLoginMsg;
 
+#define MAX_PATH 1024
+#define MAX_JSON_SIZE 1024
 //文件列表消息结构
 typedef struct _FileListsMsg{
-
+    char m_aFolderPath[MAX_PATH + 1];
+    char m_jsonFileList[MAX_JSON_SIZE + 1];
 }FileListsMsg, *pFileListsMsg;
 
 //预览信息消息结构

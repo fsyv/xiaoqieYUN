@@ -1,7 +1,11 @@
 ﻿#include "mainwidget.h"
 #include <QtWidgets>
 
-MainWidget::MainWidget(QWidget *parent) : BasicWidget(parent)
+#include "network/connecttoserver.h"
+
+MainWidget::MainWidget(QWidget *parent) :
+    BasicWidget(parent),
+    m_pConnectToServer(nullptr)
 {
     resize(800, 600);
     init();
@@ -9,7 +13,62 @@ MainWidget::MainWidget(QWidget *parent) : BasicWidget(parent)
     setTableView();
     this->setBackgroundColor(Qt::white);
 
+    m_pConnectToServer = ConnectToServer::getInstance();
+    connect(m_pConnectToServer, SIGNAL(readyReadFileListMsg(FileListsMsg)), this, SLOT(recvFileLists(FileListsMsg)));
+}
 
+MainWidget::~MainWidget()
+{
+
+}
+
+QString MainWidget::getUserName() const
+{
+    return m_stUserName;
+}
+
+void MainWidget::setUserName(const QString &UserName)
+{
+    m_stUserName = UserName;
+
+    //设置为根目录
+    //设置当前路径
+    setCurrentPath("/");
+    setPrePath("/");
+
+    replyFileLists(getCurrentPath());
+}
+
+QString MainWidget::getPrePath() const
+{
+    return m_stPrePath;
+}
+
+void MainWidget::setPrePath(const QString &PrePath)
+{
+    m_stPrePath = PrePath;
+}
+
+QString MainWidget::getCurrentPath() const
+{
+    return m_stCurrentPath;
+}
+
+void MainWidget::setCurrentPath(const QString &CurrentPath)
+{
+    setPrePath(getCurrentPath());
+    m_stCurrentPath = CurrentPath;
+}
+
+void MainWidget::replyFileLists(const QString &FolderPath)
+{
+    FileListsMsg fileListsMsg;
+    memset(&fileListsMsg, 0, sizeof(FileListsMsg));
+
+    strcat(fileListsMsg.m_aFolderPath, m_stUserName.toLatin1().data());
+    strcat(fileListsMsg.m_aFolderPath, FolderPath.toLatin1().data());
+
+    m_pConnectToServer->sendFileListMsg(fileListsMsg);
 }
 
 void MainWidget::setTableView()
@@ -45,12 +104,11 @@ void MainWidget::setTableView()
 //    tableView->setItemDelegateForColumn(0,c);
 }
 
-
 void MainWidget::setListViewItem()
 {
     listView = new QListView(this);
     QStandardItemModel *model = new QStandardItemModel(this);
-
+    
     QStringList itemsicon, itemsname;
     itemsicon << ":/resource/image/MainWidget/allfile.png" << ":/resource/image/MainWidget/photo.png" <<
           ":/resource/image/MainWidget/doc.png"<< ":/resource/image/MainWidget/film.png" << ":/resource/image/MainWidget/music.png";
@@ -119,4 +177,9 @@ void MainWidget::paintEvent(QPaintEvent *event)
     p.drawRect(0, 80, this->width(), 40);
     p.restore();
     p.drawRect(0, 0, width() - 1, height() - 1);
+}
+
+void MainWidget::recvFileLists(FileListsMsg fileListsMsg)
+{
+    qDebug() << "recvFileLists";
 }
