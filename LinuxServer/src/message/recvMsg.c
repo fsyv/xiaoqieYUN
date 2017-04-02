@@ -1,5 +1,7 @@
 #include "recvMsg.h"
 
+#include <stdio.h>
+
 #include <string.h>
 
 /**
@@ -9,18 +11,35 @@
  * @param arg 传参
  * @return
  */
-int recvMsg(int sockfd, Msg *msg, void *arg)
+void recvMsg(int sockfd, Msg *msg)
 {
+    printf("type : %d\n", msg->m_eMsgType);
+
     switch (msg->m_eMsgType){
         case Ack_OK:
+#ifdef Debug
+            fprintf(stdout, "Ack_OK\n");
+#endif
             //确定成功
             break;
         case Ack_Error:
+#ifdef Debug
+            fprintf(stdout, "Ack_Error\n");
+#endif
             //确定错误
             break;
         case Ack_Ready:
+#ifdef Debug
+            fprintf(stdout, "Ack_Ready\n");
+#endif
             //准备就绪
-            recvReadyMsg(sockfd, msg, arg);
+            recvReadyMsg(sockfd, msg);
+            break;
+        case Put_Login:
+#ifdef Debug
+            fprintf(stdout, "Put_Login\n");
+#endif
+            //登录消息
             break;
     }
 }
@@ -32,7 +51,7 @@ int recvMsg(int sockfd, Msg *msg, void *arg)
  * @param arg 传参
  * @return
  */
-int recvReadyMsg(int sockfd, Msg *msg, void *arg)
+void recvReadyMsg(int sockfd, Msg *msg)
 {
     ReadyMsg readyMsg;
     memcpy(&readyMsg, msg->m_aMsgData, msg->m_iMsgLen);

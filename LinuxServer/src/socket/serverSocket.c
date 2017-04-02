@@ -225,9 +225,6 @@ void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
         //读数据错误
         if(recvRet < 0)
         {
-#ifdef Debug
-            fprintf(stderr, "recv : %s \n", strerror(errno));
-#endif
             if(errno == EAGAIN)
             {
                 //这次没有数据了，下次再来
@@ -235,6 +232,9 @@ void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
             }
             else
             {
+#ifdef Debug
+                fprintf(stderr, "recv : %s \n", strerror(errno));
+#endif
                 ev->data.fd = clientSocketfd;
                 epoll_ctl(epfd, EPOLL_CTL_DEL, clientSocketfd, ev);
                 closeSockfd(clientSocketfd);
@@ -343,7 +343,7 @@ void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
         }
 
         //投递数据包
-        recvMsg(clientSocketfd, msg, NULL);
+        recvMsg(clientSocketfd, msg);
         msgLen -= msgStructLen + msg->m_iMsgLen;
 
         if(msgLen > 0)
