@@ -1,0 +1,4 @@
+set(CJSON_SOURCE_FILES cJSON.h cJSON.c)
+
+add_library(cjson SHARED ${CJSON_SOURCE_FILES})
+
