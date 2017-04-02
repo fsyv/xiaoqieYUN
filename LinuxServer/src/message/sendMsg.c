@@ -28,7 +28,7 @@ int sendAckErrorMsg(int sockfd, ErrorMsg errorMsg)
     msg->m_iMsgLen = sizeof(ErrorMsg);
     memcpy(msg->m_aMsgData, (void *)&errorMsg, msg->m_iMsgLen);
 
-    int ret = sendMsg(sockfd, &msg);
+    int ret = sendMsg(sockfd, msg);
 
     free(msg);
     return ret;
