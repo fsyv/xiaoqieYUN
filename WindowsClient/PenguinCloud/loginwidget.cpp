@@ -105,8 +105,8 @@ void LoginWidget::conn()
     memset(&loginMsg, 0, sizeof(LoginMsg));
     
     loginMsg.m_iLoginStatus = PUT_LOGIN;
-    memcpy(loginMsg.m_aUserName, username_input->text().toLatin1().data(), username_input->text().length());
-    memcpy(loginMsg.m_aUserPass, password_input->text().toLatin1().data(), password_input->text().length());
+    memcpy(loginMsg.m_aUserName, username_input->text().toUtf8().data(), username_input->text().length());
+    memcpy(loginMsg.m_aUserPass, password_input->text().toUtf8().data(), password_input->text().length());
     m_pConnectToServer->sendLoginMsg(loginMsg);
 }
 

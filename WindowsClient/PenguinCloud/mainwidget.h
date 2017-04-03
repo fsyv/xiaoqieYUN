@@ -36,6 +36,7 @@ protected:
 protected slots:
     void recvFileLists(QByteArray byteArray);
     void getDir(QString dirname);
+    void previousDir();
 private:
     void init();
     void setListViewItem();
@@ -48,6 +49,7 @@ private:
     QPushButton *upload;
     QPushButton *dele;
     QPushButton *share;
+    QPushButton *previous;
     QListView *listView;
     FileTableWidget *tableWidget;
 

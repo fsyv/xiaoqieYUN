@@ -39,5 +39,6 @@
         <file>resource/image/MainWidget/photo.png</file>
         <file>resource/image/MainWidget/share.png</file>
         <file>resource/image/MainWidget/upload.png</file>
+        <file>resource/widgets/undo_32.png</file>
     </qresource>
 </RCC>

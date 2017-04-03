@@ -59,6 +59,9 @@ void MainWidget::setCurrentPath(const QString &CurrentPath)
 {
     setPrePath(getCurrentPath());
     m_stCurrentPath = CurrentPath;
+
+    //目录改变的时候发送请求文件列表
+    replyFileLists(m_stCurrentPath);
 }
 
 void MainWidget::replyFileLists(const QString &FolderPath)
@@ -66,10 +69,8 @@ void MainWidget::replyFileLists(const QString &FolderPath)
     FileListsMsg fileListsMsg;
     memset(&fileListsMsg, 0, sizeof(FileListsMsg));
 
-    strcat(fileListsMsg.m_aFolderPath, m_stUserName.toLatin1().data());
+    strcat(fileListsMsg.m_aFolderPath, m_stUserName.toUtf8().data());
     strcat(fileListsMsg.m_aFolderPath, FolderPath.toUtf8().data());
-
-    qDebug() << " FolderPath.toUtf8()" << FolderPath.toUtf8();
 
     m_pConnectToServer->sendFileListMsg(fileListsMsg);
 }
@@ -119,26 +120,36 @@ void MainWidget::init()
     dele = new QPushButton(QIcon(":/resource/image/MainWidget/delete.png"),
                                tr(" 删除"), this);
 
+    previous = new QPushButton(QIcon("://resource/widgets/undo_32.png"),
+                               tr(" 返回"), this);
+
 
     download->setIconSize(QSize(16,16));
     upload->setIconSize(QSize(16,16));
     share->setIconSize(QSize(16,16));
     dele->setIconSize(QSize(16,16));
+    previous->setIconSize(QSize(16,16));
 
     download->move(5, 81);
     upload->move(80, 81);
     share->move(155, 81);
     dele->move(230, 81);
+    previous->move(305, 81);
+
 
     download->resize(75, 35);
     upload->resize(75, 35);
     share->resize(75, 35);
     dele->resize(75, 35);
+    previous->resize(75, 35);
 
     download->setObjectName("MainWidget_PushButton");
     upload->setObjectName("MainWidget_PushButton");
     share->setObjectName("MainWidget_PushButton");
     dele->setObjectName("MainWidget_PushButton");
+    previous->setObjectName("MainWidget_PushButton");
+
+    connect(previous, SIGNAL(clicked()), this, SLOT(previousDir()));
 }
 
 void MainWidget::paintEvent(QPaintEvent *event)
@@ -165,6 +176,9 @@ void MainWidget::recvFileLists(QByteArray byteArray)
 void MainWidget::getDir(QString dirname)
 {
     setCurrentPath(getCurrentPath() + dirname + "/");
-    qDebug() << getCurrentPath();
-    replyFileLists(getCurrentPath());
+}
+
+void MainWidget::previousDir()
+{
+    setCurrentPath(getPrePath());
 }
