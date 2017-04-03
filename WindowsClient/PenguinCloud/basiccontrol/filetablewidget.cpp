@@ -6,10 +6,15 @@
 #include <QMenu>
 #include <QAction>
 #include <QDebug>
+#include <QDateTime>
 FileTableWidget::FileTableWidget(QWidget *parent) : QTableWidget(parent)
 {
 
     init();
+
+   // connect(this, &QTableWidget::cellEntered, this, &FileTableWidget::close_editor);
+    connect(this, &QTableWidget::currentCellChanged, this, &FileTableWidget::close_editor);
+
     QStringList list1;
     list1 << "生化危机6.rmvb" << "视频" << "1.76G" << "2017-03-27 19:20:20";
     QStringList list2;
@@ -49,6 +54,7 @@ void FileTableWidget::init()
     headerlabels << "文件名" << "文件类型" << "文件大小" <<"修改日期";
     setHorizontalHeaderLabels(headerlabels);
 
+    isEditing = false;
 }
 
 //
@@ -118,6 +124,9 @@ void FileTableWidget::mouseReleaseEvent(QMouseEvent *event)
         noitem_menu->addAction(new_folder_action);
         noitem_menu->addAction(upload_action);
 
+        connect(new_folder_action, &QAction::triggered, this, &FileTableWidget::newfolder);
+        connect(upload_action, &QAction::triggered, this, &FileTableWidget::upload);
+
 //        记录菜单显示的位置
         menu_show = event->pos();
         if( itemAt(event->pos()) != 0)
@@ -165,4 +174,36 @@ void FileTableWidget::moveitem()
 void FileTableWidget::copy()
 {
     qDebug() << "copy";
+}
+
+void FileTableWidget::upload()
+{
+
+}
+void FileTableWidget::newfolder()
+{
+    insertRow(rowCount());
+    QFileIconProvider p;
+    QIcon icon = p.icon(QFileIconProvider::Folder);
+    edit_item = new QTableWidgetItem(icon, "新建文件夹");
+    QTableWidgetItem *type_item = new QTableWidgetItem("文件夹");
+    QTableWidgetItem *size_item = new QTableWidgetItem("-");
+    QTableWidgetItem *modify_item = new QTableWidgetItem(QDateTime::currentDateTime().toString());
+
+    setItem(rowCount() - 1, 0, edit_item);
+    setItem(rowCount() - 1, 1, type_item);
+    setItem(rowCount() - 1, 2, size_item);
+    setItem(rowCount() - 1, 3, modify_item);
+    setCurrentCell(rowCount() - 1, 0);
+    openPersistentEditor(edit_item);
+    editItem(edit_item);
+    isEditing = true;
+
+}
+
+void FileTableWidget::close_editor(int currentRow, int currentColumn, int previousRow, int previousColumn)
+{
+    if(isEditing)
+        closePersistentEditor(edit_item);
+    isEditing = false;
 }

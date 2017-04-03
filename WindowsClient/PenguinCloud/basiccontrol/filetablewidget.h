@@ -17,6 +17,10 @@ public slots:
     void moveitem();
     void copy();
 
+    void upload();
+    void newfolder();
+
+    void close_editor(int currentRow, int currentColumn, int previousRow, int previousColumn);
 protected:
     void mouseReleaseEvent(QMouseEvent *event);
 private:
@@ -24,6 +28,9 @@ private:
 
     QVector<QStringList> files;
     QPoint menu_show; // 记录菜单显示的位置
+
+    bool isEditing;
+    QTableWidgetItem *edit_item;
 };
 
 #endif // FILETABLEWIDGET_H
