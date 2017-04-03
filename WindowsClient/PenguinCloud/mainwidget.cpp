@@ -10,7 +10,7 @@ MainWidget::MainWidget(QWidget *parent) :
     resize(800, 600);
     init();
     setListViewItem();
-    setTableView();
+    setFileTable();
     this->setBackgroundColor(Qt::white);
 
     m_pConnectToServer = ConnectToServer::getInstance();
@@ -71,37 +71,18 @@ void MainWidget::replyFileLists(const QString &FolderPath)
     m_pConnectToServer->sendFileListMsg(fileListsMsg);
 }
 
-void MainWidget::setTableView()
+void MainWidget::setFileTable()
 {
-//    tableView = new QTableView(this);
+    tableWidget = new FileTableWidget(this);
+
 //    tableView->setAlternatingRowColors(true);
-//    QStringList headers;
-//    headers << "" <<"文件名" << "文件大小" << "修改时间";
-//    QHeaderView *hv = new QHeaderView(Qt::Horizontal, tableView);
-//    hv->setSortIndicatorShown(true);
-//    tableView->setHorizontalHeader(hv);
 //    tableView->setShowGrid(false);
 //    tableView->verticalHeader()->hide();   // 隐藏左侧header
 //    tableView->setSelectionBehavior(QAbstractItemView::SelectRows); //选中行
 //    tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);// 不可编辑
-//    FileTableModel *model = new FileTableModel;
+    tableWidget->resize(650, 480);
+    tableWidget->move(150, 120);
 
-
-//    model->setHorizontalHeaderLabels(headers);
-
-//    for(int i = 0 ; i < 100; ++i)
-//    {
-//        model->setItem(i , 1, new QStandardItem("未来的自己.mp3"));
-//        model->setItem(i , 2, new QStandardItem("5.9MB"));
-//        model->setItem(i , 3, new QStandardItem("2017-03-26 21:31"));
-//    }
-
-//    tableView->setModel(model);
-//    tableView->resize(650, 480);
-//    tableView->move(150, 120);
-
-//    CheckBoxDelegate *c = new CheckBoxDelegate;
-//    tableView->setItemDelegateForColumn(0,c);
 }
 
 void MainWidget::setListViewItem()

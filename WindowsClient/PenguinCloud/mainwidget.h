@@ -3,6 +3,7 @@
 
 #include "basicwidget/basicwidget.h"
 #include "network/msgtype.h"
+#include "basiccontrol/filetablewidget.h"
 
 class QLabel;
 class QPushButton;
@@ -37,7 +38,7 @@ protected slots:
 private:
     void init();
     void setListViewItem();
-    void setTableView();
+    void setFileTable();
 
     ConnectToServer *m_pConnectToServer;
 
@@ -47,7 +48,7 @@ private:
     QPushButton *dele;
     QPushButton *share;
     QListView *listView;
-    QTableView *tableView;
+    FileTableWidget *tableWidget;
 
     QString m_stUserName;
     QString m_stPrePath;
