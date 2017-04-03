@@ -35,7 +35,7 @@ protected:
 
 protected slots:
     void recvFileLists(QByteArray byteArray);
-
+    void getDir(QString dirname);
 private:
     void init();
     void setListViewItem();

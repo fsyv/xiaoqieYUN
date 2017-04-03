@@ -8,7 +8,7 @@ class FileTableWidget : public QTableWidget
     Q_OBJECT
 public:
     FileTableWidget(QWidget *parent = nullptr);
-    void setTableRow(QVector<QStringList> &_vec);
+    void setTableRow(const QVector<QStringList> &_vec);
 public slots:
     void rename();
     void del();
@@ -20,7 +20,11 @@ public slots:
     void upload();
     void newfolder();
 
+    void opendir(int row, int column);
     void close_editor(int currentRow, int currentColumn, int previousRow, int previousColumn);
+
+signals:
+    void requestDir(QString dirname);
 protected:
     void mouseReleaseEvent(QMouseEvent *event);
 private:

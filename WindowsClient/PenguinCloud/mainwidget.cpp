@@ -2,7 +2,7 @@
 #include <QtWidgets>
 
 #include "network/connecttoserver.h"
-
+#include "tools/tools.h"
 MainWidget::MainWidget(QWidget *parent) :
     BasicWidget(parent),
     m_pConnectToServer(nullptr)
@@ -15,6 +15,7 @@ MainWidget::MainWidget(QWidget *parent) :
 
     m_pConnectToServer = ConnectToServer::getInstance();
     connect(m_pConnectToServer, SIGNAL(readyReadFileListMsg(QByteArray)), this, SLOT(recvFileLists(QByteArray)));
+    connect(tableWidget, &FileTableWidget::requestDir, this, &MainWidget::getDir);
 }
 
 MainWidget::~MainWidget()
@@ -74,12 +75,6 @@ void MainWidget::replyFileLists(const QString &FolderPath)
 void MainWidget::setFileTable()
 {
     tableWidget = new FileTableWidget(this);
-
-//    tableView->setAlternatingRowColors(true);
-//    tableView->setShowGrid(false);
-//    tableView->verticalHeader()->hide();   // 隐藏左侧header
-//    tableView->setSelectionBehavior(QAbstractItemView::SelectRows); //选中行
-//    tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);// 不可编辑
     tableWidget->resize(650, 480);
     tableWidget->move(150, 120);
 
@@ -162,5 +157,12 @@ void MainWidget::paintEvent(QPaintEvent *event)
 
 void MainWidget::recvFileLists(QByteArray byteArray)
 {
-    qDebug() << QString::fromUtf8(byteArray);
+    tableWidget->setTableRow(Tools::getTableRow(byteArray));
+}
+
+void MainWidget::getDir(QString dirname)
+{
+    setCurrentPath(getCurrentPath() + dirname + "/");
+    qDebug() << getCurrentPath();
+    replyFileLists(getCurrentPath());
 }

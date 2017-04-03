@@ -7,38 +7,53 @@
 #include <QAction>
 #include <QDebug>
 #include <QDateTime>
+#include <QTemporaryFile>
+#include <QApplication>
+#include <QDir>
+
+#include <network/connecttoserver.h>
+
+static QString sizeFormat(qint64 size)
+{
+    double kb = 1024.0;
+    double mb = 1024.0 * 1024;
+    double gb = mb * 1024.0;
+
+    if(size < kb)
+        return QString::number(size) + "b";
+    else if(size < mb)
+    {
+       double k = size / kb;
+
+       return QString::number(k, 'f', 2) + "kb";
+    }
+    else if(size < gb)
+    {
+        double m = size / mb;
+
+        return QString::number(m, 'f', 2) + "mb";
+    }
+    else
+    {
+        double g = size / gb;
+
+        return QString::number(g, 'f', 2) + "gb";
+    }
+}
+
 FileTableWidget::FileTableWidget(QWidget *parent) : QTableWidget(parent)
 {
 
     init();
 
-   // connect(this, &QTableWidget::cellEntered, this, &FileTableWidget::close_editor);
     connect(this, &QTableWidget::currentCellChanged, this, &FileTableWidget::close_editor);
-
-    QStringList list1;
-    list1 << "生化危机6.rmvb" << "视频" << "1.76G" << "2017-03-27 19:20:20";
-    QStringList list2;
-    list2<< "一生所爱.mp3" << "音频" << "5.8M" << "2017-02-10 20:1:56";
-
-    for(int i = 0; i < 10; ++i)
-    {
-        if(i % 2 == 0)
-        {
-            files.push_back(list1);
-        }else
-        {
-            files.push_back(list2);
-        }
-     }
-
-    setTableRow(files);
-
-
+    connect(this, &QTableWidget::cellDoubleClicked, this, &FileTableWidget::opendir);
 }
 
 void FileTableWidget::init()
 {
     setAlternatingRowColors(true);
+    setSelectionMode(QAbstractItemView::SingleSelection);
     setShowGrid(false);
     verticalHeader()->hide();   // 隐藏左侧header
     setSelectionBehavior(QAbstractItemView::SelectRows); //选中行
@@ -58,23 +73,62 @@ void FileTableWidget::init()
 }
 
 //
-void FileTableWidget::setTableRow(QVector<QStringList> &_vec)
+void FileTableWidget::setTableRow(const QVector<QStringList> &_vec)
 {
-    //clear();
+
+    for(int i = 0; i < rowCount();)
+    {
+        removeRow(0);
+    }
+    QFileIconProvider p;
     for(int row = 0; row < _vec.size(); ++row)
     {
         QStringList elem = _vec[row];
+        qDebug() << elem;
         insertRow(this->rowCount());
         for(int i = 0; i < 4; ++i)
         {
             QTableWidgetItem *item;
             if( i == 0 )
             {
-                QFileIconProvider p;
-                QFileInfo fileinfo(elem[0]);
-                QIcon icon = p.icon(fileinfo);
-
+                QIcon icon;
+                if(elem.at(1) == "folder")
+                    icon = p.icon(QFileIconProvider::Folder);
+                else
+                {
+                    QFileInfo fileinfo(elem[0]);
+                    icon = p.icon(fileinfo);
+                }
                 item = new QTableWidgetItem(icon, elem[0]);
+
+            }
+            else if(i == 1)
+            {
+                if(elem.at(1) == "folder")
+                    item = new QTableWidgetItem("文件夹");
+                else
+                {
+                    QString strFileName = QDir::tempPath() + QDir::separator() +
+                                QApplication::applicationName() + "_XXXXXX." + elem.at(0).split(".")[1];
+                    QTemporaryFile tmpFile(strFileName);
+                    tmpFile.setAutoRemove(true);
+                    if(tmpFile.open())
+                    {
+                        QFileInfo info(tmpFile.fileName());
+                        QString type = p.type(info);
+                        item = new QTableWidgetItem(type);
+                    }
+
+                }
+            }
+            else if(i == 2)
+            {
+                if(elem[1] == "folder")
+                {
+                    item = new QTableWidgetItem("-");
+                }
+                else
+                    item = new QTableWidgetItem(sizeFormat(elem[i].toInt()));
 
             }
             else
@@ -143,6 +197,8 @@ void FileTableWidget::rename()
     QTableWidgetItem *item = itemAt(menu_show);
     setCurrentCell(item->row(), 0);
     openPersistentEditor(item);
+    edit_item = item;
+    isEditing = true;
     editItem(item);
 
     //
@@ -206,4 +262,18 @@ void FileTableWidget::close_editor(int currentRow, int currentColumn, int previo
     if(isEditing)
         closePersistentEditor(edit_item);
     isEditing = false;
+}
+
+void FileTableWidget::opendir(int row, int column)
+{
+    qDebug() << row << " " << column;
+    QTableWidgetItem *_item = item(row, 1);
+    if(_item->text() == "文件夹")
+    {
+        emit requestDir(item(row, 0 )->text());
+    }
+    else
+    {
+        //
+    }
 }
