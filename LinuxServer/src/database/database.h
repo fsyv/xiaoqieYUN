@@ -1,10 +1,10 @@
-#include <string.h> 
-#include <stdlib.h> 
-#include <stdio.h> 
-#include <mysql/mysql.h>/*×¢ÒâÒª°üº¬Õâ¸öÍ·ÎÄ¼ş*/ 
-/*¶¨ÒåÁËÒ»Ğ©Êı¾İ¿âÁ¬½ÓĞèÒªµÄºê*/
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <mysql/mysql.h>/*æ³¨æ„è¦åŒ…å«è¿™ä¸ªå¤´æ–‡ä»¶*/
+/*å®šä¹‰äº†ä¸€äº›æ•°æ®åº“è¿æ¥éœ€è¦çš„å®*/
 
-#ifndef MY_DATABASE	
+#ifndef MY_DATABASE
 
 #define HOST "localhost"
 #define USERNAME "sa"
