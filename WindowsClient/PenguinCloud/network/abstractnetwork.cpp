@@ -244,7 +244,9 @@ void AbstractNetwork::recvFileListMsg(Msg *msg)
 {
     FileListsMsg fileListsMsg;
     memcpy(&fileListsMsg, msg->m_aMsgData, msg->m_iMsgLen);
-    emit readyReadFileListMsg(fileListsMsg);
+
+    QByteArray byteArray(fileListsMsg.m_jsonFileList);
+    emit readyReadFileListMsg(byteArray);
 }
 
 void AbstractNetwork::recvPreviewMsg(Msg *msg)

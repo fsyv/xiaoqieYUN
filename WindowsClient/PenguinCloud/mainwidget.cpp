@@ -14,7 +14,7 @@ MainWidget::MainWidget(QWidget *parent) :
     this->setBackgroundColor(Qt::white);
 
     m_pConnectToServer = ConnectToServer::getInstance();
-    connect(m_pConnectToServer, SIGNAL(readyReadFileListMsg(FileListsMsg)), this, SLOT(recvFileLists(FileListsMsg)));
+    connect(m_pConnectToServer, SIGNAL(readyReadFileListMsg(QByteArray)), this, SLOT(recvFileLists(QByteArray)));
 }
 
 MainWidget::~MainWidget()
@@ -160,7 +160,7 @@ void MainWidget::paintEvent(QPaintEvent *event)
     p.drawRect(0, 0, width() - 1, height() - 1);
 }
 
-void MainWidget::recvFileLists(FileListsMsg fileListsMsg)
+void MainWidget::recvFileLists(QByteArray byteArray)
 {
-    qDebug() << "recvFileLists";
+    qDebug() << QString::fromUtf8(byteArray);
 }

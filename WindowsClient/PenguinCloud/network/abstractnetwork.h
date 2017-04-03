@@ -78,18 +78,18 @@ public:
 signals:
     //消息信号
     void readyReadAckOKMsg();
-    void readyReadAckErrorMsg(ErrorMsg errorMsg);
-    void readyReadReadyMsg(ReadyMsg readyMsg);
-    void readyReadLoginMsg(LoginMsg loginMsg);
-    void readyReadFileListMsg(FileListsMsg fileListsMsg);
-    void readyReadPreviewMsg(PreviewMsg previewMsg);
-    void readyReadDownloadMsg(DownloadMsg downloadMsg);
-    void readyReadMoveMsg(MoveMsg moveMsg);
-    void readyReadNewFolderMsg(NewFolderMsg newFolderMsg);
-    void readyReadUploadMsg(UploadMsg uploadMsg);
-    void readyReadDeleteMsg(DeleteMsg deleteMsg);
-    void readyReadShareMsg(ShareMsg shareMsg);
-    void readyReadExitMsg(ExitMsg exitMsg);
+    void readyReadAckErrorMsg(ErrorMsg);
+    void readyReadReadyMsg(ReadyMsg);
+    void readyReadLoginMsg(LoginMsg);
+    void readyReadFileListMsg(QByteArray byteArray);
+    void readyReadPreviewMsg(PreviewMsg);
+    void readyReadDownloadMsg(DownloadMsg);
+    void readyReadMoveMsg(MoveMsg);
+    void readyReadNewFolderMsg(NewFolderMsg);
+    void readyReadUploadMsg(UploadMsg);
+    void readyReadDeleteMsg(DeleteMsg);
+    void readyReadShareMsg(ShareMsg);
+    void readyReadExitMsg(ExitMsg);
 
 protected:
     //sendMsg是纯虚函数，需要在子类中实现
