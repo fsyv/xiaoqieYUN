@@ -67,7 +67,9 @@ void MainWidget::replyFileLists(const QString &FolderPath)
     memset(&fileListsMsg, 0, sizeof(FileListsMsg));
 
     strcat(fileListsMsg.m_aFolderPath, m_stUserName.toLatin1().data());
-    strcat(fileListsMsg.m_aFolderPath, FolderPath.toLatin1().data());
+    strcat(fileListsMsg.m_aFolderPath, FolderPath.toUtf8().data());
+
+    qDebug() << " FolderPath.toUtf8()" << FolderPath.toUtf8();
 
     m_pConnectToServer->sendFileListMsg(fileListsMsg);
 }
