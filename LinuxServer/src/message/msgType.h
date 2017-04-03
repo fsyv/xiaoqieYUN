@@ -21,7 +21,8 @@ typedef enum _MsgType{
 
 //错误类型
 typedef enum _ErrorType{
-    DataPackError = 0        //错误得数据包
+    DataPackError = 0,        //错误得数据包
+    NoSuchFileOrDirectory    //没有这个文件或者目录
 }ErrorType;
 //发生了错误
 typedef struct _ErrorMsg{

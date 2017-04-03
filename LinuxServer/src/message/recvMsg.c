@@ -1,8 +1,10 @@
 #include "recvMsg.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
+#include "../operating/serverOperating.h"
 
 /**
  * 收到消息
@@ -85,5 +87,18 @@ void recvFileListMsg(int sockfd, Msg *msg)
 
     memcpy(&fileListsMsg, msg->m_aMsgData, msg->m_iMsgLen);
 
-    printf("FolderPath = %s\n", fileListsMsg.m_aFolderPath);
+    char *fileListsJson = getDirFileLists(fileListsMsg.m_aFolderPath);
+
+    if(fileListsJson)
+    {
+        strcpy(fileListsMsg.m_jsonFileList, fileListsJson);
+        sendFileListMsg(sockfd, fileListsMsg);
+        free(fileListsJson);
+    }
+    else
+    {
+        ErrorMsg errorMsg;
+        errorMsg.m_eErrorType = NoSuchFileOrDirectory;
+        sendAckErrorMsg(sockfd, errorMsg);
+    }
 }

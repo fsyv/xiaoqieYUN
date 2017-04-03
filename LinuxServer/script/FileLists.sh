@@ -6,7 +6,7 @@ echo mkdir /var/penguin
 mkdir /var/penguin/test
 
 echo cp 小说.txt
-cp ./小说.txt /var/penguin
+cp ./小说.txt /var/penguin/test
 
 echo mkdir /var/penguin/test/英语
 mkdir /var/penguin/test/英语
