@@ -14,6 +14,7 @@ class ConnectToServer;
 
 class MainWidget : public BasicWidget
 {
+    Q_OBJECT
 public:
     MainWidget(QWidget *parent = 0);
     ~MainWidget();
@@ -33,7 +34,7 @@ protected:
     void paintEvent(QPaintEvent *event);
 
 protected slots:
-    void recvFileLists(FileListsMsg fileListsMsg);
+    void recvFileLists(QByteArray byteArray);
 
 private:
     void init();
