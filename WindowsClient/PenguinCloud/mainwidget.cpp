@@ -1,11 +1,14 @@
 ﻿#include "mainwidget.h"
 #include <QtWidgets>
+#include <QString>
+#include <QDir>
 
 #include "network/connecttoserver.h"
 #include "tools/tools.h"
 MainWidget::MainWidget(QWidget *parent) :
     BasicWidget(parent),
-    m_pConnectToServer(nullptr)
+    m_pConnectToServer(nullptr),
+    m_pFileMap(nullptr)
 {
     resize(800, 600);
     init();
@@ -16,11 +19,25 @@ MainWidget::MainWidget(QWidget *parent) :
     m_pConnectToServer = ConnectToServer::getInstance();
     connect(m_pConnectToServer, SIGNAL(readyReadFileListMsg(QByteArray)), this, SLOT(recvFileLists(QByteArray)));
     connect(tableWidget, &FileTableWidget::requestDir, this, &MainWidget::getDir);
+
+    m_pFileMap = new QMap<QString, QFileInfo *>;
 }
 
 MainWidget::~MainWidget()
 {
+    if(m_pFileMap->count())
+    {
+        for(auto cur = m_pFileMap->begin(); cur != m_pFileMap->end(); ++cur)
+        {
+            delete cur.value();
+            cur.value() = nullptr;
+        }
+        m_pFileMap->clear();
+    }
 
+    if(m_pFileMap)
+        delete m_pFileMap;
+    m_pFileMap = nullptr;
 }
 
 QString MainWidget::getUserName() const
@@ -90,7 +107,7 @@ void MainWidget::setListViewItem()
     
     QStringList itemsicon, itemsname;
     itemsicon << ":/resource/image/MainWidget/allfile.png" << ":/resource/image/MainWidget/photo.png" <<
-          ":/resource/image/MainWidget/doc.png"<< ":/resource/image/MainWidget/film.png" << ":/resource/image/MainWidget/music.png";
+                 ":/resource/image/MainWidget/doc.png"<< ":/resource/image/MainWidget/film.png" << ":/resource/image/MainWidget/music.png";
     itemsname << "全部文件" << "图片" << "文档" << "视频" << "音乐";
 
     for(int i = 0; i < itemsname.size(); ++i)
@@ -114,11 +131,11 @@ void MainWidget::init()
     download = new QPushButton(QIcon(":/resource/image/MainWidget/download.png"),
                                tr(" 下载"), this);
     upload = new QPushButton(QIcon(":/resource/image/MainWidget/upload.png"),
-                               tr(" 上传"), this);
+                             tr(" 上传"), this);
     share = new QPushButton(QIcon(":/resource/image/MainWidget/share.png"),
-                               tr(" 分享"), this);
+                            tr(" 分享"), this);
     dele = new QPushButton(QIcon(":/resource/image/MainWidget/delete.png"),
-                               tr(" 删除"), this);
+                           tr(" 删除"), this);
 
     previous = new QPushButton(QIcon("://resource/widgets/undo_32.png"),
                                tr(" 返回"), this);
@@ -149,6 +166,7 @@ void MainWidget::init()
     dele->setObjectName("MainWidget_PushButton");
     previous->setObjectName("MainWidget_PushButton");
 
+    connect(upload, SIGNAL(clicked()), this, SLOT(uploadFile()));
     connect(previous, SIGNAL(clicked()), this, SLOT(previousDir()));
 }
 
@@ -181,4 +199,34 @@ void MainWidget::getDir(QString dirname)
 void MainWidget::previousDir()
 {
     setCurrentPath(getPrePath());
+}
+
+void MainWidget::uploadFile()
+{
+    QStringList fileList = QFileDialog::getOpenFileNames(
+                this,
+                QString("选择上传文件"),
+                QStandardPaths::standardLocations(QStandardPaths::DesktopLocation).at(0)
+                );
+
+    //没有选择文件
+    if(!fileList.count())
+        return;
+
+    UploadMsg uploadMsg;
+    QFileInfo *fileInfo = nullptr;
+
+    for(const QString &str : fileList)
+    {
+        fileInfo = new QFileInfo(str);
+
+        m_pFileMap->insert(fileInfo->fileName(), fileInfo);
+
+        memset(&uploadMsg, 0, sizeof(UploadMsg));
+
+        strcpy(uploadMsg.fileName, fileInfo->fileName().toUtf8().data());
+        strcpy(uploadMsg.uploadPath, m_stCurrentPath.toUtf8().data());
+
+        m_pConnectToServer->sendUploadMsg(uploadMsg);
+    }
 }

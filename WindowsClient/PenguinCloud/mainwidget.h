@@ -1,6 +1,8 @@
 ﻿#ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
+#include<QMap>
+
 #include "basicwidget/basicwidget.h"
 #include "network/msgtype.h"
 #include "basiccontrol/filetablewidget.h"
@@ -11,6 +13,7 @@ class QToolButton;
 class QListView;
 class QTableView;
 class ConnectToServer;
+class QFileInfo;
 
 class MainWidget : public BasicWidget
 {
@@ -37,6 +40,7 @@ protected slots:
     void recvFileLists(QByteArray byteArray);
     void getDir(QString dirname);
     void previousDir();
+    void uploadFile();
 private:
     void init();
     void setListViewItem();
@@ -56,6 +60,8 @@ private:
     QString m_stUserName;
     QString m_stPrePath;
     QString m_stCurrentPath;
+
+    QMap<QString, QFileInfo *> *m_pFileMap;
 };
 
 #endif // MAINWIDGET_H

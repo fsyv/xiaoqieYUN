@@ -11,7 +11,9 @@ int main(int argc, char *argv[])
     {
         a.setStyleSheet(file.readAll());
     }
-    LoginWidget w;
+//    LoginWidget w;
+//    w.show();
+    MainWidget w;
     w.show();
 
     return a.exec();
