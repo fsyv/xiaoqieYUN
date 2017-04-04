@@ -123,15 +123,33 @@ void *threadpool_function(void *arg)
 
         pthread_mutex_lock(&(threadPool->queuemutex));
 
-        taskQueue = threadPool->front;
-        threadPool->front = threadPool->front->next;
         --(threadPool->m_iQueueLen);
+
+
+        taskQueue = threadPool->front;
+        if(threadPool->m_iQueueLen)
+        {
+            threadPool->front = threadPool->front->next;
+        }
+        else
+        {
+            threadPool->front = threadPool->rear = 0;
+        }
 
         pthread_mutex_unlock(&(threadPool->queuemutex));
 
         (*(taskQueue->p_fCallBackFunction))(taskQueue->p_vArg);
-        free(taskQueue);
-        taskQueue = NULL;
+
+        if(taskQueue)
+        {
+            if(taskQueue->p_vArg)
+            {
+                free(taskQueue->p_vArg);
+                taskQueue->p_vArg = NULL;
+            }
+            free(taskQueue);
+            taskQueue = NULL;
+        }
     }
 }
 

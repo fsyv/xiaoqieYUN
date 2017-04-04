@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "../operating/serverOperating.h"
+#include "../queue/threadPool.h"
 
 /**
  * 收到消息
@@ -113,11 +114,12 @@ void recvFileListMsg(int sockfd, Msg *msg)
 //上传操作消息
 void recvUploadMsg(int sockfd, Msg *msg)
 {
-    UploadMsg uploadMsg;
-    memset(&uploadMsg, 0, sizeof(UploadMsg));
+    UploadMsg *uploadMsg = (UploadMsg *)malloc(sizeof(UploadMsg));
+    memset(uploadMsg, 0, sizeof(UploadMsg));
 
-    memcpy(&uploadMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    memcpy(uploadMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    memcpy(uploadMsg->serverUrl, (void *)&sockfd, sizeof(int));
 
-    //取出一个线程来干这件事
-    printf("name : %s\n", uploadMsg.fileName);
+    extern ThreadPool *m_pThreadPool;
+    addJobThreadPool(m_pThreadPool, uploadFileThread, (void *)uploadMsg);
 }

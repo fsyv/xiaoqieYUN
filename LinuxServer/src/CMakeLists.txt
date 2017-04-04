@@ -8,6 +8,6 @@ add_subdirectory(cjson)
 add_subdirectory(operating)
 add_subdirectory(database)
 
-link_libraries(pthread)
+link_libraries(threadpool)
 link_libraries(serverSocket)
 add_executable(LinuxServer ${MAIN_SOURCE_FILES})
