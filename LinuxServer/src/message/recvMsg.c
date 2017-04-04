@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "../operating/serverOperating.h"
+#include "../queue/threadPool.h"
 
 /**
  * 收到消息
@@ -46,8 +47,15 @@ void recvMsg(int sockfd, Msg *msg)
 #ifdef Debug
             fprintf(stdout, "Get_FileLists\n");
 #endif
-            //登录消息
+            //文件列表
             recvFileListMsg(sockfd, msg);
+            break;
+        case Put_Upload:
+#ifdef Debug
+            fprintf(stdout, "Put_Upload\n");
+#endif
+            //上传文件
+            recvUploadMsg(sockfd, msg);
             break;
     }
 }
@@ -101,4 +109,17 @@ void recvFileListMsg(int sockfd, Msg *msg)
         errorMsg.m_eErrorType = NoSuchFileOrDirectory;
         sendAckErrorMsg(sockfd, errorMsg);
     }
+}
+
+//上传操作消息
+void recvUploadMsg(int sockfd, Msg *msg)
+{
+    UploadMsg *uploadMsg = (UploadMsg *)malloc(sizeof(UploadMsg));
+    memset(uploadMsg, 0, sizeof(UploadMsg));
+
+    memcpy(uploadMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    memcpy(uploadMsg->serverUrl, (void *)&sockfd, sizeof(int));
+
+    extern ThreadPool *m_pThreadPool;
+    addJobThreadPool(m_pThreadPool, uploadFileThread, (void *)uploadMsg);
 }

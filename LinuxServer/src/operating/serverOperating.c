@@ -10,6 +10,7 @@
 #include <dirent.h>
 
 #include "../cjson/cJSON.h"
+#include "../message/nstdmsgio.h"
 
 
 /**
@@ -17,7 +18,8 @@
  * @param dir
  * @return
  */
-char *getDirFileLists(char *userDir) {
+char *getDirFileLists(char *userDir)
+{
     char sysDir[1024] = "/var/penguin/";
     strcat(sysDir, userDir);
 
@@ -81,4 +83,11 @@ char *getDirFileLists(char *userDir) {
     cJSON_Delete(pRoot);
 
     return szOut;
+}
+
+//文件上传的线程
+void *uploadFileThread(void *arg)
+{
+    UploadMsg *uploadMsg = (UploadMsg *)arg;
+    printf("fileName %s\n", uploadMsg->fileName);
 }
