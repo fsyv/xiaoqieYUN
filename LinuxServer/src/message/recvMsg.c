@@ -46,8 +46,15 @@ void recvMsg(int sockfd, Msg *msg)
 #ifdef Debug
             fprintf(stdout, "Get_FileLists\n");
 #endif
-            //登录消息
+            //文件列表
             recvFileListMsg(sockfd, msg);
+            break;
+        case Put_Upload:
+#ifdef Debug
+            fprintf(stdout, "Put_Upload\n");
+#endif
+            //上传文件
+            recvUploadMsg(sockfd, msg);
             break;
     }
 }
@@ -101,4 +108,16 @@ void recvFileListMsg(int sockfd, Msg *msg)
         errorMsg.m_eErrorType = NoSuchFileOrDirectory;
         sendAckErrorMsg(sockfd, errorMsg);
     }
+}
+
+//上传操作消息
+void recvUploadMsg(int sockfd, Msg *msg)
+{
+    UploadMsg uploadMsg;
+    memset(&uploadMsg, 0, sizeof(UploadMsg));
+
+    memcpy(&uploadMsg, msg->m_aMsgData, msg->m_iMsgLen);
+
+    //取出一个线程来干这件事
+    printf("name : %s\n", uploadMsg.fileName);
 }

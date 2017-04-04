@@ -140,6 +140,7 @@ void listenClient(int serverSocketfd)
     //一次事件的总数
     int numberFds = 0;
     int i = 0;
+    int k = 0;
     while(1)
     {
         //等待
@@ -155,6 +156,7 @@ void listenClient(int serverSocketfd)
             }
             else if (events[i].events & EPOLLIN)
             {
+                printf("k = %d\n", k++);
                 //收到消息
                 recvConnectionMsg(events[i].data.fd, epfd, &ev);
             }

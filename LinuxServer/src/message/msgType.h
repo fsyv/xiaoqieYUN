@@ -77,7 +77,9 @@ typedef struct _NewFolderMsg{
 
 //上传操作消息结构
 typedef struct _UploadMsg{
-
+    char uploadPath[256];           //上传路径
+    char fileName[256];             //文件名
+    char serverUrl[256];            //服务器IP+端口
 }UploadMsg, *pUploadMsg;
 
 //删除操作消息结构
