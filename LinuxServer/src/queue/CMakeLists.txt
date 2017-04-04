@@ -1,3 +1,4 @@
-set(CLIENT_THREAD_POOL_QUEUE clientThreadPoolQueue.h clientThreadPoolQueue.c)
+set(THREAD_POOL_SOURCE_FILES threadPool.h threadPool.c)
 
-add_library(clientThreadPoolQueue SHARED ${CLIENT_THREAD_POOL_QUEUE})
+link_libraries(pthread)
+add_library(threadpool SHARED ${THREAD_POOL_SOURCE_FILES})

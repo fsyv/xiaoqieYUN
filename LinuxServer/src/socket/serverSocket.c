@@ -359,4 +359,6 @@ void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
         pRearBuf = recvBuf;
         pHeadBuf = recvBuf;
     }
+
+    free(recvBuf);
 }
