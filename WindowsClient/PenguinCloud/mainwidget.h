@@ -2,7 +2,7 @@
 #define MAINWIDGET_H
 
 #include<QMap>
-
+#include <QStack>
 #include "basicwidget/basicwidget.h"
 #include "network/msgtype.h"
 #include "basiccontrol/filetablewidget.h"
@@ -58,9 +58,8 @@ private:
     FileTableWidget *tableWidget;
 
     QString m_stUserName;
-    QString m_stPrePath;
-    QString m_stCurrentPath;
 
+    QStack<QString> path;// current dir
     QMap<QString, QFileInfo *> *m_pFileMap;
 };
 

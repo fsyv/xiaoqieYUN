@@ -16,6 +16,8 @@ MainWidget::MainWidget(QWidget *parent) :
     setFileTable();
     this->setBackgroundColor(Qt::white);
 
+    path.push("/");
+
     m_pConnectToServer = ConnectToServer::getInstance();
     connect(m_pConnectToServer, SIGNAL(readyReadFileListMsg(QByteArray)), this, SLOT(recvFileLists(QByteArray)));
     connect(tableWidget, &FileTableWidget::requestDir, this, &MainWidget::getDir);
@@ -40,71 +42,11 @@ MainWidget::~MainWidget()
     m_pFileMap = nullptr;
 }
 
-QString MainWidget::getUserName() const
-{
-    return m_stUserName;
-}
-
-void MainWidget::setUserName(const QString &UserName)
-{
-    m_stUserName = UserName;
-
-    //设置为根目录
-    //设置当前路径
-    setCurrentPath("/");
-    setPrePath("/");
-
-    replyFileLists(getCurrentPath());
-}
-
-QString MainWidget::getPrePath() const
-{
-    return m_stPrePath;
-}
-
-void MainWidget::setPrePath(const QString &PrePath)
-{
-    m_stPrePath = PrePath;
-}
-
-QString MainWidget::getCurrentPath() const
-{
-    return m_stCurrentPath;
-}
-
-void MainWidget::setCurrentPath(const QString &CurrentPath)
-{
-    setPrePath(getCurrentPath());
-    m_stCurrentPath = CurrentPath;
-
-    //目录改变的时候发送请求文件列表
-    replyFileLists(m_stCurrentPath);
-}
-
-void MainWidget::replyFileLists(const QString &FolderPath)
-{
-    FileListsMsg fileListsMsg;
-    memset(&fileListsMsg, 0, sizeof(FileListsMsg));
-
-    strcat(fileListsMsg.m_aFolderPath, m_stUserName.toUtf8().data());
-    strcat(fileListsMsg.m_aFolderPath, FolderPath.toUtf8().data());
-
-    m_pConnectToServer->sendFileListMsg(fileListsMsg);
-}
-
-void MainWidget::setFileTable()
-{
-    tableWidget = new FileTableWidget(this);
-    tableWidget->resize(650, 480);
-    tableWidget->move(150, 120);
-
-}
-
 void MainWidget::setListViewItem()
 {
     listView = new QListView(this);
     QStandardItemModel *model = new QStandardItemModel(this);
-    
+
     QStringList itemsicon, itemsname;
     itemsicon << ":/resource/image/MainWidget/allfile.png" << ":/resource/image/MainWidget/photo.png" <<
                  ":/resource/image/MainWidget/doc.png"<< ":/resource/image/MainWidget/film.png" << ":/resource/image/MainWidget/music.png";
@@ -166,6 +108,10 @@ void MainWidget::init()
     dele->setObjectName("MainWidget_PushButton");
     previous->setObjectName("MainWidget_PushButton");
 
+
+    //一开始是不能后退的
+    previous->setEnabled(false);
+
     connect(upload, SIGNAL(clicked()), this, SLOT(uploadFile()));
     connect(previous, SIGNAL(clicked()), this, SLOT(previousDir()));
 }
@@ -186,6 +132,54 @@ void MainWidget::paintEvent(QPaintEvent *event)
     p.drawRect(0, 0, width() - 1, height() - 1);
 }
 
+QString MainWidget::getUserName() const
+{
+    return m_stUserName;
+}
+
+void MainWidget::setUserName(const QString &UserName)
+{
+    m_stUserName = UserName;
+    replyFileLists(getCurrentPath());
+}
+
+
+QString MainWidget::getCurrentPath() const
+{
+    return path.top();
+}
+
+void MainWidget::setCurrentPath(const QString &CurrentPath)
+{
+    path.push(CurrentPath);
+
+    if(path.top() != "/")
+        previous->setEnabled(true);
+    //目录改变的 时候发送请求文件列表
+    replyFileLists(path.top());
+}
+
+void MainWidget::replyFileLists(const QString &FolderPath)
+{
+    FileListsMsg fileListsMsg;
+    memset(&fileListsMsg, 0, sizeof(FileListsMsg));
+
+    strcat(fileListsMsg.m_aFolderPath, m_stUserName.toUtf8().data());
+    strcat(fileListsMsg.m_aFolderPath, FolderPath.toUtf8().data());
+
+    m_pConnectToServer->sendFileListMsg(fileListsMsg);
+}
+
+void MainWidget::setFileTable()
+{
+    tableWidget = new FileTableWidget(this);
+    tableWidget->resize(650, 480);
+    tableWidget->move(150, 120);
+
+}
+
+
+
 void MainWidget::recvFileLists(QByteArray byteArray)
 {
     tableWidget->setTableRow(Tools::getTableRow(byteArray));
@@ -198,7 +192,14 @@ void MainWidget::getDir(QString dirname)
 
 void MainWidget::previousDir()
 {
-    setCurrentPath(getPrePath());
+    if(path.size() > 1)
+        path.pop();
+
+    if(path.top() == "/")
+        previous->setEnabled(false);
+
+
+    replyFileLists(path.top());
 }
 
 void MainWidget::uploadFile()
@@ -225,7 +226,7 @@ void MainWidget::uploadFile()
         memset(&uploadMsg, 0, sizeof(UploadMsg));
 
         strcpy(uploadMsg.fileName, fileInfo->fileName().toUtf8().data());
-        strcpy(uploadMsg.uploadPath, m_stCurrentPath.toUtf8().data());
+        strcpy(uploadMsg.uploadPath, path.top().toUtf8().data());
 
         m_pConnectToServer->sendUploadMsg(uploadMsg);
     }
