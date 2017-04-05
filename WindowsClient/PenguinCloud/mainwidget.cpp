@@ -20,7 +20,9 @@ MainWidget::MainWidget(QWidget *parent) :
 
     m_pConnectToServer = ConnectToServer::getInstance();
     connect(m_pConnectToServer, SIGNAL(readyReadFileListMsg(QByteArray)), this, SLOT(recvFileLists(QByteArray)));
+
     connect(tableWidget, &FileTableWidget::requestDir, this, &MainWidget::getDir);
+    connect(tableWidget, &FileTableWidget::requestNewfolder, this, &MainWidget::newFolder);
 
     m_pFileMap = new QMap<QString, QFileInfo *>;
 }
@@ -175,7 +177,6 @@ void MainWidget::setFileTable()
     tableWidget = new FileTableWidget(this);
     tableWidget->resize(650, 480);
     tableWidget->move(150, 120);
-
 }
 
 
@@ -230,4 +231,16 @@ void MainWidget::uploadFile()
 
         m_pConnectToServer->sendUploadMsg(uploadMsg);
     }
+}
+
+void MainWidget::newFolder(const QString &folderName)
+{
+    QString folderPath = path.top() + folderName;
+
+    NewFolderMsg newFolderMsg;
+    memset(&newFolderMsg, 0, sizeof(NewFolderMsg));
+    strcpy(newFolderMsg.folderName, m_stUserName.toUtf8().data());
+    strcat(newFolderMsg.folderName, folderPath.toUtf8().data());
+
+    m_pConnectToServer->sendNewFolderMsg(newFolderMsg);
 }

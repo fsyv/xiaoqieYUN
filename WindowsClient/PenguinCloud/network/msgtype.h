@@ -70,7 +70,7 @@ typedef struct _MoveMsg{
 
 //新建文件夹消息结构
 typedef struct _NewFolderMsg{
-
+    char folderName[MAX_PATH + 1]; // 新建文件的路径（包括文件夹名）
 }NewFolderMsg, *pNewFolderMsg;
 
 //上传操作消息结构

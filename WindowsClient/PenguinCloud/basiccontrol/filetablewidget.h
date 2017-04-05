@@ -10,6 +10,7 @@ public:
     FileTableWidget(QWidget *parent = nullptr);
     void setTableRow(const QVector<QStringList> &_vec);
 public slots:
+
     void rename();
     void del();
     void download();
@@ -25,6 +26,7 @@ public slots:
 
 signals:
     void requestDir(QString dirname);
+    void requestNewfolder(const QString &folderName);
 protected:
     void mouseReleaseEvent(QMouseEvent *event);
 private:
@@ -34,6 +36,9 @@ private:
     QPoint menu_show; // 记录菜单显示的位置
 
     bool isEditing;
+    bool isNewFolder;
+
+
     QTableWidgetItem *edit_item;
 };
 

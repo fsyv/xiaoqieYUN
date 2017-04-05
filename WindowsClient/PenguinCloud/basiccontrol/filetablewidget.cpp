@@ -58,6 +58,8 @@ void FileTableWidget::init()
     verticalHeader()->hide();   // 隐藏左侧header
     setSelectionBehavior(QAbstractItemView::SelectRows); //选中行
     setEditTriggers(QAbstractItemView::NoEditTriggers);// 不可编辑
+    setMouseTracking(true);    //开启捕获鼠标功能
+
 
     setColumnCount(4);
     setColumnWidth(0, 300);
@@ -254,7 +256,7 @@ void FileTableWidget::newfolder()
     openPersistentEditor(edit_item);
     editItem(edit_item);
     isEditing = true;
-
+    isNewFolder = true;
 }
 
 void FileTableWidget::close_editor(int currentRow, int currentColumn, int previousRow, int previousColumn)
@@ -262,6 +264,12 @@ void FileTableWidget::close_editor(int currentRow, int currentColumn, int previo
     if(isEditing)
         closePersistentEditor(edit_item);
     isEditing = false;
+
+    if(isNewFolder)
+    {
+        isNewFolder = false;
+        emit requestNewfolder(edit_item->text());
+    }
 }
 
 void FileTableWidget::opendir(int row, int column)
@@ -277,3 +285,5 @@ void FileTableWidget::opendir(int row, int column)
         //
     }
 }
+
+

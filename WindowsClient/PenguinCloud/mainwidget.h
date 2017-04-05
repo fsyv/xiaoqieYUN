@@ -41,6 +41,8 @@ protected slots:
     void getDir(QString dirname);
     void previousDir();
     void uploadFile();
+    void newFolder(const QString &folderName);
+
 private:
     void init();
     void setListViewItem();
