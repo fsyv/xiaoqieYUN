@@ -5,6 +5,11 @@
 
 #include"msgtype.h"
 
+//#define SERVER_IP "182.254.219.254"
+#define SERVER_IP "192.168.1.155"
+//#define SERVER_IP "192.168.89.129"
+//#define SERVER_IP "127.0.0.1"
+
 typedef struct _Msg{
     unsigned int m_uiCheckCrc;              //消息校验 0xAFAFAFAF
     MsgType m_eMsgType;				   		//消息类型
@@ -81,7 +86,7 @@ signals:
     void readyReadAckErrorMsg(ErrorMsg);
     void readyReadReadyMsg(ReadyMsg);
     void readyReadLoginMsg(LoginMsg);
-    void readyReadFileListMsg(QByteArray byteArray);
+    void readyReadFileListMsg(QByteArray);
     void readyReadPreviewMsg(PreviewMsg);
     void readyReadDownloadMsg(DownloadMsg);
     void readyReadMoveMsg(MoveMsg);
