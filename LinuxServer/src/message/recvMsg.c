@@ -57,6 +57,14 @@ void recvMsg(int sockfd, Msg *msg)
             //上传文件
             recvUploadMsg(sockfd, msg);
             break;
+
+        case Put_NewFolder:
+#ifdef Debug
+            fprintf(stdout, "Put_NewFolder\n");
+#endif
+            //新建文件夹
+            recvNewFolderMsg(sockfd, msg);
+            break;
     }
 }
 
@@ -122,4 +130,26 @@ void recvUploadMsg(int sockfd, Msg *msg)
 
     extern ThreadPool *m_pThreadPool;
     addJobThreadPool(m_pThreadPool, uploadFileThread, (void *)uploadMsg);
+}
+
+//新建文件夹消息
+void recvNewFolderMsg(int sockfd, Msg *msg)
+{
+    int ret;
+    NewFolderMsg newFolderMsg;
+    memset(&newFolderMsg, 0, sizeof(NewFolderMsg));
+    memcpy(&newFolderMsg, msg->m_aMsgData, msg->m_iMsgLen);
+
+    ret = createNewFolder(newFolderMsg.folderName);
+    if(ret == 0)
+    {
+        //donothing
+    }
+    else
+    {
+
+        ErrorMsg errorMsg;
+        errorMsg.m_eErrorType = CreateFolderFailed;
+        sendAckErrorMsg(sockfd, errorMsg);
+    }
 }

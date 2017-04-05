@@ -22,7 +22,8 @@ typedef enum _MsgType{
 //错误类型
 typedef enum _ErrorType{
     DataPackError = 0,        //错误得数据包
-    NoSuchFileOrDirectory    //没有这个文件或者目录
+    NoSuchFileOrDirectory,    //没有这个文件或者目录
+    CreateFolderFailed        // 创建文件夹失败
 }ErrorType;
 //发生了错误
 typedef struct _ErrorMsg{
@@ -72,7 +73,7 @@ typedef struct _MoveMsg{
 
 //新建文件夹消息结构
 typedef struct _NewFolderMsg{
-
+    char folderName[MAX_PATH + 1]; // 新建文件的路径（包括文件夹名）
 }NewFolderMsg, *pNewFolderMsg;
 
 //上传操作消息结构

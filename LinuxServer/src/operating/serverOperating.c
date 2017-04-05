@@ -6,7 +6,7 @@
 #include <errno.h>
 
 #include <sys/types.h>
-#include <sys/stat.h>
+#include <sys/stat.h> // mkdir
 #include <dirent.h>
 
 #include "../cjson/cJSON.h"
@@ -59,6 +59,7 @@ char *getDirFileLists(char *userDir)
             pItem = cJSON_CreateObject();
             cJSON_AddStringToObject(pItem, "name", child->d_name);
             cJSON_AddStringToObject(pItem, "type", "folder");
+            cJSON_AddNumberToObject(pItem, "lastmodifytime", statBuf.st_mtim.tv_sec);
         }
         else if(S_ISREG(statBuf.st_mode))
         {
@@ -90,4 +91,17 @@ void *uploadFileThread(void *arg)
 {
     UploadMsg *uploadMsg = (UploadMsg *)arg;
     printf("fileName %s\n", uploadMsg->fileName);
+}
+
+//新建文件夹
+// 失败返回-1 成功返回0
+int createNewFolder(char *folderPath)
+{
+    //用户及用户组可读写
+    char sysDir[1024] = "/var/penguin/";
+    strcat(sysDir, folderPath);
+
+    printf("%s\n", sysDir);
+
+    return mkdir(sysDir,  S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IWGRP|S_IXGRP);
 }
