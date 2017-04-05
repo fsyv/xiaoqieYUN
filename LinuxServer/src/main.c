@@ -6,7 +6,10 @@
 
 #include <stdio.h>
 
+#include <pthread.h>
+
 #include "socket/serverSocket.h"
+#include "socket/serverFileSocket.h"
 #include "queue/threadPool.h"
 
 //全局线程池
@@ -15,6 +18,9 @@ ThreadPool *m_pThreadPool = NULL;
 int main(int argc, char **argv)
 {
     m_pThreadPool = createThreadPool(DEFAULT_THREAD_NUM);
+
+    pthread_t filePthread;
+    pthread_create(&filePthread, NULL, createServerFileSocket, NULL);
 
     int sockfd = createSocketServer();
     listenClient(sockfd);

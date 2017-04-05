@@ -73,7 +73,7 @@ int createSocketServer()
     fprintf(stdout, "serverSocet  created!!\n");
 #endif
 
-    //将服务端sockfd设置为费永塞
+    //将服务端sockfd设置为非拥塞
     setnblocking(sockfd);
 
     struct sockaddr_in serverAddress;
@@ -95,6 +95,7 @@ int createSocketServer()
         fprintf(stderr, "createSocketServer : %s \n", strerror(errno));
 #endif
         fprintf(stdout, "bind faild!!\n");
+        closeSockfd(sockfd);
         exit(-1);
     }
 #ifdef Debug
@@ -200,7 +201,7 @@ void newConnection(int socketfd, int epfd, struct epoll_event *ev)
  */
 void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
 {
-    Msg *msg = NULL;
+    Msg *msg = NULL, *sendMsg = NULL;
 
     //接收缓存
     char *recvBuf = (char *)malloc((2 * RECV_BUF_MAX_SIZE + 1) * sizeof(char));
@@ -343,7 +344,11 @@ void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
         }
 
         //投递数据包
-        recvMsg(clientSocketfd, msg);
+        //现在消息是异步的，所以需要malloc一段空间用来存放msg消息
+        sendMsg = (Msg *)malloc(msgStructLen + msg->m_iMsgLen);
+        memcpy(sendMsg, msg, msgStructLen + msg->m_iMsgLen);
+        recvMsg(clientSocketfd, sendMsg);
+        sendMsg = NULL;
         msgLen -= msgStructLen + msg->m_iMsgLen;
 
         if(msgLen > 0)

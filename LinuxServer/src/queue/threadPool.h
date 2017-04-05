@@ -8,7 +8,8 @@
 #define DEFAULT_THREAD_NUM 5
 
 typedef struct _TaskQueue{
-    void *(*p_fCallBackFunction)(void *arg);      //回调函数
+    void *(*p_fCallBackFunction)(int sockfd, void *arg);      //回调函数
+    int sockfd;                                     //回调参数
     void *p_vArg;                                  //回调参数
     struct _TaskQueue *next;                       //下一个
 }TaskQueue, *pTaskQueue;
@@ -27,7 +28,7 @@ typedef struct _ThreadPool{
 //创建线程池
 pThreadPool createThreadPool(int maxThreadNum);
 //往线程池任务添加任务
-int addJobThreadPool(ThreadPool *threadPool, void *(*callback_function)(void *arg), void *arg);
+int addJobThreadPool(ThreadPool *threadPool, TaskQueue *taskQueue);
 //销毁线程池
 void destroyThreadPool(ThreadPool *threadPool);
 //线程函数
