@@ -7,12 +7,19 @@
 #include <stdio.h>
 
 #include "socket/serverSocket.h"
+#include "queue/threadPool.h"
 
+//全局线程池
+ThreadPool *m_pThreadPool = NULL;
 
 int main(int argc, char **argv)
 {
+    m_pThreadPool = createThreadPool(DEFAULT_THREAD_NUM);
+
     int sockfd = createSocketServer();
     listenClient(sockfd);
     closeSockfd(sockfd);
+
+    destroyThreadPool(m_pThreadPool);
     return 0;
 }
