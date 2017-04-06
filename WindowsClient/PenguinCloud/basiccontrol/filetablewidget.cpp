@@ -10,7 +10,7 @@
 #include <QTemporaryFile>
 #include <QApplication>
 #include <QDir>
-
+#include <QCheckBox>
 #include <network/connecttoserver.h>
 
 static QString sizeFormat(qint64 size)
@@ -48,27 +48,67 @@ FileTableWidget::FileTableWidget(QWidget *parent) : QTableWidget(parent)
 
     connect(this, &QTableWidget::currentCellChanged, this, &FileTableWidget::close_editor);
     connect(this, &QTableWidget::cellDoubleClicked, this, &FileTableWidget::opendir);
+    connect(this, &QTableWidget::entered, this, &FileTableWidget::test);
+    connect(this, &QTableWidget::itemSelectionChanged, this, &FileTableWidget::selectStatus);
+}
+
+void FileTableWidget::selectStatus()
+{
+    //双击选中和打开文件夹会冲突
+    //如果不做处理，打开文件夹时，会导致程序奔溃
+    if(isOpen)
+    {
+        isOpen = false;
+        return;
+    }
+
+    for(int i = 0; i < rowCount(); ++i)
+    {
+        if(item(i, 0)->isSelected())
+            static_cast<QCheckBox*>(cellWidget(i, 0))->setChecked(true);
+        else
+            static_cast<QCheckBox*>(cellWidget(i, 0))->setChecked(false);
+    }
+}
+
+void FileTableWidget::test(const QModelIndex &index)
+{
+    int row = index.row();
+
+    for(int i = 0; i < 5; ++i)
+    {
+        item(row, i)->setBackgroundColor(QColor("#555555"));
+    }
+
+    if(pre_row != -1)
+    {
+        for(int i = 0; i < 5; ++i)
+            item(pre_row, i)->setBackgroundColor(Qt::white);
+    }
+    pre_row = row;
+
 }
 
 void FileTableWidget::init()
 {
     setAlternatingRowColors(true);
-    setSelectionMode(QAbstractItemView::SingleSelection);
+   // setSelectionMode(QAbstractItemView::NoSelection);
     setShowGrid(false);
     verticalHeader()->hide();   // 隐藏左侧header
     setSelectionBehavior(QAbstractItemView::SelectRows); //选中行
     setEditTriggers(QAbstractItemView::NoEditTriggers);// 不可编辑
     setMouseTracking(true);    //开启捕获鼠标功能
 
+    setColumnCount(5);
 
-    setColumnCount(4);
-    setColumnWidth(0, 300);
-    setColumnWidth(1, 80);
-    setColumnWidth(2, 80);
-    setColumnWidth(3, 180);
+    setColumnWidth(0, 20);
+    setColumnWidth(1, 300);
+    setColumnWidth(2, 75);
+    setColumnWidth(3, 75);
+    setColumnWidth(4, 170);
 
     QStringList headerlabels;
-    headerlabels << "文件名" << "文件类型" << "文件大小" <<"修改日期";
+    headerlabels <<""<<"文件名" << "文件类型" << "文件大小" <<"修改日期";
     setHorizontalHeaderLabels(headerlabels);
 
     isEditing = false;
@@ -77,7 +117,7 @@ void FileTableWidget::init()
 //
 void FileTableWidget::setTableRow(const QVector<QStringList> &_vec)
 {
-
+    pre_row = -1;
     for(int i = 0; i < rowCount();)
     {
         removeRow(0);
@@ -88,10 +128,19 @@ void FileTableWidget::setTableRow(const QVector<QStringList> &_vec)
         QStringList elem = _vec[row];
         qDebug() << elem;
         insertRow(this->rowCount());
-        for(int i = 0; i < 4; ++i)
+        for(int i = 0; i < 5; ++i)
         {
             QTableWidgetItem *item;
-            if( i == 0 )
+            if(i == 0)
+            {
+                QCheckBox *box = new QCheckBox;
+                box->setSizeIncrement(QSize(20, 20));
+                item = new QTableWidgetItem;
+                connect(box, &QCheckBox::stateChanged, this, &FileTableWidget::selectThisRow);
+
+                this->setCellWidget(row, 0, box);
+            }
+            else if( i == 1 )
             {
                 QIcon icon;
                 if(elem.at(1) == "folder")
@@ -104,7 +153,7 @@ void FileTableWidget::setTableRow(const QVector<QStringList> &_vec)
                 item = new QTableWidgetItem(icon, elem[0]);
 
             }
-            else if(i == 1)
+            else if(i == 2)
             {
                 if(elem.at(1) == "folder")
                     item = new QTableWidgetItem("文件夹");
@@ -123,24 +172,38 @@ void FileTableWidget::setTableRow(const QVector<QStringList> &_vec)
 
                 }
             }
-            else if(i == 2)
+            else if(i == 3)
             {
                 if(elem[1] == "folder")
                 {
                     item = new QTableWidgetItem("-");
                 }
                 else
-                    item = new QTableWidgetItem(sizeFormat(elem[i].toInt()));
+                    item = new QTableWidgetItem(sizeFormat(elem[2].toInt()));
 
             }
-            else
-                item = new QTableWidgetItem(elem[i]);
+            else if (i == 4)
+                item = new QTableWidgetItem(elem[3]);
             setItem(row , i, item);
+
         }
 
     }
 }
+void FileTableWidget::selectThisRow(int state)
+{
+    if(state == Qt::Checked)
+    {
+        QTableWidgetItem *_item = itemAt(mapFromGlobal(QCursor::pos() - QPoint(0, horizontalHeader()->height())));
+        if(_item != NULL)
+        {
+            int row = _item->row();
+            for(int i = 0; i < 5; ++i)
+                item(row, i)->setSelected(true);
 
+        }
+    }
+}
 
 void FileTableWidget::mouseReleaseEvent(QMouseEvent *event)
 {
@@ -283,14 +346,15 @@ void FileTableWidget::close_editor(int currentRow, int currentColumn, int previo
 void FileTableWidget::opendir(int row, int column)
 {
     qDebug() << row << " " << column;
-    QTableWidgetItem *_item = item(row, 1);
+    isOpen = true;
+    QTableWidgetItem *_item = item(row, 2);
     if(_item->text() == "文件夹")
     {
-        emit requestDir(item(row, 0 )->text());
+        emit requestDir(item(row, 1 )->text());
     }
     else
     {
-        //
+
     }
 }
 
