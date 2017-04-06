@@ -42,6 +42,7 @@ public slots:
     void getDir(QString dirname);
     void previousDir();
     void uploadFile();
+    void doloadFile_download();
     void newFolder(const QString &folderName);
     void rename(const QString &newName, const QString &oldName);
     void renameError(RenameMsg r);

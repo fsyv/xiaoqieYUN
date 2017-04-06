@@ -121,6 +121,7 @@ void MainWidget::init()
 
     connect(upload, SIGNAL(clicked()), this, SLOT(uploadFile()));
     connect(previous, SIGNAL(clicked()), this, SLOT(previousDir()));
+    connect(download, SIGNAL(clicked()), this, SLOT(doloadFile_download()));
 }
 
 void MainWidget::paintEvent(QPaintEvent *event)
@@ -248,6 +249,11 @@ void MainWidget::uploadFile()
 
         m_pConnectToServer->sendUploadMsg(uploadMsg);
     }
+}
+
+void MainWidget::doloadFile_download()
+{
+    qDebug() << listView->currentIndex();
 }
 
 void MainWidget::newFolder(const QString &folderName)

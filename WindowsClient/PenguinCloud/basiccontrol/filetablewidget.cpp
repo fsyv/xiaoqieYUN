@@ -23,9 +23,9 @@ static QString sizeFormat(qint64 size)
         return QString::number(size) + "b";
     else if(size < mb)
     {
-       double k = size / kb;
+        double k = size / kb;
 
-       return QString::number(k, 'f', 2) + "kb";
+        return QString::number(k, 'f', 2) + "kb";
     }
     else if(size < gb)
     {
@@ -111,7 +111,7 @@ void FileTableWidget::setTableRow(const QVector<QStringList> &_vec)
                 else
                 {
                     QString strFileName = QDir::tempPath() + QDir::separator() +
-                                QApplication::applicationName() + "_XXXXXX." + elem.at(0).split(".")[1];
+                            QApplication::applicationName() + "_XXXXXX." + elem.at(0).split(".")[1];
                     QTemporaryFile tmpFile(strFileName);
                     tmpFile.setAutoRemove(true);
                     if(tmpFile.open())
@@ -144,9 +144,10 @@ void FileTableWidget::setTableRow(const QVector<QStringList> &_vec)
 
 void FileTableWidget::mouseReleaseEvent(QMouseEvent *event)
 {
+    qDebug() << "mouseReleaseEvent";
     if(event->button() == Qt::RightButton)
     {
-//        删除 下载  移动  复制  分享
+        //        删除 下载  移动  复制  分享
         QMenu *item_menu = new QMenu();
         QAction *download_action = new QAction(tr("下载"));
         QAction *delete_action = new QAction(tr("删除"));
@@ -183,10 +184,10 @@ void FileTableWidget::mouseReleaseEvent(QMouseEvent *event)
         connect(new_folder_action, &QAction::triggered, this, &FileTableWidget::newfolder);
         connect(upload_action, &QAction::triggered, this, &FileTableWidget::upload);
 
-//        记录菜单显示的位置
+        //记录菜单显示的位置
         menu_show = event->pos();
         if( itemAt(event->pos()) != 0)
-             item_menu->exec(QCursor::pos());
+            item_menu->exec(QCursor::pos());
         else
             noitem_menu->exec(QCursor::pos());
 
@@ -196,6 +197,7 @@ void FileTableWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void FileTableWidget::rename()
 {
+    qDebug() << "rename";
     QTableWidgetItem *item = itemAt(menu_show);
     setCurrentCell(item->row(), 0);
     oldName = item->text();
@@ -204,6 +206,8 @@ void FileTableWidget::rename()
     isEditing = true;
     isRename = true;
     editItem(item);
+
+    qDebug() << "~rename";
 
     //
 }

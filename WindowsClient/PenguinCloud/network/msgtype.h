@@ -61,7 +61,11 @@ typedef struct _PreviewMsg{
 
 //下载信息消息结构
 typedef struct _DownloadMsg{
-
+    int m_iLoginStatus;            //上传状态
+    char filePath[64];           //上传路径
+    char fileName[64];             //文件名
+    unsigned int serverFileIP;     //服务器地址
+    unsigned short serverFilePort; //服务器端口
 }DownloadMsg, *pDownloadMsg;
 
 //移动消息结构
