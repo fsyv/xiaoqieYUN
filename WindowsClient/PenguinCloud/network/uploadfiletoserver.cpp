@@ -1,6 +1,8 @@
 #include "uploadfiletoserver.h"
 
-#include <stdio.h>
+#include <fstream>
+
+using namespace std;
 
 UploadFileToServer::UploadFileToServer(const QFileInfo &info, UploadMsg uploadMsg, QObject *parent):
     AbstractNetwork(parent),
@@ -26,20 +28,20 @@ int UploadFileToServer::sendMsg(Msg *msg)
 void UploadFileToServer::updateFile()
 {
     qDebug() << m_fileinfo.filePath();
-    FILE *fp = open(m_fileinfo.filePath(), "rb");
+    ifstream fin(m_fileinfo.filePath().toUtf8().data(), ios::in | ios::binary);
     int ret = 0;
 
     char sendBuf[1025];
     memset(sendBuf, 0, 1024);
 
-    while(!EOF(fp))
+    while(!fin.eof())
     {
-        ret = fread(sendBuf, sizeof(char), 1024, fp);
-        m_pTcpSocket->write(sendBuf, ret);
+        fin.read(sendBuf, 1024 * sizeof(char));
+        m_pTcpSocket->write(sendBuf, fin.gcount());
         memset(sendBuf, 0, ret);
     }
 
-    close(fp);
+    fin.close();
     m_pTcpSocket->close();
 }
 
