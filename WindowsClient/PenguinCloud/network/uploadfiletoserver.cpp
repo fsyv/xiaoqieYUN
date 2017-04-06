@@ -1,5 +1,7 @@
 #include "uploadfiletoserver.h"
 
+#include <stdio.h>
+
 UploadFileToServer::UploadFileToServer(const QFileInfo &info, UploadMsg uploadMsg, QObject *parent):
     AbstractNetwork(parent),
     m_pTcpSocket(nullptr)
@@ -24,13 +26,21 @@ int UploadFileToServer::sendMsg(Msg *msg)
 void UploadFileToServer::updateFile()
 {
     qDebug() << m_fileinfo.filePath();
-    QFile *sendFile = new QFile(m_fileinfo.filePath());	//读取发送文件路径
-    if (!sendFile->open(QFile::ReadOnly ))  //读取发送文件
-        return;
-    QByteArray outBlock;
-    outBlock = sendFile->read(sendFile->size());
-    qDebug() << "sendFile.size()" << sendFile->size();
-    m_pTcpSocket->write(outBlock);
+    FILE *fp = open(m_fileinfo.filePath(), "rb");
+    int ret = 0;
+
+    char sendBuf[1025];
+    memset(sendBuf, 0, 1024);
+
+    while(!EOF(fp))
+    {
+        ret = fread(sendBuf, sizeof(char), 1024, fp);
+        m_pTcpSocket->write(sendBuf, ret);
+        memset(sendBuf, 0, ret);
+    }
+
+    close(fp);
+    m_pTcpSocket->close();
 }
 
 void UploadFileToServer::readMessage()
