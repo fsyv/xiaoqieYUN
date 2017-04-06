@@ -198,9 +198,11 @@ void FileTableWidget::rename()
 {
     QTableWidgetItem *item = itemAt(menu_show);
     setCurrentCell(item->row(), 0);
+    oldName = item->text();
     openPersistentEditor(item);
     edit_item = item;
     isEditing = true;
+    isRename = true;
     editItem(item);
 
     //
@@ -236,7 +238,7 @@ void FileTableWidget::copy()
 
 void FileTableWidget::upload()
 {
-
+    emit requestUpload();
 }
 void FileTableWidget::newfolder()
 {
@@ -270,6 +272,12 @@ void FileTableWidget::close_editor(int currentRow, int currentColumn, int previo
         isNewFolder = false;
         emit requestNewfolder(edit_item->text());
     }
+
+    if(isRename)
+    {
+        isRename = false;
+        emit requestRename(edit_item->text(), oldName);
+    }
 }
 
 void FileTableWidget::opendir(int row, int column)
@@ -285,5 +293,4 @@ void FileTableWidget::opendir(int row, int column)
         //
     }
 }
-
 

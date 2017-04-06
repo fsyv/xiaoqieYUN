@@ -5,8 +5,10 @@
  */
 
 #include <stdio.h>
-
+#include <unistd.h>
 #include <pthread.h>
+
+#include <sys/types.h>
 
 #include "socket/serverSocket.h"
 #include "socket/serverFileSocket.h"
@@ -17,6 +19,12 @@ ThreadPool *m_pThreadPool = NULL;
 
 int main(int argc, char **argv)
 {
+    if(geteuid() != 0)
+    {
+        fprintf(stderr, "请用管理员权限执行\nnot Root\n");
+        return -1;
+    }
+
     m_pThreadPool = createThreadPool(DEFAULT_THREAD_NUM);
 
     pthread_t filePthread;
