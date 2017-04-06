@@ -57,13 +57,18 @@ void recvMsg(int sockfd, Msg *msg)
             //上传文件
             recvUploadMsg(sockfd, msg);
             break;
-
         case Put_NewFolder:
 #ifdef Debug
             fprintf(stdout, "Put_NewFolder\n");
 #endif
             //新建文件夹
             recvNewFolderMsg(sockfd, msg);
+            break;
+        case Get_Download:
+#ifdef Debug
+            fprintf(stdout, "Get_Download\n");
+#endif
+            recvDownloadMsg(sockfd, msg);
             break;
     }
 }
@@ -119,6 +124,19 @@ void recvFileListMsg(int sockfd, Msg *msg)
     }
 }
 
+//下载消息
+void recvDownloadMsg(int sockfd, Msg *msg)
+{
+    DownloadMsg downloadMsg;
+    memset(&downloadMsg, 0, sizeof(UploadMsg));
+
+    memcpy(&downloadMsg, msg->m_aMsgData, msg->m_iMsgLen);
+
+    //告诉客户端往哪儿传
+    downloadMsg.serverFilePort = 36976;
+
+    sendDownloadMsg(sockfd, downloadMsg);
+}
 //上传操作消息
 void recvUploadMsg(int sockfd, Msg *msg)
 {

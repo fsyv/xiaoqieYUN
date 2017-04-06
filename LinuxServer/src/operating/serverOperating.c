@@ -92,7 +92,6 @@ char *getDirFileLists(char *userDir)
 void *uploadFileThread(int sockfd, void *arg)
 {
     Msg *msg = (Msg *)arg;
-    printf("uploadFileThread\n");
 
     UploadMsg uploadMsg;
     memset(&uploadMsg, 0, sizeof(UploadMsg));
@@ -123,7 +122,6 @@ void *uploadFileThread(int sockfd, void *arg)
 
     int ret = 0;
 
-    printf("1\n");
     sendUploadMsg(sockfd, uploadMsg);
     while((ret = recv(sockfd, recvBuf, 64 * 1024, 0)) > 0)
     {
@@ -131,7 +129,55 @@ void *uploadFileThread(int sockfd, void *arg)
         fwrite(recvBuf, sizeof(char), ret, fp);
         memset(recvBuf, 0, 64 * 1024);
     }
-    printf("2\n");
+
+    fclose(fp);
+    close(sockfd);
+    free(recvBuf);
+    return NULL;
+}
+
+//文件下载
+void *downloadFileThread(int sockfd, void *arg)
+{
+    Msg *msg = (Msg *)arg;
+
+    DownloadMsg downloadMsg;
+    memset(&downloadMsg, 0, sizeof(DownloadMsg));
+
+    memcpy(&downloadMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    downloadMsg.m_iLoginStatus = 1;
+
+    char file[1024] = "/var/penguin/";
+    strcat(file, downloadMsg.filePath);
+    strcat(file, downloadMsg.fileName);
+
+    printf("uploadPath %s\n", downloadMsg.filePath);
+    printf("fileName %s\n", downloadMsg.fileName);
+    printf("file %s\n", file);
+
+    //可写权限打开
+    FILE *fp = fopen(file, "rb");
+    if(fp == NULL)
+    {
+#ifdef Debug
+        fprintf(stdout, "fopen %s\n", strerror(errno));
+#endif
+        return NULL;
+    }
+
+    char *recvBuf = (char *)malloc(sizeof(char) * 64 * 1024 + 1);
+    memset(recvBuf, 0, 64 * 1024);
+
+    int ret = 0;
+
+    while(!feof(fp))
+    {
+        printf("ret = %d\n", ret);
+        ret = fread(recvBuf, sizeof(char), 64 * 1024, fp);
+        send(sockfd, (void *)recvBuf, ret, 0);
+        memset(recvBuf, 0, ret);
+    }
+
     fclose(fp);
     close(sockfd);
     free(recvBuf);

@@ -275,8 +275,6 @@ void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
                 sendAckErrorMsg(clientSocketfd, errorMsg);
                 break;
             }
-
-
         }
 
         //如果收到包长度小于结构体长度，暂定为丢弃
@@ -324,7 +322,6 @@ void recvConnectionMsg(int socketfd, int epfd, struct epoll_event *ev)
                 //没有找到标志位
                 continue;
             }
-
         }
 
         //一个错误得包
