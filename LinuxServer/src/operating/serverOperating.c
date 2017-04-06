@@ -2,10 +2,12 @@
 
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <sys/stat.h> // mkdir
 #include <dirent.h>
 
@@ -87,10 +89,53 @@ char *getDirFileLists(char *userDir)
 }
 
 //文件上传的线程
-void *uploadFileThread(void *arg)
+void *uploadFileThread(int sockfd, void *arg)
 {
-    UploadMsg *uploadMsg = (UploadMsg *)arg;
-    printf("fileName %s\n", uploadMsg->fileName);
+    Msg *msg = (Msg *)arg;
+    printf("uploadFileThread\n");
+
+    UploadMsg uploadMsg;
+    memset(&uploadMsg, 0, sizeof(UploadMsg));
+
+    memcpy(&uploadMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    uploadMsg.m_iLoginStatus = 1;
+
+    char file[1024] = "/var/penguin/";
+    strcat(file, uploadMsg.uploadPath);
+    strcat(file, uploadMsg.fileName);
+
+    printf("uploadPath %s\n", uploadMsg.uploadPath);
+    printf("fileName %s\n", uploadMsg.fileName);
+    printf("file %s\n", file);
+
+    //可写权限打开
+    FILE *fp = fopen(file, "ab+");
+    if(fp == NULL)
+    {
+#ifdef Debug
+        fprintf(stdout, "fopen %s\n", strerror(errno));
+#endif
+        return NULL;
+    }
+
+    char *recvBuf = (char *)malloc(sizeof(char) * 64 * 1024);
+    memset(recvBuf, 0, 64 * 1024);
+
+    int ret = 0;
+
+    printf("1\n");
+    sendUploadMsg(sockfd, uploadMsg);
+    while((ret = recv(sockfd, recvBuf, 64 * 1024, 0)) > 0)
+    {
+        printf("ret = %d\n", ret);
+        fwrite(recvBuf, sizeof(char), ret, fp);
+        memset(recvBuf, 0, 64 * 1024);
+    }
+    printf("2\n");
+    close(fp);
+    close(sockfd);
+    free(recvBuf);
+    return NULL;
 }
 
 //新建文件夹

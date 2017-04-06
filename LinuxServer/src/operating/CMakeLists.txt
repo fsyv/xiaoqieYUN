@@ -1,4 +1,5 @@
 set(SERVER_OPEARTING_SOURECE_FILES serverOperating.h serverOperating.c)
 
 link_libraries(cjson)
-add_library(serverop SHARED ${SERVER_OPEARTING_SOURECE_FILES})
+link_libraries(msgIO)
+add_library(serverop STATIC ${SERVER_OPEARTING_SOURECE_FILES})

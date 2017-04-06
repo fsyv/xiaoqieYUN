@@ -5,6 +5,8 @@
 
 #include "network/connecttoserver.h"
 #include "tools/tools.h"
+#include "thread/uploadthread.h"
+
 MainWidget::MainWidget(QWidget *parent) :
     BasicWidget(parent),
     m_pConnectToServer(nullptr),
@@ -20,8 +22,7 @@ MainWidget::MainWidget(QWidget *parent) :
 
     m_pConnectToServer = ConnectToServer::getInstance();
     connect(m_pConnectToServer, SIGNAL(readyReadFileListMsg(QByteArray)), this, SLOT(recvFileLists(QByteArray)));
-    connect(m_pConnectToServer, &ConnectToServer::readyReadRenameMsg, this, &MainWidget::renameError);
-
+    connect(m_pConnectToServer, SIGNAL(readyReadUploadMsg(UploadMsg)), this, SLOT(recvUploadFile(UploadMsg)));
 
     connect(tableWidget, &FileTableWidget::requestDir, this, &MainWidget::getDir);
     connect(tableWidget, &FileTableWidget::requestNewfolder, this, &MainWidget::newFolder);
@@ -190,6 +191,17 @@ void MainWidget::recvFileLists(QByteArray byteArray)
     tableWidget->setTableRow(Tools::getTableRow(byteArray));
 }
 
+void MainWidget::recvUploadFile(UploadMsg uploadMsg)
+{
+    qDebug()<< "serverPort" << uploadMsg.serverFilePort;
+    QString name(uploadMsg.fileName);
+
+    QFileInfo *fileinfo = m_pFileMap->value(name);
+
+    UploadThread *uploadThread = new UploadThread(*fileinfo, uploadMsg);
+    uploadThread->start();
+}
+
 void MainWidget::getDir(QString dirname)
 {
     setCurrentPath(getCurrentPath() + dirname + "/");
@@ -231,7 +243,8 @@ void MainWidget::uploadFile()
         memset(&uploadMsg, 0, sizeof(UploadMsg));
 
         strcpy(uploadMsg.fileName, fileInfo->fileName().toUtf8().data());
-        strcpy(uploadMsg.uploadPath, path.top().toUtf8().data());
+        strcpy(uploadMsg.uploadPath, m_stUserName.toUtf8().data());
+        strcat(uploadMsg.uploadPath, path.top().toUtf8().data());
 
         m_pConnectToServer->sendUploadMsg(uploadMsg);
     }

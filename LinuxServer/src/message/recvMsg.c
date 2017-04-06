@@ -122,14 +122,15 @@ void recvFileListMsg(int sockfd, Msg *msg)
 //上传操作消息
 void recvUploadMsg(int sockfd, Msg *msg)
 {
-    UploadMsg *uploadMsg = (UploadMsg *)malloc(sizeof(UploadMsg));
-    memset(uploadMsg, 0, sizeof(UploadMsg));
+    UploadMsg uploadMsg;
+    memset(&uploadMsg, 0, sizeof(UploadMsg));
 
-    memcpy(uploadMsg, msg->m_aMsgData, msg->m_iMsgLen);
-    memcpy(uploadMsg->serverUrl, (void *)&sockfd, sizeof(int));
+    memcpy(&uploadMsg, msg->m_aMsgData, msg->m_iMsgLen);
 
-    extern ThreadPool *m_pThreadPool;
-    addJobThreadPool(m_pThreadPool, uploadFileThread, (void *)uploadMsg);
+    //告诉客户端往哪儿传
+    uploadMsg.serverFilePort = 36976;
+
+    sendUploadMsg(sockfd, uploadMsg);
 }
 
 //新建文件夹消息
@@ -147,7 +148,6 @@ void recvNewFolderMsg(int sockfd, Msg *msg)
     }
     else
     {
-
         ErrorMsg errorMsg;
         errorMsg.m_eErrorType = CreateFolderFailed;
         sendAckErrorMsg(sockfd, errorMsg);

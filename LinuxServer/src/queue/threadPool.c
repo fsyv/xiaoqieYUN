@@ -47,9 +47,9 @@ pThreadPool createThreadPool(int maxThreadNum)
 }
 
 //往线程池任务添加任务
-int addJobThreadPool(ThreadPool *threadPool, void *(*callback_function)(void *arg), void *arg)
+int addJobThreadPool(ThreadPool *threadPool, TaskQueue *taskQueue)
 {
-    if (!threadPool || !callback_function)
+    if (!threadPool)
     {
 #ifdef Debug
         fprintf(stderr, "addJobThreadPool : %s \n", "句柄无效");
@@ -58,24 +58,22 @@ int addJobThreadPool(ThreadPool *threadPool, void *(*callback_function)(void *ar
         return -1;
     }
 
-    TaskQueue *taskQueue = (pTaskQueue)malloc(sizeof(TaskQueue));
-    memset(taskQueue, 0, sizeof(TaskQueue));
-
-    taskQueue->p_fCallBackFunction = callback_function;
-    taskQueue->p_vArg = arg;
-
     pthread_mutex_lock(&(threadPool->queuemutex));
+
+    printf("a\n");
 
     if (threadPool->front == NULL)
     {
+        printf("b\n");
         threadPool->front = threadPool->rear = taskQueue;
-        pthread_cond_broadcast(&(threadPool->queue_not_empty));
     }
     else
     {
+        printf("c\n");
         threadPool->rear->next = taskQueue;
         threadPool->rear = taskQueue;
     }
+    pthread_cond_broadcast(&(threadPool->queue_not_empty));
     ++(threadPool->m_iQueueLen);
 
     pthread_mutex_unlock(&(threadPool->queuemutex));
@@ -114,6 +112,7 @@ void *threadpool_function(void *arg)
     pTaskQueue taskQueue = NULL;
     while (1)
     {
+        printf("11\n");
         pthread_mutex_lock(&(threadPool->taskmutex));
 
         while(!threadPool->m_iQueueLen)
@@ -138,7 +137,9 @@ void *threadpool_function(void *arg)
 
         pthread_mutex_unlock(&(threadPool->queuemutex));
 
-        (*(taskQueue->p_fCallBackFunction))(taskQueue->p_vArg);
+        printf("threadpool_function\n");
+
+        (*(taskQueue->p_fCallBackFunction))(taskQueue->sockfd, taskQueue->p_vArg);
 
         if(taskQueue)
         {

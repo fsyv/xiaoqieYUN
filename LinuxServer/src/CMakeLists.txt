@@ -6,7 +6,7 @@ add_subdirectory(socket)
 add_subdirectory(tools)
 add_subdirectory(cjson)
 add_subdirectory(operating)
-
+add_subdirectory(database)
 
 link_libraries(threadpool)
 link_libraries(serverSocket)
