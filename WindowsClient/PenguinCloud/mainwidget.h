@@ -36,12 +36,14 @@ public:
 protected:
     void paintEvent(QPaintEvent *event);
 
-protected slots:
+public slots:
     void recvFileLists(QByteArray byteArray);
     void getDir(QString dirname);
     void previousDir();
     void uploadFile();
     void newFolder(const QString &folderName);
+    void rename(const QString &newName, const QString &oldName);
+    void renameError(RenameMsg r);
 
 private:
     void init();

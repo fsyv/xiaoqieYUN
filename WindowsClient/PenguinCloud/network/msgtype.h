@@ -12,6 +12,7 @@ typedef enum _MsgType{
     Get_Download,       //文件下载
     Put_Move,           //移动操作
     Put_NewFolder,      //新建文件夹
+    Put_Rename,         //重命名
     Put_Upload,         //上传操作
     Put_Delete,         //删除操作
     Put_Share,          //分享操作
@@ -94,5 +95,11 @@ typedef struct _ShareMsg{
 typedef struct _ExitMsg{
 
 }ExitMsg, *pExitMsg;
+
+//重命名消息结构
+typedef struct _RenameMsg{
+    char newName[MAX_PATH + 1]; // 重命名文件(文件夹)
+    char oldName[MAX_PATH + 1]; //old name
+}RenameMsg, *pRenameMsg;
 
 #endif // MSGTYPE_H
