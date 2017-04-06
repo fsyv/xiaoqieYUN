@@ -110,8 +110,6 @@ void *createServerFileSocket(void *arg)
         sendMsg = (Msg *)malloc(sizeof(Msg) + msg->m_iMsgLen);
         memcpy(sendMsg, recvBuf, ret);
 
-        printf("sendMsg %d\n", sendMsg->m_eMsgType);
-
         if (msg->m_eMsgType == Put_Upload)
         {
             //上传
@@ -125,6 +123,12 @@ void *createServerFileSocket(void *arg)
         else if(msg->m_eMsgType == Get_Download)
         {
             //下载
+            taskQueue = (pTaskQueue)malloc(sizeof(TaskQueue));
+            memset(taskQueue, 0, sizeof(TaskQueue));
+
+            taskQueue->p_fCallBackFunction = &downloadFileThread;
+            taskQueue->sockfd = clientSocketfd;
+            taskQueue->p_vArg = (void *)sendMsg;
         }
         else
         {

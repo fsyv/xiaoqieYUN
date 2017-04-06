@@ -1,7 +1,6 @@
 #ifndef LINUXSERVER_MESSAGE_MSGTYPE_H
 #define LINUXSERVER_MESSAGE_MSGTYPE_H
 
-
 //消息类型
 typedef enum _MsgType{
     Ack_OK = 0,         //确定成功
@@ -13,6 +12,7 @@ typedef enum _MsgType{
     Get_Download,       //文件下载
     Put_Move,           //移动操作
     Put_NewFolder,      //新建文件夹
+    Put_Rename,         //重命名
     Put_Upload,         //上传操作
     Put_Delete,         //删除操作
     Put_Share,          //分享操作
@@ -63,7 +63,11 @@ typedef struct _PreviewMsg{
 
 //下载信息消息结构
 typedef struct _DownloadMsg{
-
+    int m_iLoginStatus;            //下载状态
+    char filePath[64];           //文件路径
+    char fileName[64];             //文件名
+    unsigned int serverFileIP;     //服务器地址
+    unsigned short serverFilePort; //服务器端口
 }DownloadMsg, *pDownloadMsg;
 
 //移动消息结构
