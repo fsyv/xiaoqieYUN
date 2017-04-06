@@ -43,6 +43,9 @@ public:
     virtual int sendMoveMsg(MoveMsg moveMsg);
     //新建文件夹消息
     virtual int sendNewFolderMsg(NewFolderMsg newFolderMsg);
+    //重命名消息
+    virtual int sendRenameMsg(RenameMsg renameMsg);
+
     //上传操作消息
     virtual int sendUploadMsg(UploadMsg uploadMsg);
     //删除操作消息
@@ -71,6 +74,8 @@ public:
     virtual void recvMoveMsg(Msg *msg);
     //新建文件夹消息
     virtual void recvNewFolderMsg(Msg *msg);
+    //重命名消息
+    virtual void recvRenameMsg(Msg *msg);
     //上传操作消息
     virtual void recvUploadMsg(Msg *msg);
     //删除操作消息
@@ -91,6 +96,7 @@ signals:
     void readyReadDownloadMsg(DownloadMsg);
     void readyReadMoveMsg(MoveMsg);
     void readyReadNewFolderMsg(NewFolderMsg);
+    void readyReadRenameMsg(RenameMsg);
     void readyReadUploadMsg(UploadMsg);
     void readyReadDeleteMsg(DeleteMsg);
     void readyReadShareMsg(ShareMsg);

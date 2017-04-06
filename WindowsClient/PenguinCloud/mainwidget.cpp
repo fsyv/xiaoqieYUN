@@ -26,6 +26,8 @@ MainWidget::MainWidget(QWidget *parent) :
 
     connect(tableWidget, &FileTableWidget::requestDir, this, &MainWidget::getDir);
     connect(tableWidget, &FileTableWidget::requestNewfolder, this, &MainWidget::newFolder);
+    connect(tableWidget, &FileTableWidget::requestUpload, this, &MainWidget::uploadFile);
+    connect(tableWidget, &FileTableWidget::requestRename, this, &MainWidget::rename);
 
     m_pFileMap = new QMap<QString, QFileInfo *>;
 }
@@ -258,4 +260,20 @@ void MainWidget::newFolder(const QString &folderName)
     strcat(newFolderMsg.folderName, folderPath.toUtf8().data());
 
     m_pConnectToServer->sendNewFolderMsg(newFolderMsg);
+}
+
+void MainWidget::rename(const QString &newName, const QString &oldName)
+{
+    QString new_path = m_stUserName + path.top() + newName;
+    QString old_path = m_stUserName + path.top() + oldName;
+    RenameMsg renameMsg;
+    memset(&renameMsg, 0, sizeof(RenameMsg));
+    strcpy(renameMsg.newName, new_path.toUtf8().data());
+    strcpy(renameMsg.oldName, old_path.toUtf8().data());
+    m_pConnectToServer->sendRenameMsg(renameMsg);
+    replyFileLists(path.top());
+}
+
+void MainWidget::renameError(RenameMsg r){
+       qDebug() << "Rename Error";
 }

@@ -27,6 +27,8 @@ public slots:
 signals:
     void requestDir(QString dirname);
     void requestNewfolder(const QString &folderName);
+    void requestUpload();
+    void requestRename(const QString &newname, const QString &oldname);
 protected:
     void mouseReleaseEvent(QMouseEvent *event);
 private:
@@ -37,8 +39,8 @@ private:
 
     bool isEditing;
     bool isNewFolder;
-
-
+    bool isRename;
+    QString oldName;
     QTableWidgetItem *edit_item;
 };
 

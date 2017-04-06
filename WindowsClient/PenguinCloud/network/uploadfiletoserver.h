@@ -5,7 +5,7 @@
 
 #include <QFileInfo>
 #include <QTcpSocket>
-#include <qDebug>
+#include <QDebug>
 
 class UploadFileToServer : public AbstractNetwork
 {

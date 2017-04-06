@@ -149,6 +149,24 @@ int AbstractNetwork::sendNewFolderMsg(NewFolderMsg newFolderMsg)
     return ret;
 }
 
+//重命名消息
+int AbstractNetwork::sendRenameMsg(RenameMsg renameMsg)
+{
+    Msg *msg = (Msg*)new char[m_iMsgStructLen + sizeof(RenameMsg) + 1];
+    memset(msg, 0, m_iMsgStructLen + sizeof(RenameMsg));
+
+    msg->m_eMsgType = Put_Rename;
+    msg->m_iMsgLen = sizeof(RenameMsg);
+    memcpy(msg->m_aMsgData, (void*)&renameMsg, msg->m_iMsgLen);
+
+    int ret = sendMsg(msg);
+
+    delete msg;
+
+    return ret;
+}
+
+
 int AbstractNetwork::sendUploadMsg(UploadMsg uploadMsg)
 {
     Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(UploadMsg) + 1];
@@ -222,7 +240,7 @@ void AbstractNetwork::recvAckErrorMsg(Msg *msg)
 {
     ErrorMsg errorMsg;
     memcpy(&errorMsg, msg->m_aMsgData, msg->m_iMsgLen);
-    readyReadAckErrorMsg(errorMsg);
+    //readyReadAckErrorMsg(errorMsg);
     emit readyReadAckErrorMsg(errorMsg);
 }
 
@@ -276,6 +294,15 @@ void AbstractNetwork::recvNewFolderMsg(Msg *msg)
     memcpy(&newFolderMsg, msg->m_aMsgData, msg->m_iMsgLen);
     emit readyReadNewFolderMsg(newFolderMsg);
 }
+
+void AbstractNetwork::recvRenameMsg(Msg *msg)
+{
+    RenameMsg renameMsg;
+    memcpy(&renameMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    emit readyReadRenameMsg(renameMsg);
+}
+
+
 
 void AbstractNetwork::recvUploadMsg(Msg *msg)
 {
