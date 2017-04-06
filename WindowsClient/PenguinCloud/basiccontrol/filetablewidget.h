@@ -24,6 +24,9 @@ public slots:
     void opendir(int row, int column);
     void close_editor(int currentRow, int currentColumn, int previousRow, int previousColumn);
 
+    void test(const QModelIndex &index);
+    void selectStatus();
+    void selectThisRow(int state);
 signals:
     void requestDir(QString dirname);
     void requestNewfolder(const QString &folderName);
@@ -40,6 +43,8 @@ private:
     bool isEditing;
     bool isNewFolder;
     bool isRename;
+    bool isOpen; //当前操作是打开文件夹
+    int pre_row = -1;
     QString oldName;
     QTableWidgetItem *edit_item;
 };
