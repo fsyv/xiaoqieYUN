@@ -132,7 +132,7 @@ void *uploadFileThread(int sockfd, void *arg)
         memset(recvBuf, 0, 64 * 1024);
     }
     printf("2\n");
-    close(fp);
+    fclose(fp);
     close(sockfd);
     free(recvBuf);
     return NULL;
