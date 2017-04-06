@@ -39,6 +39,7 @@ protected:
 public slots:
     void recvFileLists(QByteArray byteArray);
     void recvUploadFile(UploadMsg uploadMsg);
+    void recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg);
     void getDir(QString dirname);
     void previousDir();
     void uploadFile();

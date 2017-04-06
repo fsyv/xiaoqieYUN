@@ -92,7 +92,7 @@ void FileTableWidget::test(const QModelIndex &index)
 void FileTableWidget::init()
 {
     setAlternatingRowColors(true);
-   // setSelectionMode(QAbstractItemView::NoSelection);
+    // setSelectionMode(QAbstractItemView::NoSelection);
     setShowGrid(false);
     verticalHeader()->hide();   // 隐藏左侧header
     setSelectionBehavior(QAbstractItemView::SelectRows); //选中行
@@ -112,6 +112,9 @@ void FileTableWidget::init()
     setHorizontalHeaderLabels(headerlabels);
 
     isEditing = false;
+    isNewFolder = false;
+    isRename = false;
+    isOpen = false; //当前操作是打开文件夹
 }
 
 //
@@ -255,6 +258,7 @@ void FileTableWidget::mouseReleaseEvent(QMouseEvent *event)
             noitem_menu->exec(QCursor::pos());
 
     }
+    QTableWidget::mouseReleaseEvent(event);
 }
 
 

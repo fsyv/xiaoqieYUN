@@ -6,6 +6,7 @@
 #include "network/connecttoserver.h"
 #include "tools/tools.h"
 #include "thread/uploadthread.h"
+#include "thread/downloadthread.h"
 
 MainWidget::MainWidget(QWidget *parent) :
     BasicWidget(parent),
@@ -23,6 +24,8 @@ MainWidget::MainWidget(QWidget *parent) :
     m_pConnectToServer = ConnectToServer::getInstance();
     connect(m_pConnectToServer, SIGNAL(readyReadFileListMsg(QByteArray)), this, SLOT(recvFileLists(QByteArray)));
     connect(m_pConnectToServer, SIGNAL(readyReadUploadMsg(UploadMsg)), this, SLOT(recvUploadFile(UploadMsg)));
+    connect(m_pConnectToServer, SIGNAL(readyReadDownloadMsg(DownloadMsg)), this, SLOT(recvDownloadFile_readyReadDownloadMsg(DownloadMsg)));
+
 
     connect(tableWidget, &FileTableWidget::requestDir, this, &MainWidget::getDir);
     connect(tableWidget, &FileTableWidget::requestNewfolder, this, &MainWidget::newFolder);
@@ -201,6 +204,18 @@ void MainWidget::recvUploadFile(UploadMsg uploadMsg)
 
     UploadThread *uploadThread = new UploadThread(*fileinfo, uploadMsg);
     uploadThread->start();
+
+    delete fileinfo;
+    fileinfo = nullptr;
+    m_pFileMap->remove(name);
+}
+
+void MainWidget::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg)
+{
+    qDebug()<< "serverPort" << downloadMsg.serverFilePort;
+
+    DownloadThread *downloadThread = new DownloadThread(downloadMsg);
+    downloadThread->start();
 }
 
 void MainWidget::getDir(QString dirname)
@@ -253,7 +268,26 @@ void MainWidget::uploadFile()
 
 void MainWidget::doloadFile_download()
 {
-    qDebug() << listView->currentIndex();
+    QTableWidgetItem *_item = tableWidget->item(tableWidget->currentRow(), 2);
+
+    if(!_item)
+        return ;
+
+    if(_item->text() == "文件夹")
+    {
+
+    }
+    else
+    {
+        QTableWidgetItem *_item = tableWidget->item(tableWidget->currentRow(), 1);
+        qDebug() << _item->text();
+        DownloadMsg downloadMsg;
+        strcpy(downloadMsg.fileName, _item->text().toUtf8().data());
+        strcpy(downloadMsg.filePath, m_stUserName.toUtf8().data());
+        strcat(downloadMsg.filePath, path.top().toUtf8().data());
+
+        m_pConnectToServer->sendDownloadMsg(downloadMsg);
+    }
 }
 
 void MainWidget::newFolder(const QString &folderName)
