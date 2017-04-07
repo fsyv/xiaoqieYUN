@@ -1,0 +1,2 @@
+/usr/bin/ar qc libserverop.a  CMakeFiles/serverop.dir/serverOperating.o
+/usr/bin/ranlib libserverop.a

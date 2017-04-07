@@ -11,4 +11,7 @@ void *uploadFileThread(int sockfd, void *arg);
 void *downloadFileThread(int sockfd, void *arg);
 //新建文件夹
 int createNewFolder(char *folderPath);
+
+//删除文件夹
+int removeFolder(char *folderPath);
 #endif //LINUXSERVER_OPERATING_SERVEROPERATING_H

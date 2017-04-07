@@ -1,0 +1,2 @@
+/usr/bin/ar qc libmsgIO.a  CMakeFiles/msgIO.dir/recvMsg.o CMakeFiles/msgIO.dir/sendMsg.o
+/usr/bin/ranlib libmsgIO.a

@@ -70,6 +70,13 @@ void recvMsg(int sockfd, Msg *msg)
 #endif
             recvDownloadMsg(sockfd, msg);
             break;
+
+        case Put_Delete:
+#ifdef Debug
+            fprintf(stdout, "Put_Delete\n");
+#endif
+            recvDeleteMsg(sockfd, msg);
+            break;
     }
 }
 
@@ -169,5 +176,19 @@ void recvNewFolderMsg(int sockfd, Msg *msg)
         ErrorMsg errorMsg;
         errorMsg.m_eErrorType = CreateFolderFailed;
         sendAckErrorMsg(sockfd, errorMsg);
+    }
+}
+
+//删除操作消息
+void recvDeleteMsg(int sockfd, Msg *msg)
+{
+    int ret;
+    DeleteMsg deleteMsg;
+    memset(&deleteMsg, 0, sizeof(DeleteMsg));
+    memcpy(&deleteMsg, msg->m_aMsgData, msg->m_iMsgLen);
+
+    if(removeFolder(deleteMsg.path) == -1)
+    {
+        //错误处理
     }
 }
