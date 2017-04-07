@@ -302,7 +302,10 @@ void FileTableWidget::del()
     QTableWidgetItem *item = itemAt(menu_show);
 
     if(item != NULL)
-        this->removeRow(item->row());
+    {
+        emit requestDeleteItem(item->text());
+    }
+
 }
 
 void FileTableWidget::download()
@@ -389,3 +392,13 @@ void FileTableWidget::opendir(int row, int column)
     }
 }
 
+QList<QString> FileTableWidget::getSelectedItem()
+{
+    QList<QString> tmp;
+    for(int i = 0; i < rowCount(); ++i)
+    {
+        if(item(i, 1)->isSelected())
+            tmp.append(item(i, 1)->text());
+    }
+    return tmp;
+}

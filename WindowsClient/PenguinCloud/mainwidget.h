@@ -14,6 +14,7 @@ class QListView;
 class QTableView;
 class ConnectToServer;
 class QFileInfo;
+class DownloadManage;
 
 class MainWidget : public BasicWidget
 {
@@ -45,9 +46,11 @@ public slots:
     void uploadFile();
     void doloadFile_download();
     void newFolder(const QString &folderName);
+    void removeFileOrFolder(const QString &path);
     void rename(const QString &newName, const QString &oldName);
     void renameError(RenameMsg r);
-
+    void show_download_manage();
+    void removeSelected();
 private:
     void init();
     void setListViewItem();
@@ -63,11 +66,16 @@ private:
     QPushButton *previous;
     QListView *listView;
     FileTableWidget *tableWidget;
+    DownloadManage *load;
 
+
+    QLabel *sys_info;
+    QPushButton *download_manage;
     QString m_stUserName;
 
     QStack<QString> path;// current dir
     QMap<QString, QFileInfo *> *m_pFileMap;
+
 };
 
 #endif // MAINWIDGET_H

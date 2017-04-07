@@ -9,6 +9,8 @@ class FileTableWidget : public QTableWidget
 public:
     FileTableWidget(QWidget *parent = nullptr);
     void setTableRow(const QVector<QStringList> &_vec);
+    QList<QString> getSelectedItem();
+
 public slots:
 
     void rename();
@@ -32,6 +34,7 @@ signals:
     void requestNewfolder(const QString &folderName);
     void requestUpload();
     void requestRename(const QString &newname, const QString &oldname);
+    void requestDeleteItem(const QString &path);
 protected:
     void mouseReleaseEvent(QMouseEvent *event);
 private:

@@ -2,12 +2,12 @@
 #include <QtWidgets>
 #include <QString>
 #include <QDir>
-
+#include <QStatusBar>
 #include "network/connecttoserver.h"
 #include "tools/tools.h"
 #include "thread/uploadthread.h"
 #include "thread/downloadthread.h"
-
+#include "basiccontrol/downloadmanage.h"
 MainWidget::MainWidget(QWidget *parent) :
     BasicWidget(parent),
     m_pConnectToServer(nullptr),
@@ -17,6 +17,10 @@ MainWidget::MainWidget(QWidget *parent) :
     init();
     setListViewItem();
     setFileTable();
+    load = new DownloadManage(this);
+    load->move(1, 80);
+    load->setFixedSize(800, 480);
+    load->hide();
     this->setBackgroundColor(Qt::white);
 
     path.push("/");
@@ -31,7 +35,7 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(tableWidget, &FileTableWidget::requestNewfolder, this, &MainWidget::newFolder);
     connect(tableWidget, &FileTableWidget::requestUpload, this, &MainWidget::uploadFile);
     connect(tableWidget, &FileTableWidget::requestRename, this, &MainWidget::rename);
-
+    connect(tableWidget, &FileTableWidget::requestDeleteItem, this, &MainWidget::removeFileOrFolder);
     m_pFileMap = new QMap<QString, QFileInfo *>;
 }
 
@@ -71,8 +75,9 @@ void MainWidget::setListViewItem()
     }
 
     listView->setModel(model);
-    listView->move(0, 120);
-    listView->resize(150, 480);
+
+    listView->move(1, 120);
+    listView->resize(149, 450);
 }
 
 void MainWidget::init()
@@ -91,6 +96,9 @@ void MainWidget::init()
 
     previous = new QPushButton(QIcon("://resource/widgets/undo_32.png"),
                                tr(" 返回"), this);
+    sys_info = new QLabel(this);
+    download_manage = new QPushButton(QIcon(":/resource/image/MainWidget/download_manage.png"),
+                                      tr("下载管理"), this);
 
 
     download->setIconSize(QSize(16,16));
@@ -98,13 +106,14 @@ void MainWidget::init()
     share->setIconSize(QSize(16,16));
     dele->setIconSize(QSize(16,16));
     previous->setIconSize(QSize(16,16));
+    download_manage->setIconSize(QSize(32, 32));
 
     download->move(5, 81);
     upload->move(80, 81);
     share->move(155, 81);
     dele->move(230, 81);
     previous->move(305, 81);
-
+    download_manage->move(690, 560);
 
     download->resize(75, 35);
     upload->resize(75, 35);
@@ -117,6 +126,8 @@ void MainWidget::init()
     share->setObjectName("MainWidget_PushButton");
     dele->setObjectName("MainWidget_PushButton");
     previous->setObjectName("MainWidget_PushButton");
+    download_manage->setObjectName("MainWidget_PushButton");
+
 
 
     //一开始是不能后退的
@@ -125,6 +136,8 @@ void MainWidget::init()
     connect(upload, SIGNAL(clicked()), this, SLOT(uploadFile()));
     connect(previous, SIGNAL(clicked()), this, SLOT(previousDir()));
     connect(download, SIGNAL(clicked()), this, SLOT(doloadFile_download()));
+    connect(download_manage, &QPushButton::clicked, this, &MainWidget::show_download_manage);
+    connect(dele, &QPushButton::clicked, this, &MainWidget::removeSelected);
 }
 
 void MainWidget::paintEvent(QPaintEvent *event)
@@ -184,7 +197,7 @@ void MainWidget::replyFileLists(const QString &FolderPath)
 void MainWidget::setFileTable()
 {
     tableWidget = new FileTableWidget(this);
-    tableWidget->resize(650, 480);
+    tableWidget->resize(649, 440);
     tableWidget->move(150, 120);
 }
 
@@ -314,6 +327,46 @@ void MainWidget::rename(const QString &newName, const QString &oldName)
     replyFileLists(path.top());
 }
 
+void MainWidget::removeFileOrFolder(const QString &_path)
+{
+    QString wholepath = m_stUserName + path.top() + _path;
+
+    DeleteMsg deleteMsg;
+    memset(&deleteMsg, 0, sizeof(DeleteMsg));
+    strcpy(deleteMsg.path, wholepath.toUtf8().data());
+    m_pConnectToServer->sendDeleteMsg(deleteMsg);
+    replyFileLists(path.top());
+}
+
 void MainWidget::renameError(RenameMsg r){
        qDebug() << "Rename Error";
+}
+
+void MainWidget::show_download_manage()
+{
+    if(load->isHidden())
+    {
+        load->show();
+    }
+    else
+    {
+        load->hide();
+    }
+}
+
+void MainWidget::removeSelected()
+{
+    QList<QString> items = tableWidget->getSelectedItem();
+    if(items.size() > 0)
+    {
+        for(auto elem : items)
+        {
+            removeFileOrFolder(elem);
+        }
+        QMessageBox::warning(this, tr("Hint"), tr("Delete OK"));
+    }
+    else
+        QMessageBox::warning(this, tr("Warning"), tr("未选中任何项目"));
+
+
 }
