@@ -304,3 +304,22 @@ int moveSrcToDes(char *src, char *des)
 
     return system(command);
 }
+
+
+int copySrcToDes(char *src, char *des)
+{
+    char srcPath[1024] = "/var/penguin/";
+    char desPath[1024] = "/var/penguin/";
+    char command[2048] = "cp -r ";        //递归复制
+
+    strcat(srcPath, src);
+    strcat(desPath, des);
+
+    strcat(command, srcPath);
+    strcat(command, " ");
+    strcat(command, desPath);
+
+    printf("%s\n", command);
+
+    return system(command);
+}

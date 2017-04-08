@@ -409,7 +409,24 @@ void MainWidget::pasteSelected()
 {
     QString currpath = getUserName() + path.top();
     if(isCopy)
-        qDebug() << "copy" << wholeCopyPath;
+    {
+        // 复制操作
+        for(auto elem : wholeCopyPath)
+        {
+
+            QString tmpPath = getUserName() + elem;
+            currpath.chop(1); //移除最后的一个 '/'
+            CopyMsg copyMsg;
+
+            memset(&copyMsg, 0, sizeof(MoveMsg));
+            strcpy(copyMsg.sourcePath, tmpPath.toUtf8().data());
+            strcpy(copyMsg.DestinationPath, currpath.toUtf8().data());
+            m_pConnectToServer->sendCopyMsg(copyMsg);
+        }
+
+        replyFileLists(path.top());
+        emit paste(false);
+    }
     else
     {
         //移动操作

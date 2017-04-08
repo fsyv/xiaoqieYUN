@@ -17,4 +17,6 @@ int renameFileOrFolder(char *oldpath, char *newpath);
 int removeFolder(char *folderPath);
 //移动文件或文件夹
 int moveSrcToDes(char *src, char *des);
+//复制文件或文件夹
+int copySrcToDes(char *src, char *des);
 #endif //LINUXSERVER_OPERATING_SERVEROPERATING_H

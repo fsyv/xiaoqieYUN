@@ -11,6 +11,7 @@ typedef enum _MsgType{
     Get_Preview,        //文件预览
     Get_Download,       //文件下载
     Put_Move,           //移动操作
+    Put_Copy,           //复制操作
     Put_NewFolder,      //新建文件夹
     Put_Rename,         //重命名
     Put_Upload,         //上传操作
@@ -74,6 +75,11 @@ typedef struct _MoveMsg{
     char sourcePath[MAX_PATH + 1];          // 源路径
     char DestinationPath[MAX_PATH + 1];    //目的地址
 }MoveMsg, *pMoveMsg;
+//复制消息结构
+typedef struct _CopyMsg{
+    char sourcePath[MAX_PATH + 1];          // 源路径
+    char DestinationPath[MAX_PATH + 1];    //目的地址
+}CopyMsg, *pCopyMsg;
 //新建文件夹消息结构
 typedef struct _NewFolderMsg{
     char folderName[MAX_PATH + 1]; // 新建文件的路径（包括文件夹名）

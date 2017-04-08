@@ -91,6 +91,12 @@ void recvMsg(int sockfd, Msg *msg)
 #endif
             recvMoveMsg(sockfd, msg);
             break;
+        case Put_Copy:
+#ifdef Debug
+            fprintf(stdout, "Put_Copy\n");
+#endif
+            recvCopyMsg(sockfd, msg);
+            break;
     }
 }
 
@@ -243,6 +249,23 @@ void recvMoveMsg(int sockfd, Msg *msg)
     memcpy(&moveMsg, msg->m_aMsgData, msg->m_iMsgLen);
 
     ret = moveSrcToDes(moveMsg.sourcePath, moveMsg.DestinationPath);
+
+    if(ret == -1)
+    {
+        //错误处理
+    }
+}
+
+//复制消息
+void recvCopyMsg(int sockfd, Msg *msg)
+{
+    int ret;
+
+    CopyMsg copyMsg;
+    memset(&copyMsg, 0, sizeof(MoveMsg));
+    memcpy(&copyMsg, msg->m_aMsgData, msg->m_iMsgLen);
+
+    ret = copySrcToDes(copyMsg.sourcePath, copyMsg.DestinationPath);
 
     if(ret == -1)
     {
