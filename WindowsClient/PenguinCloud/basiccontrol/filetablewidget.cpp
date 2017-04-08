@@ -51,6 +51,34 @@ FileTableWidget::FileTableWidget(QWidget *parent) : QTableWidget(parent)
     connect(this, &QTableWidget::entered, this, &FileTableWidget::test);
     connect(this, &QTableWidget::itemSelectionChanged, this, &FileTableWidget::selectStatus);
 }
+void FileTableWidget::init()
+{
+    setAlternatingRowColors(true);
+    setShowGrid(false);
+    setSelectionBehavior(QAbstractItemView::SelectRows); //选中行
+    setEditTriggers(QAbstractItemView::NoEditTriggers);// 不可编辑
+    setMouseTracking(true);    //开启捕获鼠标功能
+
+    verticalHeader()->hide();   // 隐藏左侧header
+
+    setColumnCount(5);
+
+    setColumnWidth(0, 20);
+    setColumnWidth(1, 300);
+    setColumnWidth(2, 75);
+    setColumnWidth(3, 75);
+    setColumnWidth(4, 170);
+
+    QStringList headerlabels;
+    headerlabels <<""<<"文件名" << "文件类型" << "文件大小" <<"修改日期";
+    setHorizontalHeaderLabels(headerlabels);
+
+    isEditing = false;
+    isNewFolder = false;
+    isRename = false;
+    isOpen = false; //当前操作是打开文件夹
+
+}
 
 void FileTableWidget::selectStatus()
 {
@@ -91,34 +119,6 @@ void FileTableWidget::test(const QModelIndex &index)
 
 }
 
-void FileTableWidget::init()
-{
-    setAlternatingRowColors(true);
-    setShowGrid(false);
-    setSelectionBehavior(QAbstractItemView::SelectRows); //选中行
-    setEditTriggers(QAbstractItemView::NoEditTriggers);// 不可编辑
-    setMouseTracking(true);    //开启捕获鼠标功能
-
-    verticalHeader()->hide();   // 隐藏左侧header
-
-    setColumnCount(5);
-
-    setColumnWidth(0, 20);
-    setColumnWidth(1, 300);
-    setColumnWidth(2, 75);
-    setColumnWidth(3, 75);
-    setColumnWidth(4, 170);
-
-    QStringList headerlabels;
-    headerlabels <<""<<"文件名" << "文件类型" << "文件大小" <<"修改日期";
-    setHorizontalHeaderLabels(headerlabels);
-
-    isEditing = false;
-    isNewFolder = false;
-    isRename = false;
-    isOpen = false; //当前操作是打开文件夹
-
-}
 
 //
 void FileTableWidget::setTableRow(const QVector<QStringList> &_vec)
@@ -238,15 +238,17 @@ void FileTableWidget::mouseReleaseEvent(QMouseEvent *event)
     qDebug() << "mouseReleaseEvent";
     if(event->button() == Qt::RightButton)
     {
-        //        删除 下载  移动  复制  分享
+        //    预览    删除 下载  移动  复制  分享
         QMenu *item_menu = new QMenu();
-        QAction *download_action = new QAction(tr("下载"));
-        QAction *delete_action = new QAction(tr("删除"));
-        QAction *rename_action = new QAction(tr("重命名"));
-        QAction *copy_action = new QAction(tr("复制"));
-        QAction *move_action = new QAction(tr("移动"));
-        QAction *share_action = new QAction(tr("分享"));
+        QAction *preview_action = new QAction(QIcon(":/resource/image/MainWidget/preview.png"), tr("预览"));
+        QAction *download_action = new QAction(QIcon(":/resource/image/MainWidget/download.png"), tr("下载"));
+        QAction *delete_action = new QAction(QIcon(":/resource/image/MainWidget/delete.png"), tr("删除"));
+        QAction *rename_action = new QAction(QIcon(":/resource/image/MainWidget/rename.png"), tr("重命名"));
+        QAction *copy_action = new QAction(QIcon(":/resource/image/MainWidget/copy.png"), tr("复制"));
+        QAction *move_action = new QAction(QIcon(":/resource/image/MainWidget/move.png"), ("移动"));
+        QAction *share_action = new QAction(QIcon(":/resource/image/MainWidget/share.png"), tr("分享"));
 
+        connect(preview_action, &QAction::triggered, this, &FileTableWidget::preview);
         connect(rename_action, &QAction::triggered, this, &FileTableWidget::rename);
         connect(delete_action, &QAction::triggered, this, &FileTableWidget::del);
         connect(download_action, &QAction::triggered, this, &FileTableWidget::download);
@@ -256,23 +258,30 @@ void FileTableWidget::mouseReleaseEvent(QMouseEvent *event)
 
 
 
-
+        item_menu->addAction(preview_action);
         item_menu->addAction(download_action);
+        item_menu->addSeparator();
         item_menu->addAction(delete_action);
         item_menu->addAction(rename_action);
         item_menu->addAction(copy_action);
         item_menu->addAction(move_action);
+        item_menu->addSeparator();
         item_menu->addAction(share_action);
 
         //新建文件夹   上传
         QMenu *noitem_menu = new QMenu();
-        QAction *new_folder_action = new QAction(tr("新建文件夹"));
-        QAction *upload_action = new QAction(tr("上传"));
+        QAction *new_folder_action = new QAction(QIcon(":/resource/image/MainWidget/newfloder.png"), tr("新建文件夹"));
+        QAction *refresh_action = new QAction(QIcon(":/resource/image/MainWidget/refresh.png"), tr("刷新"));
+
+        QAction *upload_action = new QAction(QIcon(":/resource/image/MainWidget/upload.png"), tr("上传"));
 
         noitem_menu->addAction(new_folder_action);
+        noitem_menu->addAction(refresh_action);
+        noitem_menu->addSeparator();
         noitem_menu->addAction(upload_action);
 
         connect(new_folder_action, &QAction::triggered, this, &FileTableWidget::newfolder);
+        connect(refresh_action, &QAction::triggered, this, &FileTableWidget::refresh);
         connect(upload_action, &QAction::triggered, this, &FileTableWidget::upload);
 
         //记录菜单显示的位置
@@ -303,6 +312,17 @@ void FileTableWidget::rename()
         editItem(item);
     }
 
+}
+
+
+void FileTableWidget::preview()
+{
+    qDebug() << "preview";
+}
+
+void FileTableWidget::refresh()
+{
+    qDebug() << "refresh";
 }
 
 void FileTableWidget::del()

@@ -17,6 +17,7 @@ BasicWidget::BasicWidget(QWidget *parent)
    close_buttonn->setIcon(pix);
    close_buttonn->setFixedSize(pix.size());
    close_buttonn->setStyleSheet("border:none");
+   drop = true;
    connect(close_buttonn, &QPushButton::clicked, this, [&](){this->close();});
 
 }
@@ -25,9 +26,20 @@ BasicWidget::~BasicWidget()
 {
 
 }
+void BasicWidget::hideCloseIcon()
+{
+    close_buttonn->hide();
+}
+
+
+void BasicWidget::setDroped(bool _drop)
+{
+    drop = _drop;
+}
+
 void BasicWidget::mouseMoveEvent(QMouseEvent *e)
 {
-    if (pressed) {
+    if (pressed && drop) {
         QPoint p = e->globalPos();
         this->move(p.x() - point.x(), p.y() - point.y());
     }

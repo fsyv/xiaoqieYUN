@@ -77,7 +77,7 @@ void MainWidget::setListViewItem()
     listView->setModel(model);
 
     listView->move(1, 120);
-    listView->resize(149, 450);
+    listView->resize(150, 450);
 }
 
 void MainWidget::init()
@@ -97,8 +97,8 @@ void MainWidget::init()
     previous = new QPushButton(QIcon("://resource/widgets/undo_32.png"),
                                tr(" 返回"), this);
     sys_info = new QLabel(this);
-    download_manage = new QPushButton(QIcon(":/resource/image/MainWidget/download_manage.png"),
-                                      tr("下载管理"), this);
+    download_manage = new QPushButton(this);
+    download_manage->setIcon(QIcon(":/resource/image/MainWidget/download_manage.png"));
 
 
     download->setIconSize(QSize(16,16));
@@ -113,14 +113,14 @@ void MainWidget::init()
     share->move(155, 81);
     dele->move(230, 81);
     previous->move(305, 81);
-    download_manage->move(690, 560);
+    download_manage->move(693, 569);
 
     download->resize(75, 35);
     upload->resize(75, 35);
     share->resize(75, 35);
     dele->resize(75, 35);
     previous->resize(75, 35);
-
+    download_manage->resize(100, 30);
     download->setObjectName("MainWidget_PushButton");
     upload->setObjectName("MainWidget_PushButton");
     share->setObjectName("MainWidget_PushButton");
@@ -197,7 +197,7 @@ void MainWidget::replyFileLists(const QString &FolderPath)
 void MainWidget::setFileTable()
 {
     tableWidget = new FileTableWidget(this);
-    tableWidget->resize(649, 440);
+    tableWidget->resize(649, 450);
     tableWidget->move(150, 120);
 }
 

@@ -19,10 +19,10 @@ public slots:
     void share();
     void moveitem();
     void copy();
-
+    void preview();
     void upload();
     void newfolder();
-
+    void refresh();
     void opendir(int row, int column);
     void close_editor(int currentRow, int currentColumn, int previousRow, int previousColumn);
 

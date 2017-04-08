@@ -16,7 +16,8 @@ public:
 
     //设置背景颜色
     void setBackgroundColor(const QColor &color);
-
+    void setDroped(bool _drop);
+    void hideCloseIcon();
 protected:
     void mouseMoveEvent(QMouseEvent *e);
     void mousePressEvent(QMouseEvent *e);
@@ -28,6 +29,7 @@ private:
     QPoint point;
     QColor background_color;
     QPushButton *close_buttonn;
+    bool drop;
 };
 
 #endif // BasicWidget_H

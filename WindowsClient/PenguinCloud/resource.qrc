@@ -40,5 +40,12 @@
         <file>resource/image/MainWidget/share.png</file>
         <file>resource/image/MainWidget/upload.png</file>
         <file>resource/widgets/undo_32.png</file>
+        <file>resource/image/MainWidget/download_manage.png</file>
+        <file>resource/image/MainWidget/copy.png</file>
+        <file>resource/image/MainWidget/move.png</file>
+        <file>resource/image/MainWidget/newfloder.png</file>
+        <file>resource/image/MainWidget/preview.png</file>
+        <file>resource/image/MainWidget/refresh.png</file>
+        <file>resource/image/MainWidget/rename.png</file>
     </qresource>
 </RCC>

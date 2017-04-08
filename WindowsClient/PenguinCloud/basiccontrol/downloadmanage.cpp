@@ -2,8 +2,8 @@
 DownloadManage::DownloadManage(BasicWidget *parent) : BasicWidget(parent)
 {
     //this->setBackgroundColor(QColor(Qt::gray));
-//    acceptDrop(false);
-//    hideCloseIcon();
+    setDroped(false);
+    hideCloseIcon();
 
     title = new QLabel(tr("下载管理"), this);
     title->move(20, 20);
