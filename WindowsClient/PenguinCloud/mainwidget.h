@@ -37,6 +37,9 @@ public:
 protected:
     void paintEvent(QPaintEvent *event);
 
+
+signals:
+    void paste(bool);
 public slots:
     void recvFileLists(QByteArray byteArray);
     void recvUploadFile(UploadMsg uploadMsg);
@@ -51,6 +54,10 @@ public slots:
     void renameError(RenameMsg r);
     void show_download_manage();
     void removeSelected();
+    void copySelectFilesOrFolder(const QStringList &path);
+    void moveSelectFilesOrFolder(const QStringList &path);
+    void pasteSelected();
+    void errorHandle(ErrorMsg msg);                                         // 错误处理
 private:
     void init();
     void setListViewItem();
@@ -75,7 +82,8 @@ private:
 
     QStack<QString> path;// current dir
     QMap<QString, QFileInfo *> *m_pFileMap;
-
+    QStringList wholeCopyPath; // 保存所有将要复制的文件的具体路径
+    bool isCopy; // true是复制， false是移动
 };
 
 #endif // MAINWIDGET_H

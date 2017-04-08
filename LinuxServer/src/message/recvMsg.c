@@ -77,6 +77,20 @@ void recvMsg(int sockfd, Msg *msg)
 #endif
             recvDeleteMsg(sockfd, msg);
             break;
+
+        case Put_Rename:
+#ifdef Debug
+            fprintf(stdout, "Put_Rename\n");
+#endif
+            recvRenameMsg(sockfd, msg);
+            break;
+
+        case Put_Move:
+#ifdef Debug
+            fprintf(stdout, "Put_Move\n");
+#endif
+            recvMoveMsg(sockfd, msg);
+            break;
     }
 }
 
@@ -182,12 +196,55 @@ void recvNewFolderMsg(int sockfd, Msg *msg)
 //删除操作消息
 void recvDeleteMsg(int sockfd, Msg *msg)
 {
-    int ret;
     DeleteMsg deleteMsg;
     memset(&deleteMsg, 0, sizeof(DeleteMsg));
     memcpy(&deleteMsg, msg->m_aMsgData, msg->m_iMsgLen);
 
     if(removeFolder(deleteMsg.path) == -1)
+    {
+        //错误处理
+    }
+}
+
+//重命名消息
+void recvRenameMsg(int sockfd, Msg *msg)
+{
+    int ret;
+    RenameMsg renameMsg;
+    memset(&renameMsg, 0, sizeof(RenameMsg));
+    memcpy(&renameMsg, msg->m_aMsgData, msg->m_iMsgLen);
+
+    ret = renameFileOrFolder(renameMsg.oldName, renameMsg.newName);
+
+    if(ret == -1)
+    {
+        printf("rename error\n");
+        ErrorMsg msg;
+        memset(&msg, 0, sizeof(ErrorMsg));
+        msg.m_eErrorType = RenameError;
+        sendAckErrorMsg(sockfd, msg);
+        //错误处理
+    }
+    else
+    {
+        //返回成功
+    }
+
+
+}
+
+//移动消息
+void recvMoveMsg(int sockfd, Msg *msg)
+{
+    int ret;
+
+    MoveMsg moveMsg;
+    memset(&moveMsg, 0, sizeof(MoveMsg));
+    memcpy(&moveMsg, msg->m_aMsgData, msg->m_iMsgLen);
+
+    ret = moveSrcToDes(moveMsg.sourcePath, moveMsg.DestinationPath);
+
+    if(ret == -1)
     {
         //错误处理
     }

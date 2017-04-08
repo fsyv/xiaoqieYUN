@@ -28,6 +28,8 @@ void recvDownloadMsg(int sockfd, Msg *msg);
 void recvMoveMsg(int sockfd, Msg *msg);
 //新建文件夹消息
 void recvNewFolderMsg(int sockfd, Msg *msg);
+//重命名消息
+void recvRenameMsg(int sockfd, Msg *msg);
 //上传操作消息
 void recvUploadMsg(int sockfd, Msg *msg);
 //删除操作消息

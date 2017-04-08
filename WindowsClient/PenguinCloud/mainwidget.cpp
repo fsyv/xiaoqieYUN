@@ -29,13 +29,17 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(m_pConnectToServer, SIGNAL(readyReadFileListMsg(QByteArray)), this, SLOT(recvFileLists(QByteArray)));
     connect(m_pConnectToServer, SIGNAL(readyReadUploadMsg(UploadMsg)), this, SLOT(recvUploadFile(UploadMsg)));
     connect(m_pConnectToServer, SIGNAL(readyReadDownloadMsg(DownloadMsg)), this, SLOT(recvDownloadFile_readyReadDownloadMsg(DownloadMsg)));
-
+    connect(m_pConnectToServer, &ConnectToServer::readyReadAckErrorMsg, this, &MainWidget::errorHandle);
 
     connect(tableWidget, &FileTableWidget::requestDir, this, &MainWidget::getDir);
     connect(tableWidget, &FileTableWidget::requestNewfolder, this, &MainWidget::newFolder);
     connect(tableWidget, &FileTableWidget::requestUpload, this, &MainWidget::uploadFile);
     connect(tableWidget, &FileTableWidget::requestRename, this, &MainWidget::rename);
     connect(tableWidget, &FileTableWidget::requestDeleteItem, this, &MainWidget::removeFileOrFolder);
+    connect(tableWidget, &FileTableWidget::requestCopy, this, &MainWidget::copySelectFilesOrFolder);
+    connect(tableWidget, &FileTableWidget::requestMove, this, &MainWidget::moveSelectFilesOrFolder);
+    connect(tableWidget, &FileTableWidget::requestPaste, this, &MainWidget::pasteSelected);
+
     m_pFileMap = new QMap<QString, QFileInfo *>;
 }
 
@@ -138,6 +142,9 @@ void MainWidget::init()
     connect(download, SIGNAL(clicked()), this, SLOT(doloadFile_download()));
     connect(download_manage, &QPushButton::clicked, this, &MainWidget::show_download_manage);
     connect(dele, &QPushButton::clicked, this, &MainWidget::removeSelected);
+
+
+    isCopy = false;
 }
 
 void MainWidget::paintEvent(QPaintEvent *event)
@@ -367,6 +374,68 @@ void MainWidget::removeSelected()
     }
     else
         QMessageBox::warning(this, tr("Warning"), tr("未选中任何项目"));
+}
+
+void MainWidget::copySelectFilesOrFolder(const QStringList &_path)
+{
+    wholeCopyPath.clear(); //先清空
+
+    for(auto elem : _path)
+    {
+        wholeCopyPath << path.top() + elem;
+    }
+
+    isCopy = true;
+    emit paste(true);
+
+}
+
+void MainWidget::moveSelectFilesOrFolder(const QStringList &_path)
+{
+    wholeCopyPath.clear(); //先清空
+
+    for(auto elem : _path)
+    {
+        wholeCopyPath << path.top() + elem;
+    }
+
+    isCopy = false;
+    emit paste(true);
+
+}
 
 
+void MainWidget::pasteSelected()
+{
+    QString currpath = getUserName() + path.top();
+    if(isCopy)
+        qDebug() << "copy" << wholeCopyPath;
+    else
+    {
+        //移动操作
+        for(auto elem : wholeCopyPath)
+        {
+
+            QString tmpPath = getUserName() + elem;
+            MoveMsg moveMsg;
+
+            memset(&moveMsg, 0, sizeof(MoveMsg));
+            strcpy(moveMsg.sourcePath, tmpPath.toUtf8().data());
+            strcpy(moveMsg.DestinationPath, currpath.toUtf8().data());
+            m_pConnectToServer->sendMoveMsg(moveMsg);
+        }
+
+        replyFileLists(path.top());
+        emit paste(false);
+    }
+}
+
+void MainWidget::errorHandle(ErrorMsg msg)
+{
+    //之所以使用按位与是因为 在msg中搞得错误类型是 几个值的按位或而来的
+    if(msg.m_eErrorType & RenameError)
+    {
+        QMessageBox::warning(this, tr("无法重命名项目"), tr("存在相同名称的项目！"));
+        replyFileLists(path.top());
+    }
 }

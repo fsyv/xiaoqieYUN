@@ -21,7 +21,8 @@ typedef enum _MsgType{
 
 //错误类型
 typedef enum _ErrorType{
-    DataPackError = 0        //错误得数据包
+    DataPackError = 0,        //错误得数据包
+    RenameError               //重命名错误
 }ErrorType;
 //发生了错误
 typedef struct _ErrorMsg{
@@ -70,9 +71,9 @@ typedef struct _DownloadMsg{
 
 //移动消息结构
 typedef struct _MoveMsg{
-
+    char sourcePath[MAX_PATH + 1];          // 源路径
+    char DestinationPath[MAX_PATH + 1];    //目的地址
 }MoveMsg, *pMoveMsg;
-
 //新建文件夹消息结构
 typedef struct _NewFolderMsg{
     char folderName[MAX_PATH + 1]; // 新建文件的路径（包括文件夹名）
