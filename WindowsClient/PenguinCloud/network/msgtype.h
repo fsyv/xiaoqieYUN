@@ -89,7 +89,7 @@ typedef struct _UploadMsg{
 
 //删除操作消息结构
 typedef struct _DeleteMsg{
-
+    char path[MAX_PATH+1];
 }DeleteMsg, *pDeleteMsg;
 
 //分享操作消息结构

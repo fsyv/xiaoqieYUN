@@ -71,15 +71,5 @@ QPushButton#MainWidget_PushButton:hover
 }
 
 QTableWidget{
-        border:none;
-        background:white;
-}
-QTableWidget::item:selected{
-        color:white;
-        background:rgb(34, 175, 75);
-}
-
-QTableWidget::item:hover{
-        color:white;
-        background:rgb(21, 75, 125);
+    selection-background-color:
 }

@@ -145,37 +145,44 @@ void FileTableWidget::setTableRow(const QVector<QStringList> &_vec)
                 connect(box, &QCheckBox::stateChanged, this, &FileTableWidget::selectThisRow);
 
                 this->setCellWidget(row, 0, box);
+                setItem(row , 0, item);
             }
             else if( i == 1 )
             {
+                QTableWidgetItem *item;
+                QTableWidgetItem *item2;
                 QIcon icon;
-                if(elem.at(1) == "folder")
-                    icon = p.icon(QFileIconProvider::Folder);
-                else
+                if( i == 1 )
                 {
-                    QFileInfo fileinfo(elem[0]);
-                    icon = p.icon(fileinfo);
-                }
-                item = new QTableWidgetItem(icon, elem[0]);
-
-            }
-            else if(i == 2)
-            {
-                if(elem.at(1) == "folder")
-                    item = new QTableWidgetItem("文件夹");
-                else
-                {
-                    QString strFileName = QDir::tempPath() + QDir::separator() +
-                            QApplication::applicationName() + "_XXXXXX." + elem.at(0).split(".")[1];
-                    QTemporaryFile tmpFile(strFileName);
-                    tmpFile.setAutoRemove(true);
-                    if(tmpFile.open())
+                    if(elem.at(1) == "folder")
                     {
-                        QFileInfo info(tmpFile.fileName());
-                        QString type = p.type(info);
-                        item = new QTableWidgetItem(type);
+                        QFileIconProvider p;
+                        icon = p.icon(QFileIconProvider::Folder);
+                        item = new QTableWidgetItem(icon, elem[0]);
+                        item2 = new QTableWidgetItem("文件夹");
+
+                    }
+                    else
+                    {
+                        QStringList staff = elem.at(0).split(".");
+                        QString strFileName = QDir::tempPath() + QDir::separator() +
+                                QApplication::applicationName() + "_XXXXXX." + staff[staff.size() - 1];
+                        QTemporaryFile tmpFile(strFileName);
+                        tmpFile.setAutoRemove(false);
+                        if(tmpFile.open())
+                        {
+                            QFileIconProvider p;
+                            QFileInfo info(tmpFile.fileName());
+                            QString type = p.type(info);
+                            item2 = new QTableWidgetItem(type);
+                            icon = p.icon(info);
+                            item = new QTableWidgetItem(icon, elem[0]);
+                        }
+
                     }
 
+                    setItem(row , 1, item);
+                    setItem(row , 2, item2);
                 }
             }
             else if(i == 3)
@@ -186,12 +193,13 @@ void FileTableWidget::setTableRow(const QVector<QStringList> &_vec)
                 }
                 else
                     item = new QTableWidgetItem(sizeFormat(elem[2].toInt()));
-
+                setItem(row , 3, item);
             }
             else if (i == 4)
+            {
                 item = new QTableWidgetItem(elem[3]);
-            setItem(row , i, item);
-
+                setItem(row , 4, item);
+            }
         }
 
     }
