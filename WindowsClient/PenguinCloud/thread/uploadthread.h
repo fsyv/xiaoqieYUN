@@ -1,25 +1,33 @@
 #ifndef UPLOADTHREAD_H
 #define UPLOADTHREAD_H
 
-#include <QThread>
 #include <QFileInfo>
-#include "QDebug"
+#include <QUrl>
+
+#include "updatefilethread.h"
 
 #include "../network/msgtype.h"
 
 class UploadFileToServer;
 
-class UploadThread : public QThread
+class UploadThread : public UpdateFileThread
 {
     Q_OBJECT
 public:
     UploadThread(QFileInfo fileinfo, UploadMsg uploadMsg, QObject *parent = nullptr);
+
+    //停掉当前任务
+    void stopCurrenTask() override;
+    //暂停当前任务
+    void pauseCurrenTask() override;
+
     void run();
 
 private:
+    double getCurrentTaskProgress() override;
+
     UploadFileToServer *m_upload;
     QFileInfo m_fileinfo;
-    UploadMsg m_stUploadMsg;
 };
 
 #endif // UPLOADTHREAD_H

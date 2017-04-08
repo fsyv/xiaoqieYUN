@@ -1,22 +1,44 @@
 #include "uploadfiletoserver.h"
 
-#include <fstream>
+#define MAX_READ_BUG (64 * 1024)
 
-using namespace std;
-
-UploadFileToServer::UploadFileToServer(const QFileInfo &info, UploadMsg uploadMsg, QObject *parent):
+UploadFileToServer::UploadFileToServer(QString localFilePath, QUrl remoteUrl, QObject *parent):
     AbstractNetwork(parent),
-    m_pTcpSocket(nullptr)
+    m_pTcpSocket(nullptr),
+    m_pUpdateFileMsg(nullptr)
 {
-    m_fileinfo = info;
+    m_u64CurrentUploadSize = quint64(0);
+
+    m_file.setFileName(localFilePath);
+    if(m_file.open(QIODevice::ReadOnly))
+    {
+        m_u64FileSize = quint64(m_file.size());
+    }
+
+    //检测是否是暂停的文件
+    //began
+    {
+
+    }
+    //end
 
     m_pTcpSocket = new QTcpSocket(this);
-    connect(m_pTcpSocket, SIGNAL(readyRead()), this, SLOT(readMessage()));
-    connect(m_pTcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
-    m_pTcpSocket->connectToHost(SERVER_IP, uploadMsg.serverFilePort);
 
-    qDebug() << m_pTcpSocket->state();
-    qDebug() << sendUploadMsg(uploadMsg);
+    connect(m_pTcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(displayState(QAbstractSocket::SocketState)));
+    connect(m_pTcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
+
+    m_pTcpSocket->connectToHost(remoteUrl.host(), remoteUrl.port());
+}
+
+UploadFileToServer::~UploadFileToServer()
+{
+    m_file.close();
+//    if(m_pTcpSocket->state() == )
+}
+
+double UploadFileToServer::getCurrentProgress()
+{
+    return double(1.0 * m_u64CurrentUploadSize / m_u64FileSize);
 }
 
 int UploadFileToServer::sendMsg(Msg *msg)
@@ -25,41 +47,47 @@ int UploadFileToServer::sendMsg(Msg *msg)
     return m_pTcpSocket->write((char *)msg, m_iMsgStructLen + msg->m_iMsgLen);
 }
 
+int UploadFileToServer::sendUpdateFileMsg(UpdateFileMsg *updateFileMsg)
+{
+    updateFileMsg->m_uiCheckCrc = 0xAFAFAFAF;
+    return m_pTcpSocket->write((char *)updateFileMsg, sizeof(UpdateFileMsg) + updateFileMsg->m_iMsgLen);
+}
+
 void UploadFileToServer::updateFile()
 {
-    qDebug() << m_fileinfo.filePath();
-    ifstream fin(m_fileinfo.filePath().toUtf8().data(), ios::in | ios::binary);
+    int fileMsgStructLen = sizeof(UpdateFileMsg);
+
+    QDataStream dataStream(&m_file);
+    dataStream.setVersion(QDataStream::Qt_5_6);
+
+    m_pUpdateFileMsg = (UpdateFileMsg *)new char[fileMsgStructLen + MAX_READ_BUG + 1];
+    memset(m_pUpdateFileMsg, 0, fileMsgStructLen + MAX_READ_BUG);
+    m_pUpdateFileMsg->m_ullFileSize = m_u64FileSize;
+
     int ret = 0;
 
-    char sendBuf[1025];
-    memset(sendBuf, 0, 1024);
-
-    while(!fin.eof())
+    while(!dataStream.atEnd())
     {
-        fin.read(sendBuf, 1024 * sizeof(char));
-        m_pTcpSocket->write(sendBuf, fin.gcount());
-        memset(sendBuf, 0, ret);
+        ret = dataStream.readRawData(m_pUpdateFileMsg->m_aMsgData, MAX_READ_BUG);
+
+        m_pUpdateFileMsg->m_iMsgLen = ret;
+
+        m_u64CurrentUploadSize += quint64(ret);
+        m_pUpdateFileMsg->m_ullCurrentSize = m_u64CurrentUploadSize;
+
+        sendUpdateFileMsg(m_pUpdateFileMsg);
+
+        memset(m_pUpdateFileMsg->m_aMsgData, 0, m_pUpdateFileMsg->m_iMsgLen);
     }
 
-    fin.close();
     m_pTcpSocket->close();
 }
 
-void UploadFileToServer::readMessage()
+void UploadFileToServer::displayState(QAbstractSocket::SocketState)
 {
-    QByteArray byteArray = m_pTcpSocket->readAll();
-
-    //翻译buf
-    Msg *msg = (Msg *)byteArray.data();
-
-    UploadMsg uploadMsg;
-    memcpy(&uploadMsg, msg->m_aMsgData, msg->m_iMsgLen);
-
-    if(uploadMsg.m_iLoginStatus)
-    {
-        qDebug() << "开始上传";
-        updateFile();
-    }
+    qDebug() << m_pTcpSocket->state();
+    //如果状态改成可上传，则开始上床
+    //updateFile();
 }
 
 void UploadFileToServer::displayError(QAbstractSocket::SocketError)
