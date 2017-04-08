@@ -5,6 +5,7 @@
 
 #include <QTcpSocket>
 #include <QFile>
+#include <QFileInfo>
 #include <QDataStream>
 #include <QUrl>
 #include <QDebug>
@@ -19,17 +20,20 @@ public:
     ~UploadFileToServer();
 
     double getCurrentProgress();
+    void pause();
+    void stop();
 
 private:
     QTcpSocket *m_pTcpSocket;
     QFile m_file;
+    QUrl m_serverUrl;
     UpdateFileMsg *m_pUpdateFileMsg;
 
     quint64 m_u64CurrentUploadSize;
     quint64 m_u64FileSize;
 
-    //实现父类sendMsg方法
-    int sendMsg(Msg *msg);
+    bool m_bRun;
+
     int sendUpdateFileMsg(UpdateFileMsg *updateFileMsg);
     void updateFile();
 

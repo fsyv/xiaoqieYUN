@@ -332,6 +332,12 @@ void AbstractNetwork::recvExitMsg(Msg *msg)
     emit readyReadExitMsg(exitMsg);
 }
 
+int AbstractNetwork::sendMsg(Msg *msg)
+{
+    msg->m_uiCheckCrc = 0xAFAFAFAF;
+    return p_tcpSocket->write((char *)msg, m_iMsgStructLen + msg->m_iMsgLen);
+}
+
 void AbstractNetwork::recvMsg(Msg *msg)
 {
     switch (msg->m_eMsgType){

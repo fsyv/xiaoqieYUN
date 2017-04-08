@@ -5,6 +5,20 @@
 #include <QTimerEvent>
 #include <QUrl>
 
+class UpdateFileThread;
+
+typedef enum _UpdateFileType{
+    Download = 0,
+    Upload
+}UpdateFileType;
+
+typedef struct _UpdateFileInfo{
+    UpdateFileType m_eUpdateFileWay;
+    QString m_local;
+    QString m_remote;
+    UpdateFileThread *m_pUpdateFileThread;
+}UpdateFileInfo;
+
 class UpdateFileThread : public QThread
 {
     Q_OBJECT

@@ -44,13 +44,6 @@ ConnectToServer::~ConnectToServer()
     p_cHeadBuf = p_aRecvBuf;
 }
 
-
-int ConnectToServer::sendMsg(Msg *msg)
-{
-    msg->m_uiCheckCrc = 0xAFAFAFAF;
-    return p_tcpSocket->write((char *)msg, m_iMsgStructLen + msg->m_iMsgLen);
-}
-
 void ConnectToServer::readMessage()
 {
     int recvRet = p_tcpSocket->read(p_aRecvBuf, SEND_BUF_MAX_SIZE);

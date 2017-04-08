@@ -27,12 +27,18 @@ UploadThread::UploadThread(QFileInfo fileinfo, UploadMsg uploadMsg, QObject *par
 
 void UploadThread::stopCurrenTask()
 {
-
+    if(m_upload)
+    {
+        m_upload->stop();
+    }
 }
 
 void UploadThread::pauseCurrenTask()
 {
-
+    if(m_upload)
+    {
+        m_upload->pause();
+    }
 }
 
 void UploadThread::run()

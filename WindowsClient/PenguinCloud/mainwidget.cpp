@@ -8,10 +8,11 @@
 #include "thread/uploadthread.h"
 #include "thread/downloadthread.h"
 #include "basiccontrol/downloadmanage.h"
+
 MainWidget::MainWidget(QWidget *parent) :
     BasicWidget(parent),
     m_pConnectToServer(nullptr),
-    m_pFileMap(nullptr)
+    m_pTaskLists(nullptr)
 {
     resize(800, 600);
     init();
@@ -33,27 +34,33 @@ MainWidget::MainWidget(QWidget *parent) :
 
     connect(tableWidget, &FileTableWidget::requestDir, this, &MainWidget::getDir);
     connect(tableWidget, &FileTableWidget::requestNewfolder, this, &MainWidget::newFolder);
-    connect(tableWidget, &FileTableWidget::requestUpload, this, &MainWidget::uploadFile);
+    connect(tableWidget, &FileTableWidget::requestUpload, this, &MainWidget::uploadFile_upload);
     connect(tableWidget, &FileTableWidget::requestRename, this, &MainWidget::rename);
     connect(tableWidget, &FileTableWidget::requestDeleteItem, this, &MainWidget::removeFileOrFolder);
-    m_pFileMap = new QMap<QString, QFileInfo *>;
+
+    m_pTaskLists = new QList<UpdateFileInfo *>;
 }
 
 MainWidget::~MainWidget()
 {
-    if(m_pFileMap->count())
+    if(m_pTaskLists->count())
     {
-        for(auto cur = m_pFileMap->begin(); cur != m_pFileMap->end(); ++cur)
+        for(auto cur = m_pTaskLists->begin(); cur != m_pTaskLists->end(); ++cur)
         {
-            delete cur.value();
-            cur.value() = nullptr;
+            if((*cur)->m_pUpdateFileThread)
+            {
+                (*cur)->m_pUpdateFileThread->pause();
+                delete (*cur)->m_pUpdateFileThread;
+                (*cur)->m_pUpdateFileThread = nullptr;
+            }
+            delete (*cur);
         }
-        m_pFileMap->clear();
+        m_pTaskLists->clear();
     }
 
-    if(m_pFileMap)
-        delete m_pFileMap;
-    m_pFileMap = nullptr;
+    if(m_pTaskLists)
+        delete m_pTaskLists;
+    m_pTaskLists = nullptr;
 }
 
 void MainWidget::setListViewItem()
@@ -133,7 +140,7 @@ void MainWidget::init()
     //一开始是不能后退的
     previous->setEnabled(false);
 
-    connect(upload, SIGNAL(clicked()), this, SLOT(uploadFile()));
+    connect(upload, SIGNAL(clicked()), this, SLOT(uploadFile_upload()));
     connect(previous, SIGNAL(clicked()), this, SLOT(previousDir()));
     connect(download, SIGNAL(clicked()), this, SLOT(doloadFile_download()));
     connect(download_manage, &QPushButton::clicked, this, &MainWidget::show_download_manage);
@@ -208,28 +215,25 @@ void MainWidget::recvFileLists(QByteArray byteArray)
     tableWidget->setTableRow(Tools::getTableRow(byteArray));
 }
 
-void MainWidget::recvUploadFile(UploadMsg uploadMsg)
-{
-    qDebug()<< "serverPort" << uploadMsg.serverFilePort;
-    QString name(uploadMsg.fileName);
+//void MainWidget::recvUploadFile(UploadMsg uploadMsg)
+//{
+//    QString name(uploadMsg.fileName);
 
-    QFileInfo *fileinfo = m_pFileMap->value(name);
+//    QFileInfo fileinfo = m_pTaskLists->value(name);
 
-    UploadThread *uploadThread = new UploadThread(*fileinfo, uploadMsg);
-    uploadThread->start();
+//    UploadThread *uploadThread = new UploadThread(fileinfo, uploadMsg);
+//    uploadThread->start();
 
-    delete fileinfo;
-    fileinfo = nullptr;
-    m_pFileMap->remove(name);
-}
+//    m_pTaskLists->remove(name);
+//}
 
-void MainWidget::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg)
-{
-    qDebug()<< "serverPort" << downloadMsg.serverFilePort;
+//void MainWidget::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg)
+//{
+//    qDebug()<< "serverPort" << downloadMsg.serverFilePort;
 
-    DownloadThread *downloadThread = new DownloadThread(downloadMsg);
-    downloadThread->start();
-}
+//    DownloadThread *downloadThread = new DownloadThread(downloadMsg);
+//    downloadThread->start();
+//}
 
 void MainWidget::getDir(QString dirname)
 {
@@ -248,7 +252,7 @@ void MainWidget::previousDir()
     replyFileLists(path.top());
 }
 
-void MainWidget::uploadFile()
+void MainWidget::uploadFile_upload()
 {
     QStringList fileList = QFileDialog::getOpenFileNames(
                 this,
@@ -260,22 +264,17 @@ void MainWidget::uploadFile()
     if(!fileList.count())
         return;
 
-    UploadMsg uploadMsg;
-    QFileInfo *fileInfo = nullptr;
+    UpdateFileInfo *fileInfo = nullptr;
 
     for(const QString &str : fileList)
     {
-        fileInfo = new QFileInfo(str);
+        fileInfo = new UpdateFileInfo;
+        fileInfo->m_eUpdateFileWay = Upload;
+        fileInfo->m_local = str;
+        fileInfo->m_remote = m_stUserName + path.top();
+        fileInfo->m_pUpdateFileThread = nullptr;
 
-        m_pFileMap->insert(fileInfo->fileName(), fileInfo);
-
-        memset(&uploadMsg, 0, sizeof(UploadMsg));
-
-        strcpy(uploadMsg.fileName, fileInfo->fileName().toUtf8().data());
-        strcpy(uploadMsg.uploadPath, m_stUserName.toUtf8().data());
-        strcat(uploadMsg.uploadPath, path.top().toUtf8().data());
-
-        m_pConnectToServer->sendUploadMsg(uploadMsg);
+        m_pTaskLists->append(fileInfo);
     }
 }
 
@@ -293,13 +292,19 @@ void MainWidget::doloadFile_download()
     else
     {
         QTableWidgetItem *_item = tableWidget->item(tableWidget->currentRow(), 1);
-        qDebug() << _item->text();
-        DownloadMsg downloadMsg;
-        strcpy(downloadMsg.fileName, _item->text().toUtf8().data());
-        strcpy(downloadMsg.filePath, m_stUserName.toUtf8().data());
-        strcat(downloadMsg.filePath, path.top().toUtf8().data());
 
-        m_pConnectToServer->sendDownloadMsg(downloadMsg);
+        if(!_item)
+            return ;
+
+        UpdateFileInfo *fileInfo = nullptr;
+
+        fileInfo = new UpdateFileInfo;
+        fileInfo->m_eUpdateFileWay = Download;
+        fileInfo->m_local = _item->text();
+        fileInfo->m_remote = m_stUserName + path.top();
+        fileInfo->m_pUpdateFileThread = nullptr;
+
+        m_pTaskLists->append(fileInfo);
     }
 }
 

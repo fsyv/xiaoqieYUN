@@ -80,11 +80,10 @@ typedef struct _NewFolderMsg{
 
 //上传操作消息结构
 typedef struct _UploadMsg{
-    int m_iLoginStatus;            //上传状态
-    char uploadPath[64];           //上传路径
-    char fileName[64];             //文件名
-    char serverFileIP[16];         //服务器地址
-    unsigned short serverFilePort; //服务器端口
+    char fileName[64];                      //文件名
+    unsigned long long m_ullCurrentSize;    //当前文件长度
+    char serverFileIP[16];                  //服务器地址
+    unsigned short serverFilePort;          //服务器端口
 }UploadMsg, *pUploadMsg;
 
 //删除操作消息结构

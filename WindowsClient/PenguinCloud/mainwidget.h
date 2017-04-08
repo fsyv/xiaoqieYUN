@@ -3,9 +3,11 @@
 
 #include<QMap>
 #include <QStack>
+#include <QQueue>
 #include "basicwidget/basicwidget.h"
 #include "network/msgtype.h"
 #include "basiccontrol/filetablewidget.h"
+#include "thread/updatefilethread.h"
 
 class QLabel;
 class QPushButton;
@@ -15,6 +17,7 @@ class QTableView;
 class ConnectToServer;
 class QFileInfo;
 class DownloadManage;
+class UpdateFileThread;
 
 class MainWidget : public BasicWidget
 {
@@ -39,11 +42,11 @@ protected:
 
 public slots:
     void recvFileLists(QByteArray byteArray);
-    void recvUploadFile(UploadMsg uploadMsg);
-    void recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg);
+    //void recvUploadFile(UploadMsg uploadMsg);
+    //void recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg);
     void getDir(QString dirname);
     void previousDir();
-    void uploadFile();
+    void uploadFile_upload();
     void doloadFile_download();
     void newFolder(const QString &folderName);
     void removeFileOrFolder(const QString &path);
@@ -74,8 +77,9 @@ private:
     QString m_stUserName;
 
     QStack<QString> path;// current dir
-    QMap<QString, QFileInfo *> *m_pFileMap;
 
+    //任务列表
+    QList<UpdateFileInfo *> *m_pTaskLists;
 };
 
 #endif // MAINWIDGET_H
