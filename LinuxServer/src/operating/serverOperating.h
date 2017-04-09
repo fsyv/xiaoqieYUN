@@ -3,6 +3,8 @@
 
 #include "../message/nstdmsgio.h"
 
+#define MAX_RECV_BUF (64 * 1024)
+
 //获取目录下的文件
 char *getDirFileLists(char *userDir);
 //文件上传的线程

@@ -117,8 +117,6 @@ void *createServerFileSocket(void *arg)
             memset(taskQueue, 0, sizeof(TaskQueue));
 
             taskQueue->p_fCallBackFunction = &uploadFileThread;
-            taskQueue->sockfd = clientSocketfd;
-            taskQueue->p_vArg = (void *)sendMsg;
         }
         else if(msg->m_eMsgType == Get_Download)
         {
@@ -127,13 +125,14 @@ void *createServerFileSocket(void *arg)
             memset(taskQueue, 0, sizeof(TaskQueue));
 
             taskQueue->p_fCallBackFunction = &downloadFileThread;
-            taskQueue->sockfd = clientSocketfd;
-            taskQueue->p_vArg = (void *)sendMsg;
         }
         else
         {
             continue;
         }
+
+        taskQueue->sockfd = clientSocketfd;
+        taskQueue->p_vArg = (void *)sendMsg;
         addJobThreadPool(m_pThreadPool, taskQueue);
     }
 }

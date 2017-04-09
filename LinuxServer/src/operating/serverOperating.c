@@ -98,18 +98,16 @@ void *uploadFileThread(int sockfd, void *arg)
     memset(&uploadMsg, 0, sizeof(UploadMsg));
 
     memcpy(&uploadMsg, msg->m_aMsgData, msg->m_iMsgLen);
-    uploadMsg.m_iLoginStatus = 1;
 
     char file[1024] = "/var/penguin/";
-    strcat(file, uploadMsg.uploadPath);
     strcat(file, uploadMsg.fileName);
 
-    printf("uploadPath %s\n", uploadMsg.uploadPath);
     printf("fileName %s\n", uploadMsg.fileName);
     printf("file %s\n", file);
 
-    //可写权限打开
-    FILE *fp = fopen(file, "ab+");
+    //二进制可写方式追加
+    FILE *fp = fopen(file, "wb");
+
     if(fp == NULL)
     {
 #ifdef Debug
@@ -118,15 +116,22 @@ void *uploadFileThread(int sockfd, void *arg)
         return NULL;
     }
 
-    char *recvBuf = (char *)malloc(sizeof(char) * 64 * 1024);
-    memset(recvBuf, 0, 64 * 1024);
+    long long currentFileSeek = lseek(fp, 0, SEEK_END);
+    printf("currentFileSeek = %lld\n", currentFileSeek);
+
+    char *recvBuf = (char *)malloc(MAX_RECV_BUF + 1);
+    memset(recvBuf, 0, MAX_RECV_BUF);
 
     int ret = 0;
 
+    //把当前文件服务器文件索引发送给客户端
+    uploadMsg.m_llCurrentSize = currentFileSeek;
     sendUploadMsg(sockfd, uploadMsg);
+
     while((ret = recv(sockfd, recvBuf, 64 * 1024, 0)) > 0)
     {
-        printf("ret = %d\n", ret);
+        currentFileSeek += ret;
+        printf("currentFileSeek = %lld\n", currentFileSeek);
         fwrite(recvBuf, sizeof(char), ret, fp);
         memset(recvBuf, 0, 64 * 1024);
     }
