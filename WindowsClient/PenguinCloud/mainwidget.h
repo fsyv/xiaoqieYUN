@@ -3,6 +3,7 @@
 
 #include<QMap>
 #include <QStack>
+#include <QQueue>
 #include "basicwidget/basicwidget.h"
 #include "network/msgtype.h"
 #include "basiccontrol/filetablewidget.h"
@@ -15,6 +16,7 @@ class QTableView;
 class ConnectToServer;
 class QFileInfo;
 class DownloadManage;
+class UpdateFileThread;
 
 class MainWidget : public BasicWidget
 {
@@ -42,11 +44,11 @@ signals:
     void paste(bool);
 public slots:
     void recvFileLists(QByteArray byteArray);
-    void recvUploadFile(UploadMsg uploadMsg);
-    void recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg);
+    //void recvUploadFile(UploadMsg uploadMsg);
+    //void recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg);
     void getDir(QString dirname);
     void previousDir();
-    void uploadFile();
+    void uploadFile_upload();
     void doloadFile_download();
     void newFolder(const QString &folderName);
     void removeFileOrFolder(const QString &path);
@@ -83,9 +85,15 @@ private:
     QString m_stUserName;
 
     QStack<QString> path;// current dir
-    QMap<QString, QFileInfo *> *m_pFileMap;
+
+    //上传任务列表
+    QList<UpdateFileThread *> *m_pUploadTaskLists;
+    //下载任务列表
+    QList<UpdateFileThread *> *m_pDownloadTaskLists;
+
     QStringList wholeCopyPath; // 保存所有将要复制的文件的具体路径
     bool isCopy; // true是复制， false是移动
+
 };
 
 #endif // MAINWIDGET_H

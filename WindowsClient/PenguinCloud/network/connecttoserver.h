@@ -2,6 +2,7 @@
 #define CONNECTTOSERVER_H
 
 #include <QObject>
+#include <QMutex>
 #include <QTcpSocket>
 
 #include "abstractnetwork.h"
@@ -23,6 +24,7 @@ public:
 private:
     ConnectToServer(QObject *parent = nullptr);
     static ConnectToServer* conn;
+    static QMutex mutex;
 
     //实现父类sendMsg方法
     int sendMsg(Msg *msg);
@@ -35,6 +37,7 @@ private:
 
 private slots:
     void readMessage();
+    void displayState(QAbstractSocket::SocketState);
     void displayError(QAbstractSocket::SocketError);
 };
 
