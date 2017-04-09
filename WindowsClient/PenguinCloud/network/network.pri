@@ -3,8 +3,7 @@ HEADERS += \
     $$PWD/msgtype.h \
     $$PWD/connecttoserver.h \
     $$PWD/uploadfiletoserver.h \
-    $$PWD/downloadfiletoserver.h \
-    $$PWD/updatefilemsg.h
+    $$PWD/downloadfiletoserver.h
 
 SOURCES += \
     $$PWD/abstractnetwork.cpp \

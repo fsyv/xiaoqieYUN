@@ -10,8 +10,6 @@
 #include <QUrl>
 #include <QDebug>
 
-#include "updatefilemsg.h"
-
 class UploadFileToServer : public AbstractNetwork
 {
     Q_OBJECT
@@ -27,16 +25,14 @@ private:
     QTcpSocket *m_pTcpSocket;
     QFile m_file;
     QUrl m_serverUrl;
-    UpdateFileMsg *m_pUpdateFileMsg;
 
-    quint64 m_u64CurrentUploadSize;
-    quint64 m_u64FileSize;
+    qint64 m_i64CurrentUploadSize;
+    qint64 m_i64FileSize;
 
     bool m_bRun;
 
     //实现父类sendMsg方法
     int sendMsg(Msg *msg);
-    int sendUpdateFileMsg(UpdateFileMsg *updateFileMsg);
     void updateFile();
 
 protected slots:

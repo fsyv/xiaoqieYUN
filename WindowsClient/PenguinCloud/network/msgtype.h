@@ -61,11 +61,10 @@ typedef struct _PreviewMsg{
 
 //下载信息消息结构
 typedef struct _DownloadMsg{
-    int m_iLoginStatus;            //下载状态
-    char filePath[64];             //文件路径
-    char fileName[64];             //文件名
-    char serverFileIP[16];         //服务器地址
-    unsigned short serverFilePort; //服务器端口
+    char serverFileIP[16];                  //文件服务器地址
+    unsigned short serverFilePort;          //文件服务器端口
+    long long m_llCurrentSize;              //当前传输进度
+    char fileName[64];                      //文件名
 }DownloadMsg, *pDownloadMsg;
 
 //移动消息结构
@@ -80,10 +79,10 @@ typedef struct _NewFolderMsg{
 
 //上传操作消息结构
 typedef struct _UploadMsg{
+    char serverFileIP[16];                  //文件服务器地址
+    unsigned short serverFilePort;          //文件服务器端口
+    long long m_llCurrentSize;              //当前传输进度
     char fileName[64];                      //文件名
-    unsigned long long m_ullCurrentSize;    //当前文件长度
-    char serverFileIP[16];                  //服务器地址
-    unsigned short serverFilePort;          //服务器端口
 }UploadMsg, *pUploadMsg;
 
 //删除操作消息结构
