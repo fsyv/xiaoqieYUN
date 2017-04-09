@@ -3,7 +3,8 @@
 
 #include "tools/tools.h"
 
-ConnectToServer* ConnectToServer::conn = NULL;
+ConnectToServer* ConnectToServer::conn = nullptr;
+QMutex ConnectToServer::mutex;
 
 ConnectToServer::ConnectToServer(QObject *parent) :
     AbstractNetwork(parent),
@@ -15,8 +16,10 @@ ConnectToServer::ConnectToServer(QObject *parent) :
 {
     p_tcpSocket = new QTcpSocket(this);
     connect(p_tcpSocket, SIGNAL(readyRead()), this, SLOT(readMessage()));
+    connect(p_tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(displayState(QAbstractSocket::SocketState)));
     connect(p_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
     p_tcpSocket->connectToHost(SERVER_IP, SERVER_PORT);
+    p_tcpSocket->waitForConnected(1000);
 
     p_aRecvBuf = new char[2 * SEND_BUF_MAX_SIZE + 1];
     memset(p_aRecvBuf, 0, sizeof(char) * SEND_BUF_MAX_SIZE * 2);
@@ -178,6 +181,11 @@ stickyPackageLoop:
 
 }
 
+void ConnectToServer::displayState(QAbstractSocket::SocketState)
+{
+    qDebug() << p_tcpSocket->state();
+}
+
 void ConnectToServer::displayError(QAbstractSocket::SocketError)
 {
     qDebug()<< p_tcpSocket->errorString();
@@ -185,12 +193,22 @@ void ConnectToServer::displayError(QAbstractSocket::SocketError)
 
 ConnectToServer* ConnectToServer::getInstance()
 {
-    if(conn == NULL || conn->p_tcpSocket->state() == QAbstractSocket::UnconnectedState)
+    if(!conn)
     {
-        qDebug() << "new instance";
-        conn = new ConnectToServer();
+        mutex.lock();
+        if(!conn)
+        {
+            conn = new ConnectToServer();
+        }
+        mutex.unlock();
     }
-    else
-        qDebug() << "old instance";
+
+    //每次获取单实例时没网络不可达就会重新连接
+    if(conn->p_tcpSocket->state() == QAbstractSocket::UnconnectedState)
+    {
+        conn->p_tcpSocket->connectToHost(SERVER_IP, SERVER_PORT);
+        conn->p_tcpSocket->waitForConnected(1000);
+    }
+
     return conn;
 }
