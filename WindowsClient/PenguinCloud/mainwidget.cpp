@@ -3,10 +3,12 @@
 #include <QString>
 #include <QDir>
 #include <QStatusBar>
+#include <stdio.h>
 #include "network/connecttoserver.h"
 #include "tools/tools.h"
 #include "thread/uploadthread.h"
 #include "thread/downloadthread.h"
+#include "basiccontrol/imagepreview.h"
 #include "basiccontrol/downloadmanage.h"
 MainWidget::MainWidget(QWidget *parent) :
     BasicWidget(parent),
@@ -30,6 +32,8 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(m_pConnectToServer, SIGNAL(readyReadUploadMsg(UploadMsg)), this, SLOT(recvUploadFile(UploadMsg)));
     connect(m_pConnectToServer, SIGNAL(readyReadDownloadMsg(DownloadMsg)), this, SLOT(recvDownloadFile_readyReadDownloadMsg(DownloadMsg)));
     connect(m_pConnectToServer, &ConnectToServer::readyReadAckErrorMsg, this, &MainWidget::errorHandle);
+    connect(m_pConnectToServer, &ConnectToServer::readyReadPreviewMsg, this, &MainWidget::show_prview);
+
 
     connect(tableWidget, &FileTableWidget::requestDir, this, &MainWidget::getDir);
     connect(tableWidget, &FileTableWidget::requestNewfolder, this, &MainWidget::newFolder);
@@ -39,7 +43,7 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(tableWidget, &FileTableWidget::requestCopy, this, &MainWidget::copySelectFilesOrFolder);
     connect(tableWidget, &FileTableWidget::requestMove, this, &MainWidget::moveSelectFilesOrFolder);
     connect(tableWidget, &FileTableWidget::requestPaste, this, &MainWidget::pasteSelected);
-
+    connect(tableWidget, &FileTableWidget::requestPreview, this, &MainWidget::preview);
     m_pFileMap = new QMap<QString, QFileInfo *>;
 }
 
@@ -456,3 +460,32 @@ void MainWidget::errorHandle(ErrorMsg msg)
         replyFileLists(path.top());
     }
 }
+
+void MainWidget::preview(const QString &_path)
+{
+    PreviewMsg previewMsg;
+    memset(&previewMsg, 0, sizeof(PreviewMsg));
+
+    QString wholepath = getUserName() + path.top() +  _path;
+    qDebug() << wholepath;
+    strcpy(previewMsg.path, wholepath.toUtf8().data());
+    m_pConnectToServer->sendPreviewMsg(previewMsg);
+}
+
+void MainWidget::show_prview(PreviewArray previewMsg)
+{
+    ImagePreView *pw = new ImagePreView();
+
+    char *arr = new char[previewMsg.length];
+    memset(arr, 0, previewMsg.length);
+    FILE *p = fopen("1.jpg", "wb");
+    fwrite(arr, sizeof(char), previewMsg.length, p);
+    fclose(p);
+    QPixmap p1("1.jpg");
+    pw->setPixmap(p1);
+    delete []arr;
+    pw->show();
+
+}
+
+

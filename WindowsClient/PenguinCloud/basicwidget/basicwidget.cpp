@@ -66,6 +66,7 @@ void BasicWidget::paintEvent(QPaintEvent *e)
     QPainter p(this);
     p.setPen(Qt::NoPen);
     p.setBrush(QBrush(background_color));
+
     p.drawRect(0, 0, width(), height());
 }
 

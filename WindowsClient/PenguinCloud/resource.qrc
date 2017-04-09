@@ -48,5 +48,17 @@
         <file>resource/image/MainWidget/refresh.png</file>
         <file>resource/image/MainWidget/rename.png</file>
         <file>resource/image/MainWidget/paste.png</file>
+        <file>resource/image/ImageView/1491702897338.jpg</file>
+        <file>resource/image/ImageView/before.png</file>
+        <file>resource/image/ImageView/before_normal.png</file>
+        <file>resource/image/ImageView/next.png</file>
+        <file>resource/image/ImageView/next_normal.png</file>
+        <file>resource/image/ImageView/loading.gif</file>
+        <file>resource/image/ImageView/fd.png</file>
+        <file>resource/image/ImageView/fd_normal.png</file>
+        <file>resource/image/ImageView/sx.png</file>
+        <file>resource/image/ImageView/sx_normal.png</file>
+        <file>resource/image/ImageView/download.png</file>
+        <file>resource/image/ImageView/download_normal.png</file>
     </qresource>
 </RCC>

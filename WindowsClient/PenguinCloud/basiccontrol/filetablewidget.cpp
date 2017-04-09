@@ -1,5 +1,7 @@
 #include "filetablewidget.h"
 #include "mainwidget.h"
+#include "imagepreview.h"
+
 #include <QFileIconProvider>
 #include <QFileInfo>
 #include <QHeaderView>
@@ -121,7 +123,11 @@ void FileTableWidget::test(const QModelIndex &index)
     if(pre_row != -1)
     {
         for(int i = 0; i < 5; ++i)
-            item(pre_row, i)->setBackgroundColor(Qt::white);
+        {
+            if(item(pre_row, i) != NULL)
+                item(pre_row, i)->setBackgroundColor(Qt::white);
+
+        }
     }
     pre_row = row;
 
@@ -326,7 +332,14 @@ void FileTableWidget::rename()
 
 void FileTableWidget::preview()
 {
-    qDebug() << "preview";
+    QTableWidgetItem *_item = itemAt(menu_show);
+
+    if(_item != NULL)
+    {
+        int row = _item->row();
+        emit requestPreview(item(row, 1)->text());
+        // emit requestDeleteItem(item(row, 1)->text());
+    }
 }
 
 void FileTableWidget::refresh()
@@ -336,11 +349,12 @@ void FileTableWidget::refresh()
 
 void FileTableWidget::del()
 {
-    QTableWidgetItem *item = itemAt(menu_show);
+    QTableWidgetItem *_item = itemAt(menu_show);
 
-    if(item != NULL)
+    if(_item != NULL)
     {
-        emit requestDeleteItem(item->text());
+        int row = _item->row();
+        emit requestDeleteItem(item(row, 1)->text());
     }
 
 }

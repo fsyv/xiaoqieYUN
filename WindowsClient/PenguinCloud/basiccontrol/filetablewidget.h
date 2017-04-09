@@ -37,6 +37,7 @@ signals:
     void requestCopy(const QStringList &path);
     void requestMove(const QStringList &path);
     void requestPaste();
+    void requestPreview(const QString &path);
 protected:
     void mouseReleaseEvent(QMouseEvent *event);
 private:

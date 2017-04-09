@@ -8,9 +8,10 @@ typedef enum _MsgType{
     Ack_Ready,          //准备就绪
     Put_Login,          //登录消息
     Get_FileLists,      //文件列表
-    Get_Preview,        //文件预览
+    Get_Preview,        //预览响应
     Get_Download,       //文件下载
     Put_Move,           //移动操作
+    Put_Preview,        //预览请求
     Put_Copy,           //复制操作
     Put_NewFolder,      //新建文件夹
     Put_Rename,         //重命名
@@ -58,7 +59,7 @@ typedef struct _FileListsMsg{
 
 //预览信息消息结构
 typedef struct _PreviewMsg{
-
+    char path[MAX_PATH + 1];
 }PreviewMsg, *pPreviewMsg;
 
 //下载信息消息结构
@@ -115,4 +116,9 @@ typedef struct _RenameMsg{
     char oldName[MAX_PATH + 1]; //old name
 }RenameMsg, *pRenameMsg;
 
+//返回预览图片数组
+typedef struct _PreviewArray{
+    long length;
+    char array[0];
+}PreviewArray, *pPreviewArray;
 #endif // MSGTYPE_H

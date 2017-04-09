@@ -90,7 +90,7 @@ int AbstractNetwork::sendPreviewMsg(PreviewMsg previewMsg)
     Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(PreviewMsg) + 1];
     memset(msg, 0, m_iMsgStructLen + sizeof(PreviewMsg));
 
-    msg->m_eMsgType = Get_Preview;
+    msg->m_eMsgType = Put_Preview;
     msg->m_iMsgLen = sizeof(PreviewMsg);
     memcpy(msg->m_aMsgData, (void *)&previewMsg, msg->m_iMsgLen);
 
@@ -285,9 +285,9 @@ void AbstractNetwork::recvFileListMsg(Msg *msg)
 
 void AbstractNetwork::recvPreviewMsg(Msg *msg)
 {
-    PreviewMsg previewMsg;
-    memcpy(&previewMsg, msg->m_aMsgData, msg->m_iMsgLen);
-    emit readyReadPreviewMsg(previewMsg);
+    PreviewArray previewArray;
+    memcpy(&previewArray, msg->m_aMsgData, msg->m_iMsgLen);
+    emit readyReadPreviewMsg(previewArray);
 }
 
 void AbstractNetwork::recvDownloadMsg(Msg *msg)

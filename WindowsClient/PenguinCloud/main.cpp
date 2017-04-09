@@ -2,6 +2,7 @@
 #include <QFile>
 #include "loginwidget.h"
 #include "mainwidget.h"
+#include "basiccontrol/imagepreview.h"
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -11,6 +12,8 @@ int main(int argc, char *argv[])
     {
         a.setStyleSheet(file.readAll());
     }
+
+    //ImagePreView w;
     LoginWidget w;
     w.show();
 //    MainWidget w;s

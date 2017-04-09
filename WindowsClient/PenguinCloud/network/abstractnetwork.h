@@ -94,7 +94,7 @@ signals:
     void readyReadReadyMsg(ReadyMsg);
     void readyReadLoginMsg(LoginMsg);
     void readyReadFileListMsg(QByteArray);
-    void readyReadPreviewMsg(PreviewMsg);
+    void readyReadPreviewMsg(PreviewArray);
     void readyReadDownloadMsg(DownloadMsg);
     void readyReadMoveMsg(MoveMsg);
     void readyReadNewFolderMsg(NewFolderMsg);
