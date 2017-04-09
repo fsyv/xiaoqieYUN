@@ -36,6 +36,7 @@ private:
     void updateFile();
 
 protected slots:
+    void readMessage();
     void displayState(QAbstractSocket::SocketState);
     void displayError(QAbstractSocket::SocketError);
 };
