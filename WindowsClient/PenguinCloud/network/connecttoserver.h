@@ -24,6 +24,9 @@ private:
     ConnectToServer(QObject *parent = nullptr);
     static ConnectToServer* conn;
 
+    //实现父类sendMsg方法
+    int sendMsg(Msg *msg);
+
     QTcpSocket *p_tcpSocket;
     char *p_aRecvBuf;
     char *p_cRearBuf;

@@ -34,6 +34,8 @@ private:
 
     bool m_bRun;
 
+    //实现父类sendMsg方法
+    int sendMsg(Msg *msg);
     int sendUpdateFileMsg(UpdateFileMsg *updateFileMsg);
     void updateFile();
 

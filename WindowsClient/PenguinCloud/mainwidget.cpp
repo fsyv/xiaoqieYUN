@@ -12,7 +12,8 @@
 MainWidget::MainWidget(QWidget *parent) :
     BasicWidget(parent),
     m_pConnectToServer(nullptr),
-    m_pTaskLists(nullptr)
+    m_pUploadTaskLists(nullptr),
+    m_pDownloadTaskLists(nullptr)
 {
     resize(800, 600);
     init();
@@ -38,29 +39,51 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(tableWidget, &FileTableWidget::requestRename, this, &MainWidget::rename);
     connect(tableWidget, &FileTableWidget::requestDeleteItem, this, &MainWidget::removeFileOrFolder);
 
-    m_pTaskLists = new QList<UpdateFileInfo *>;
+    m_pUploadTaskLists = new QList<UpdateFileThread *>;
+    m_pDownloadTaskLists = new QList<UpdateFileThread *>;
 }
 
 MainWidget::~MainWidget()
 {
-    if(m_pTaskLists->count())
+    //清空上传列表
+    if(m_pUploadTaskLists->count())
     {
-        for(auto cur = m_pTaskLists->begin(); cur != m_pTaskLists->end(); ++cur)
+        for(auto cur = m_pUploadTaskLists->begin(); cur != m_pUploadTaskLists->end(); ++cur)
         {
-            if((*cur)->m_pUpdateFileThread)
+            if((*cur))
             {
-                (*cur)->m_pUpdateFileThread->pause();
-                delete (*cur)->m_pUpdateFileThread;
-                (*cur)->m_pUpdateFileThread = nullptr;
+                (*cur)->pause();
+                //等待任务结束
+                (*cur)->wait(1000);
+                delete (*cur);
             }
-            delete (*cur);
         }
-        m_pTaskLists->clear();
+        m_pUploadTaskLists->clear();
     }
 
-    if(m_pTaskLists)
-        delete m_pTaskLists;
-    m_pTaskLists = nullptr;
+    if(m_pUploadTaskLists)
+        delete m_pUploadTaskLists;
+    m_pUploadTaskLists = nullptr;
+
+    //清空下载
+    if(m_pDownloadTaskLists->count())
+    {
+        for(auto cur = m_pDownloadTaskLists->begin(); cur != m_pDownloadTaskLists->end(); ++cur)
+        {
+            if((*cur))
+            {
+                (*cur)->pause();
+                //等待任务结束
+                (*cur)->wait(1000);
+                delete (*cur);
+            }
+        }
+        m_pDownloadTaskLists->clear();
+    }
+
+    if(m_pDownloadTaskLists)
+        delete m_pDownloadTaskLists;
+    m_pDownloadTaskLists = nullptr;
 }
 
 void MainWidget::setListViewItem()
@@ -264,17 +287,9 @@ void MainWidget::uploadFile_upload()
     if(!fileList.count())
         return;
 
-    UpdateFileInfo *fileInfo = nullptr;
-
     for(const QString &str : fileList)
     {
-        fileInfo = new UpdateFileInfo;
-        fileInfo->m_eUpdateFileWay = Upload;
-        fileInfo->m_local = str;
-        fileInfo->m_remote = m_stUserName + path.top();
-        fileInfo->m_pUpdateFileThread = nullptr;
-
-        m_pTaskLists->append(fileInfo);
+        m_pUploadTaskLists->append(new UploadThread(str, m_stUserName + path.top(), this));
     }
 }
 
@@ -296,15 +311,14 @@ void MainWidget::doloadFile_download()
         if(!_item)
             return ;
 
-        UpdateFileInfo *fileInfo = nullptr;
-
-        fileInfo = new UpdateFileInfo;
-        fileInfo->m_eUpdateFileWay = Download;
-        fileInfo->m_local = _item->text();
-        fileInfo->m_remote = m_stUserName + path.top();
-        fileInfo->m_pUpdateFileThread = nullptr;
-
-        m_pTaskLists->append(fileInfo);
+        //下载路径默认为这样
+        m_pDownloadTaskLists->append(\
+                    new DownloadThread(\
+                        QDir::currentPath() + QString("/penguin/") + m_stUserName + path.top() + _item->text(), \
+                        m_stUserName + path.top() + _item->text(), \
+                        this\
+                        )\
+                    );
     }
 }
 
@@ -372,6 +386,4 @@ void MainWidget::removeSelected()
     }
     else
         QMessageBox::warning(this, tr("Warning"), tr("未选中任何项目"));
-
-
 }

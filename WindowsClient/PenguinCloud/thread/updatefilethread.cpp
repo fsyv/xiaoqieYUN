@@ -1,13 +1,17 @@
 #include "updatefilethread.h"
 
-UpdateFileThread::UpdateFileThread(QObject *parent):
+UpdateFileThread::UpdateFileThread(QString localPath, QString remotePath, QObject *parent):
     QThread(parent)
 {
     m_iTimerID = 0;
+    setLocalPath(localPath);
+    setRemotePath(remotePath);
 }
 
 void UpdateFileThread::pause()
 {
+    //停止timer
+    stopCheckCurrentProgressTimer();
     //暂停也是让这个线程退出，但是干得事情不一样
     pauseCurrenTask();
     //退出这个线程
@@ -16,6 +20,8 @@ void UpdateFileThread::pause()
 
 void UpdateFileThread::stop()
 {
+    //停止timer
+    stopCheckCurrentProgressTimer();
     //退出前需要处理一些东西
     stopCurrenTask();
     //退出这个线程
@@ -26,6 +32,39 @@ void UpdateFileThread::start()
 {
     //默认以最低优先级启动线程
     QThread::start(LowestPriority);
+    startCheckCurrentProgressTimer();
+}
+
+QString UpdateFileThread::getLocalPath() const
+{
+    return m_stLocalPath;
+}
+
+void UpdateFileThread::setLocalPath(const QString &stLocalPath)
+{
+    m_stLocalPath = stLocalPath;
+}
+
+QString UpdateFileThread::getRemotePath() const
+{
+    return m_stRemotePath;
+}
+
+void UpdateFileThread::setRemotePath(const QString &stRemotePath)
+{
+    m_stRemotePath = stRemotePath;
+}
+
+void UpdateFileThread::setServerUrl(QString serverHost)
+{
+    m_serverUrl.setUrl(serverHost);
+}
+
+void UpdateFileThread::setServerUrl(QString serverIP, quint16 port)
+{
+    m_serverUrl.setHost(serverIP);
+    m_serverUrl.setPort(port);
+    m_serverUrl.setPath(m_stRemotePath);
 }
 
 void UpdateFileThread::timerEvent(QTimerEvent *event)
@@ -67,3 +106,4 @@ void UpdateFileThread::pauseCurrenTask()
 {
 
 }
+

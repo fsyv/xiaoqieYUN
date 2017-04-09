@@ -7,7 +7,6 @@
 #include "basicwidget/basicwidget.h"
 #include "network/msgtype.h"
 #include "basiccontrol/filetablewidget.h"
-#include "thread/updatefilethread.h"
 
 class QLabel;
 class QPushButton;
@@ -78,8 +77,10 @@ private:
 
     QStack<QString> path;// current dir
 
-    //任务列表
-    QList<UpdateFileInfo *> *m_pTaskLists;
+    //上传任务列表
+    QList<UpdateFileThread *> *m_pUploadTaskLists;
+    //下载任务列表
+    QList<UpdateFileThread *> *m_pDownloadTaskLists;
 };
 
 #endif // MAINWIDGET_H

@@ -14,7 +14,8 @@ class UploadThread : public UpdateFileThread
 {
     Q_OBJECT
 public:
-    UploadThread(QFileInfo fileinfo, UploadMsg uploadMsg, QObject *parent = nullptr);
+    UploadThread(QString localPath, QString remotePath, QObject *parent = nullptr);
+    ~UploadThread();
 
     //停掉当前任务
     void stopCurrenTask() override;

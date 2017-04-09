@@ -103,7 +103,8 @@ signals:
     void readyReadExitMsg(ExitMsg);
 
 protected:
-    virtual int sendMsg(Msg *msg);
+    //sendMsg是纯虚函数，需要在子类中实现
+    virtual int sendMsg(Msg *msg) = 0;
     virtual void recvMsg(Msg *msg);
 
     int m_iMsgStructLen;

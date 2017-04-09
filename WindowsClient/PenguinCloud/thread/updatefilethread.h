@@ -5,25 +5,11 @@
 #include <QTimerEvent>
 #include <QUrl>
 
-class UpdateFileThread;
-
-typedef enum _UpdateFileType{
-    Download = 0,
-    Upload
-}UpdateFileType;
-
-typedef struct _UpdateFileInfo{
-    UpdateFileType m_eUpdateFileWay;
-    QString m_local;
-    QString m_remote;
-    UpdateFileThread *m_pUpdateFileThread;
-}UpdateFileInfo;
-
 class UpdateFileThread : public QThread
 {
     Q_OBJECT
 public:
-    UpdateFileThread(QObject *parent = nullptr);
+    UpdateFileThread(QString localPath, QString remotePath, QObject *parent = nullptr);
 
     //暂停任务
     virtual void pause();
@@ -31,6 +17,16 @@ public:
     virtual void stop();
     //开始任务
     virtual void start();
+
+    QString getLocalPath() const;
+    void setLocalPath(const QString &stLocalPath);
+
+    QString getRemotePath() const;
+    void setRemotePath(const QString &stRemotePath);
+
+    //文件服务器地址+端口
+    void setServerUrl(QString serverHost);
+    void setServerUrl(QString serverIP, quint16 port);
 
 protected:
     virtual double getCurrentTaskProgress() = 0;
@@ -45,12 +41,17 @@ protected:
     //暂停当前任务
     virtual void pauseCurrenTask();
 
+    //本地路径
+    QString m_stLocalPath;
+    //远程路径
+    QString m_stRemotePath;
     //定时器ID
     int m_iTimerID;
     //标识符
     int m_iIdentifier;
     //服务器URL
     QUrl m_serverUrl;
+
 signals:
     void currentTaskProgress(double);
 };

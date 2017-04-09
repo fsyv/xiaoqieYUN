@@ -78,14 +78,15 @@ double UploadFileToServer::getCurrentProgress()
 void UploadFileToServer::pause()
 {
     m_bRun = false;
-    //给1秒的暂停时间
-    m_pTcpSocket->waitForDisconnected(1000);
 
     QFile tmpFile(m_file.fileName() + ".tmp");
     qDebug() << "m_file.fileName()"<< m_file.fileName();
     tmpFile.open(QIODevice::WriteOnly);
-
     QTextStream out(&tmpFile);
+
+    //给0.5秒的断开网络时间
+    m_pTcpSocket->waitForDisconnected(500);
+
     out << "currentsize:" << QString::number(m_u64CurrentUploadSize);
     out << "serverUrl:" << m_serverUrl.toString() << endl;
     out.flush();
@@ -96,8 +97,8 @@ void UploadFileToServer::pause()
 void UploadFileToServer::stop()
 {
     m_bRun = false;
-    //给1秒的暂停时间
-    m_pTcpSocket->waitForDisconnected(1000);
+    //给0.5秒的暂停时间
+    m_pTcpSocket->waitForDisconnected(500);
 }
 
 int UploadFileToServer::sendMsg(Msg *msg)

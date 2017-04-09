@@ -3,26 +3,28 @@
 #include "../network/uploadfiletoserver.h"
 
 
-UploadThread::UploadThread(QFileInfo fileinfo, UploadMsg uploadMsg, QObject *parent):
-    UpdateFileThread(parent),
+UploadThread::UploadThread(QString localPath, QString remotePath, QObject *parent):
+    UpdateFileThread(localPath, remotePath, parent),
     m_upload(nullptr)
 {
-    if(!fileinfo.exists())
+    m_fileinfo.setFile(localPath);
+
+    if(!m_fileinfo.exists())
     {
-        throw fileinfo.filePath() + ": not exits";
+        throw localPath + ": not exits";
     }
 
-    if(!fileinfo.isFile())
+    if(!m_fileinfo.isFile())
     {
-        throw fileinfo.filePath() + "not a File!";
+        throw localPath + "not a File!";
     }
+}
 
-    m_fileinfo = fileinfo;
-
-    m_serverUrl.setHost(QString(uploadMsg.serverFileIP));
-    m_serverUrl.setPort(uploadMsg.serverFilePort);
-    m_serverUrl.setPath(QString(uploadMsg.uploadPath));
-    qDebug() << m_serverUrl;
+UploadThread::~UploadThread()
+{
+    if(m_upload)
+        delete m_upload;
+    m_upload = nullptr;
 }
 
 void UploadThread::stopCurrenTask()
