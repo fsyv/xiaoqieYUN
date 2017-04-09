@@ -128,16 +128,15 @@ void *uploadFileThread(int sockfd, void *arg)
     uploadMsg.m_llCurrentSize = currentFileSeek;
     sendUploadMsg(sockfd, uploadMsg);
 
-    while((ret = recv(sockfd, recvBuf, 64 * 1024, 0)) > 0)
+    while((ret = recv(sockfd, recvBuf, MAX_RECV_BUF, 0)) > 0)
     {
         currentFileSeek += ret;
         printf("currentFileSeek = %lld\n", currentFileSeek);
         fwrite(recvBuf, sizeof(char), ret, fp);
-        memset(recvBuf, 0, 64 * 1024);
+        memset(recvBuf, 0, ret);
     }
 
     fclose(fp);
-    close(sockfd);
     free(recvBuf);
     return NULL;
 }
@@ -151,13 +150,10 @@ void *downloadFileThread(int sockfd, void *arg)
     memset(&downloadMsg, 0, sizeof(DownloadMsg));
 
     memcpy(&downloadMsg, msg->m_aMsgData, msg->m_iMsgLen);
-    downloadMsg.m_iLoginStatus = 1;
 
     char file[1024] = "/var/penguin/";
-    strcat(file, downloadMsg.filePath);
     strcat(file, downloadMsg.fileName);
 
-    printf("uploadPath %s\n", downloadMsg.filePath);
     printf("fileName %s\n", downloadMsg.fileName);
     printf("file %s\n", file);
 
@@ -171,22 +167,25 @@ void *downloadFileThread(int sockfd, void *arg)
         return NULL;
     }
 
-    char *recvBuf = (char *)malloc(sizeof(char) * 64 * 1024 + 1);
-    memset(recvBuf, 0, 64 * 1024);
+    long long currentFileSeek = lseek(fp, downloadMsg.m_llCurrentSize, SEEK_CUR);
+
+    char *recvBuf = (char *)malloc(MAX_RECV_BUF + 1);
+    memset(recvBuf, 0, MAX_RECV_BUF);
 
     int ret = 0;
 
     while(!feof(fp))
     {
-        printf("ret = %d\n", ret);
-        ret = fread(recvBuf, sizeof(char), 64 * 1024, fp);
+        ret = fread(recvBuf, sizeof(char), MAX_RECV_BUF, fp);
+        currentFileSeek += ret;
+        printf("currentFileSeek = %d\n", currentFileSeek);
         send(sockfd, (void *)recvBuf, ret, 0);
         memset(recvBuf, 0, ret);
     }
 
+    free(recvBuf);
     fclose(fp);
     close(sockfd);
-    free(recvBuf);
     return NULL;
 }
 
