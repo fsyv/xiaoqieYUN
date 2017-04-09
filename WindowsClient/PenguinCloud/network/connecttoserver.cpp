@@ -27,6 +27,12 @@ ConnectToServer::ConnectToServer(QObject *parent) :
     m_iMsgLen = 0;
 }
 
+int ConnectToServer::sendMsg(Msg *msg)
+{
+    msg->m_uiCheckCrc = 0xAFAFAFAF;
+    return p_tcpSocket->write((char *)msg, m_iMsgStructLen + msg->m_iMsgLen);
+}
+
 ConnectToServer::~ConnectToServer()
 {
     if(p_tcpSocket)
@@ -42,13 +48,6 @@ ConnectToServer::~ConnectToServer()
 
     p_cRearBuf = p_aRecvBuf;
     p_cHeadBuf = p_aRecvBuf;
-}
-
-
-int ConnectToServer::sendMsg(Msg *msg)
-{
-    msg->m_uiCheckCrc = 0xAFAFAFAF;
-    return p_tcpSocket->write((char *)msg, m_iMsgStructLen + msg->m_iMsgLen);
 }
 
 void ConnectToServer::readMessage()

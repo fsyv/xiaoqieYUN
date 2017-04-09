@@ -1,4 +1,5 @@
 #include "filetablewidget.h"
+#include "mainwidget.h"
 #include <QFileIconProvider>
 #include <QFileInfo>
 #include <QHeaderView>
@@ -50,6 +51,12 @@ FileTableWidget::FileTableWidget(QWidget *parent) : QTableWidget(parent)
     connect(this, &QTableWidget::cellDoubleClicked, this, &FileTableWidget::opendir);
     connect(this, &QTableWidget::entered, this, &FileTableWidget::test);
     connect(this, &QTableWidget::itemSelectionChanged, this, &FileTableWidget::selectStatus);
+
+    connect((MainWidget*)parent, &MainWidget::paste, this, [&](bool b)
+                                                            {
+                                                                isPaste = b;
+                                                            });
+
 }
 void FileTableWidget::init()
 {
@@ -76,6 +83,7 @@ void FileTableWidget::init()
     isEditing = false;
     isNewFolder = false;
     isRename = false;
+    isPaste = false;
     isOpen = false; //当前操作是打开文件夹
 
 }
@@ -272,18 +280,20 @@ void FileTableWidget::mouseReleaseEvent(QMouseEvent *event)
         QMenu *noitem_menu = new QMenu();
         QAction *new_folder_action = new QAction(QIcon(":/resource/image/MainWidget/newfloder.png"), tr("新建文件夹"));
         QAction *refresh_action = new QAction(QIcon(":/resource/image/MainWidget/refresh.png"), tr("刷新"));
-
+        QAction *paste_action = new QAction(QIcon(":/resource/image/MainWidget/paste.png"), tr("粘贴"));
         QAction *upload_action = new QAction(QIcon(":/resource/image/MainWidget/upload.png"), tr("上传"));
 
         noitem_menu->addAction(new_folder_action);
         noitem_menu->addAction(refresh_action);
         noitem_menu->addSeparator();
+        noitem_menu->addAction(paste_action);
+        noitem_menu->addSeparator();
         noitem_menu->addAction(upload_action);
-
+        paste_action->setEnabled(isPaste);
         connect(new_folder_action, &QAction::triggered, this, &FileTableWidget::newfolder);
         connect(refresh_action, &QAction::triggered, this, &FileTableWidget::refresh);
         connect(upload_action, &QAction::triggered, this, &FileTableWidget::upload);
-
+        connect(paste_action, &QAction::triggered, this, [&](){emit requestPaste();});
         //记录菜单显示的位置
         menu_show = event->pos();
         if( itemAt(event->pos()) != 0)
@@ -298,7 +308,6 @@ void FileTableWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void FileTableWidget::rename()
 {
-    qDebug() << "rename";
     QTableWidgetItem *item = itemAt(menu_show);
 
     if(item != NULL)
@@ -348,12 +357,32 @@ void FileTableWidget::share()
 
 void FileTableWidget::moveitem()
 {
-    qDebug() << "move";
+    //返回选中的文件列表
+    QStringList copyPaths;
+    for(int i = 0; i < rowCount(); ++i)
+    {
+        if(item(i, 1)->isSelected())
+        {
+            copyPaths << item(i, 1)->text();
+        }
+    }
+
+    emit requestMove(copyPaths);
 }
 
 void FileTableWidget::copy()
 {
-    qDebug() << "copy";
+    //返回选中的文件列表
+    QStringList copyPaths;
+    for(int i = 0; i < rowCount(); ++i)
+    {
+        if(item(i, 1)->isSelected())
+        {
+            copyPaths << item(i, 1)->text();
+        }
+    }
+
+    emit requestCopy(copyPaths);
 }
 
 void FileTableWidget::upload()
@@ -396,6 +425,7 @@ void FileTableWidget::close_editor(int currentRow, int currentColumn, int previo
     if(isNewFolder)
     {
         isNewFolder = false;
+
         emit requestNewfolder(edit_item->text());
     }
 

@@ -3,19 +3,33 @@
 
 #include "abstractnetwork.h"
 
-#include <QFileInfo>
 #include <QTcpSocket>
+#include <QFile>
+#include <QFileInfo>
+#include <QDataStream>
+#include <QUrl>
 #include <QDebug>
 
 class UploadFileToServer : public AbstractNetwork
 {
     Q_OBJECT
 public:
-    UploadFileToServer(const QFileInfo &info, UploadMsg uploadMsg, QObject *parent = nullptr);
+    UploadFileToServer(QString localFilePath, QUrl remoteUrl, QObject *parent = nullptr);
+    ~UploadFileToServer();
+
+    double getCurrentProgress();
+    void pause();
+    void stop();
 
 private:
     QTcpSocket *m_pTcpSocket;
-    QFileInfo m_fileinfo;
+    QFile m_file;
+    QUrl m_serverUrl;
+
+    qint64 m_i64CurrentUploadSize;
+    qint64 m_i64FileSize;
+
+    bool m_bRun;
 
     //实现父类sendMsg方法
     int sendMsg(Msg *msg);
@@ -23,6 +37,7 @@ private:
 
 protected slots:
     void readMessage();
+    void displayState(QAbstractSocket::SocketState);
     void displayError(QAbstractSocket::SocketError);
 };
 

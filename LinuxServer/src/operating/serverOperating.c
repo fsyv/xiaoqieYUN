@@ -10,7 +10,6 @@
 #include <sys/socket.h>
 #include <sys/stat.h> // mkdir
 #include <dirent.h>
-#include <limits.h>
 #include <stdbool.h>
 #include "../cjson/cJSON.h"
 #include "../message/nstdmsgio.h"
@@ -277,4 +276,54 @@ int removeFolder(char *path)
     char sysDir[1024] = "/var/penguin/";
     strcat(sysDir, path);
     return delete_file(sysDir);
+}
+
+
+//重命名
+int renameFileOrFolder(char *_oldpath, char *_newpath)
+{
+    char newpath[1024] = "/var/penguin/";
+    char oldpath[1024] = "/var/penguin/";
+
+    strcat(oldpath, _oldpath);
+    strcat(newpath, _newpath);
+
+    return rename(oldpath, newpath);
+}
+
+int moveSrcToDes(char *src, char *des)
+{
+    char srcPath[1024] = "/var/penguin/";
+    char desPath[1024] = "/var/penguin/";
+    char command[2048] = "mv ";
+
+    strcat(srcPath, src);
+    strcat(desPath, des);
+
+    strcat(command, srcPath);
+    strcat(command, " ");
+    strcat(command, desPath);
+
+    printf("%s\n", command);
+
+    return system(command);
+}
+
+
+int copySrcToDes(char *src, char *des)
+{
+    char srcPath[1024] = "/var/penguin/";
+    char desPath[1024] = "/var/penguin/";
+    char command[2048] = "cp -r ";        //递归复制
+
+    strcat(srcPath, src);
+    strcat(desPath, des);
+
+    strcat(command, srcPath);
+    strcat(command, " ");
+    strcat(command, desPath);
+
+    printf("%s\n", command);
+
+    return system(command);
 }

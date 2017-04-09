@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     }
     LoginWidget w;
     w.show();
-//    MainWidget w;
+//    MainWidget w;s
 //    w.show();
 
     return a.exec();

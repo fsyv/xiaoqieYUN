@@ -47,5 +47,6 @@
         <file>resource/image/MainWidget/preview.png</file>
         <file>resource/image/MainWidget/refresh.png</file>
         <file>resource/image/MainWidget/rename.png</file>
+        <file>resource/image/MainWidget/paste.png</file>
     </qresource>
 </RCC>

@@ -26,8 +26,12 @@ void recvPreviewMsg(int sockfd, Msg *msg);
 void recvDownloadMsg(int sockfd, Msg *msg);
 //移动消息
 void recvMoveMsg(int sockfd, Msg *msg);
+//复制消息
+void recvCopyMsg(int sockfd, Msg *msg);
 //新建文件夹消息
 void recvNewFolderMsg(int sockfd, Msg *msg);
+//重命名消息
+void recvRenameMsg(int sockfd, Msg *msg);
 //上传操作消息
 void recvUploadMsg(int sockfd, Msg *msg);
 //删除操作消息
