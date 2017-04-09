@@ -41,6 +41,8 @@ public:
     virtual int sendDownloadMsg(DownloadMsg downloadMsg);
     //移动消息
     virtual int sendMoveMsg(MoveMsg moveMsg);
+    //复制消息
+    virtual int sendCopyMsg(CopyMsg copyMsg);
     //新建文件夹消息
     virtual int sendNewFolderMsg(NewFolderMsg newFolderMsg);
     //重命名消息

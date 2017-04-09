@@ -133,6 +133,22 @@ int AbstractNetwork::sendMoveMsg(MoveMsg moveMsg)
     return ret;
 }
 
+int AbstractNetwork::sendCopyMsg(CopyMsg copyMsg)
+{
+    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(CopyMsg) + 1];
+    memset(msg, 0, m_iMsgStructLen + sizeof(CopyMsg));
+
+    msg->m_eMsgType = Put_Copy;
+    msg->m_iMsgLen = sizeof(CopyMsg);
+    memcpy(msg->m_aMsgData, (void *)&copyMsg, msg->m_iMsgLen);
+
+    int ret = sendMsg(msg);
+
+    delete msg;
+
+    return ret;
+}
+
 int AbstractNetwork::sendNewFolderMsg(NewFolderMsg newFolderMsg)
 {
     Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(NewFolderMsg) + 1];

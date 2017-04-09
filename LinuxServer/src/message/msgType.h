@@ -11,6 +11,7 @@ typedef enum _MsgType{
     Get_Preview,        //文件预览
     Get_Download,       //文件下载
     Put_Move,           //移动操作
+    Put_Copy,           //复制操作
     Put_NewFolder,      //新建文件夹
     Put_Rename,         //重命名
     Put_Upload,         //上传操作
@@ -23,7 +24,8 @@ typedef enum _MsgType{
 typedef enum _ErrorType{
     DataPackError = 0,        //错误得数据包
     NoSuchFileOrDirectory,    //没有这个文件或者目录
-    CreateFolderFailed        // 创建文件夹失败
+    CreateFolderFailed,       //创建文件夹失败
+    RenameError               //重命名错误， 客户端收到这个错误时，做文件名以存在处理
 }ErrorType;
 //发生了错误
 typedef struct _ErrorMsg{
@@ -72,13 +74,26 @@ typedef struct _DownloadMsg{
 
 //移动消息结构
 typedef struct _MoveMsg{
-
+    char sourcePath[MAX_PATH + 1];          // 源路径
+    char DestinationPath[MAX_PATH + 1];    //目的地址
 }MoveMsg, *pMoveMsg;
+
+//复制消息结构
+typedef struct _CopyMsg{
+    char sourcePath[MAX_PATH + 1];          // 源路径
+    char DestinationPath[MAX_PATH + 1];    //目的地址
+}CopyMsg, *pCopyMsg;
 
 //新建文件夹消息结构
 typedef struct _NewFolderMsg{
     char folderName[MAX_PATH + 1]; // 新建文件的路径（包括文件夹名）
 }NewFolderMsg, *pNewFolderMsg;
+
+//重命名
+typedef struct _RenameMsg{
+    char newName[MAX_PATH + 1]; // 重命名文件(文件夹)
+    char oldName[MAX_PATH + 1]; //old name
+}RenameMsg, *pRenameMsg;
 
 //上传操作消息结构
 typedef struct _UploadMsg{

@@ -55,8 +55,6 @@ sys/stat.h
 -
 dirent.h
 -
-limits.h
--
 stdbool.h
 -
 ../cjson/cJSON.h

@@ -25,7 +25,6 @@ public slots:
     void refresh();
     void opendir(int row, int column);
     void close_editor(int currentRow, int currentColumn, int previousRow, int previousColumn);
-
     void test(const QModelIndex &index);
     void selectStatus();
     void selectThisRow(int state);
@@ -35,6 +34,9 @@ signals:
     void requestUpload();
     void requestRename(const QString &newname, const QString &oldname);
     void requestDeleteItem(const QString &path);
+    void requestCopy(const QStringList &path);
+    void requestMove(const QStringList &path);
+    void requestPaste();
 protected:
     void mouseReleaseEvent(QMouseEvent *event);
 private:
@@ -46,8 +48,11 @@ private:
     bool isEditing;
     bool isNewFolder;
     bool isRename;
+    bool isPaste; // 当前是否允许粘贴
     bool isOpen; //当前操作是打开文件夹
+
     int pre_row = -1;
+
     QString oldName;
     QTableWidgetItem *edit_item;
 };
