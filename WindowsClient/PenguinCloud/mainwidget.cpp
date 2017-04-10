@@ -31,8 +31,8 @@ MainWidget::MainWidget(QWidget *parent) :
 
     m_pConnectToServer = ConnectToServer::getInstance();
     connect(m_pConnectToServer, SIGNAL(readyReadFileListMsg(QByteArray)), this, SLOT(recvFileLists(QByteArray)));
-    connect(m_pConnectToServer, SIGNAL(readyReadUploadMsg(UploadMsg)), this, SLOT(recvUploadFile(UploadMsg)));
-    connect(m_pConnectToServer, SIGNAL(readyReadDownloadMsg(DownloadMsg)), this, SLOT(recvDownloadFile_readyReadDownloadMsg(DownloadMsg)));
+    //    connect(m_pConnectToServer, SIGNAL(readyReadUploadMsg(UploadMsg)), this, SLOT(recvUploadFile(UploadMsg)));
+    //    connect(m_pConnectToServer, SIGNAL(readyReadDownloadMsg(DownloadMsg)), this, SLOT(recvDownloadFile_readyReadDownloadMsg(DownloadMsg)));
     connect(m_pConnectToServer, &ConnectToServer::readyReadAckErrorMsg, this, &MainWidget::errorHandle);
     connect(m_pConnectToServer, &ConnectToServer::readyReadPreviewMsg, this, &MainWidget::show_prview);
 
@@ -47,7 +47,9 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(tableWidget, &FileTableWidget::requestPaste, this, &MainWidget::pasteSelected);
     connect(tableWidget, &FileTableWidget::requestPreview, this, &MainWidget::preview);
 
-   // m_pFileMap = new QMap<QString, QFileInfo *>;
+  //  m_pFileMap = new QMap<QString, QFileInfo *>;
+
+
     m_pUploadTaskLists = new QList<UpdateFileThread *>;
     m_pDownloadTaskLists = new QList<UpdateFileThread *>;
 }
@@ -301,7 +303,13 @@ void MainWidget::uploadFile_upload()
 
     for(const QString &str : fileList)
     {
-        m_pUploadTaskLists->append(new UploadThread(str, m_stUserName + path.top(), this));
+        try{
+            m_pUploadTaskLists->append(new UploadThread(str, m_stUserName + path.top(), this));
+        }
+        catch(QString e)
+        {
+            qDebug() << e;
+        }
     }
 }
 
@@ -357,6 +365,7 @@ void MainWidget::doloadFile_download()
     }
 }
 
+
 void MainWidget::newFolder(const QString &folderName)
 {
     QString folderPath = path.top() + folderName;
@@ -393,7 +402,7 @@ void MainWidget::removeFileOrFolder(const QString &_path)
 }
 
 void MainWidget::renameError(RenameMsg r){
-       qDebug() << "Rename Error";
+    qDebug() << "Rename Error";
 }
 
 void MainWidget::show_download_manage()

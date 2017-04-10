@@ -1,5 +1,7 @@
 #include "downloadthread.h"
 
+#include <QDir>
+
 #include "../network/downloadfiletoserver.h"
 
 DownloadThread::DownloadThread(QString localPath, QString remotePath, QObject *parent):
@@ -17,6 +19,9 @@ DownloadThread::DownloadThread(QString localPath, QString remotePath, QObject *p
 //    {
 //        throw localPath + "not a File!";
 //    }
+    //生成路径
+    QDir dir;
+    dir.mkpath(m_fileinfo.path());
 }
 
 DownloadThread::~DownloadThread()
