@@ -31,8 +31,8 @@ MainWidget::MainWidget(QWidget *parent) :
 
     m_pConnectToServer = ConnectToServer::getInstance();
     connect(m_pConnectToServer, SIGNAL(readyReadFileListMsg(QByteArray)), this, SLOT(recvFileLists(QByteArray)));
-    //    connect(m_pConnectToServer, SIGNAL(readyReadUploadMsg(UploadMsg)), this, SLOT(recvUploadFile(UploadMsg)));
-    //    connect(m_pConnectToServer, SIGNAL(readyReadDownloadMsg(DownloadMsg)), this, SLOT(recvDownloadFile_readyReadDownloadMsg(DownloadMsg)));
+    connect(m_pConnectToServer, SIGNAL(readyReadUploadMsg(UploadMsg)), this, SLOT(recvUploadFile_readyReadUploadMsg(UploadMsg)));
+    connect(m_pConnectToServer, SIGNAL(readyReadDownloadMsg(DownloadMsg)), this, SLOT(recvDownloadFile_readyReadDownloadMsg(DownloadMsg)));
     connect(m_pConnectToServer, &ConnectToServer::readyReadAckErrorMsg, this, &MainWidget::errorHandle);
     connect(m_pConnectToServer, &ConnectToServer::readyReadPreviewMsg, this, &MainWidget::show_prview);
 
@@ -50,8 +50,8 @@ MainWidget::MainWidget(QWidget *parent) :
   //  m_pFileMap = new QMap<QString, QFileInfo *>;
 
 
-    m_pUploadTaskLists = new QList<UpdateFileThread *>;
-    m_pDownloadTaskLists = new QList<UpdateFileThread *>;
+    m_pUploadTaskLists = new QMap<QString, UpdateFileThread *>;
+    m_pDownloadTaskLists = new QMap<QString, UpdateFileThread *>;
 }
 
 MainWidget::~MainWidget()
@@ -61,12 +61,12 @@ MainWidget::~MainWidget()
     {
         for(auto cur = m_pUploadTaskLists->begin(); cur != m_pUploadTaskLists->end(); ++cur)
         {
-            if((*cur))
+            if(cur.value())
             {
-                (*cur)->pause();
+                cur.value()->pause();
                 //等待任务结束
-                (*cur)->wait(1000);
-                delete (*cur);
+                cur.value()->wait(1000);
+                delete cur.value();
             }
         }
         m_pUploadTaskLists->clear();
@@ -81,12 +81,12 @@ MainWidget::~MainWidget()
     {
         for(auto cur = m_pDownloadTaskLists->begin(); cur != m_pDownloadTaskLists->end(); ++cur)
         {
-            if((*cur))
+            if(cur.value())
             {
-                (*cur)->pause();
+                cur.value()->pause();
                 //等待任务结束
-                (*cur)->wait(1000);
-                delete (*cur);
+                cur.value()->wait(1000);
+                delete cur.value();
             }
         }
         m_pDownloadTaskLists->clear();
@@ -252,25 +252,28 @@ void MainWidget::recvFileLists(QByteArray byteArray)
     tableWidget->setTableRow(Tools::getTableRow(byteArray));
 }
 
-//void MainWidget::recvUploadFile(UploadMsg uploadMsg)
-//{
-//    QString name(uploadMsg.fileName);
+void MainWidget::recvUploadFile_readyReadUploadMsg(UploadMsg uploadMsg)
+{
+    QString name(uploadMsg.fileName);
+    m_pUploadTaskLists->value(name)->setServerUrl(QString(SERVER_IP), uploadMsg.serverFilePort);
+    m_pUploadTaskLists->value(name)->start();
+}
 
-//    QFileInfo fileinfo = m_pTaskLists->value(name);
+void MainWidget::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg)
+{
+    qDebug()<< "serverPort" << downloadMsg.serverFilePort;
+    qDebug()<< "downloadMsg.fileName" << downloadMsg.fileName;
 
-//    UploadThread *uploadThread = new UploadThread(fileinfo, uploadMsg);
-//    uploadThread->start();
+    QString name(downloadMsg.fileName);
 
-//    m_pTaskLists->remove(name);
-//}
+    UpdateFileThread *thread = m_pDownloadTaskLists->value(name);
 
-//void MainWidget::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg)
-//{
-//    qDebug()<< "serverPort" << downloadMsg.serverFilePort;
-
-//    DownloadThread *downloadThread = new DownloadThread(downloadMsg);
-//    downloadThread->start();
-//}
+    if(thread)
+    {
+        thread->setServerUrl(QString(SERVER_IP), downloadMsg.serverFilePort);
+        thread->start();
+    }
+}
 
 void MainWidget::getDir(QString dirname)
 {
@@ -289,7 +292,7 @@ void MainWidget::previousDir()
     replyFileLists(path.top());
 }
 
-void MainWidget::uploadFile_upload()
+void MainWidget::uploadFile_upload() noexcept
 {
     QStringList fileList = QFileDialog::getOpenFileNames(
                 this,
@@ -302,21 +305,21 @@ void MainWidget::uploadFile_upload()
         return;
 
     for(const QString &str : fileList)
-    {
-        try{
-            m_pUploadTaskLists->append(new UploadThread(str, m_stUserName + path.top(), this));
-        }
-        catch(QString e)
+    {     
+        if(!m_pUploadTaskLists->keys().contains(str))
         {
-            qDebug() << e;
+            try{
+                m_pUploadTaskLists->insert(str, new UploadThread(str, m_stUserName + path.top(), this));
+            }
+            catch(QString e){
+                qDebug() << e;
+            }
         }
     }
 }
 
 void MainWidget::doloadFile_download()
 {
-    qDebug() << "download";
-
     for(int i = 0; i < tableWidget->rowCount(); ++i)
     {
         QTableWidgetItem *_item = tableWidget->item(i, 1);
@@ -329,38 +332,48 @@ void MainWidget::doloadFile_download()
         }
         else if(_item->isSelected())
         {
+            if(!m_pDownloadTaskLists->keys().contains(m_stUserName + path.top() + _item->text()))
+            {
+                DownloadThread *uft = new DownloadThread(\
+                            QDir::currentPath() + QString("/penguin/") + m_stUserName + path.top() + _item->text(), \
+                            m_stUserName + path.top() + _item->text(), \
+                            this\
+                            );
+                m_pDownloadTaskLists->insert(uft->getRemotePath(), uft);
+
+                //在这里添加按钮的槽函数
+                QPushButton *cancel = new QPushButton();
+                connect(cancel, &QPushButton::clicked, this, [&](){
+                    uft->stop();
+                });
+                QPushButton *pause = new QPushButton();
+                connect(pause, &QPushButton::clicked, this, [&](){
+                    if(uft->getCurrentStatus())
+                    {
+                        uft->pause();
+                    }
+                    else
+                    {
+                        uft->start();
+                    }
+                });
+
+                QProgressBar *bar = new QProgressBar();
+                bar->setMaximum(100);
+                connect(m_pDownloadTaskLists->last(), &UpdateFileThread::currentTaskProgress, this, [&](double d){
+                    bar->setValue(d * 100);
+                });
+
+                load->addRow(_item->text(), bar, cancel, pause);
 
 
+                qDebug() << "remote name : " << uft->getRemotePath();
+                DownloadMsg downloadMsg;
+                memset(&downloadMsg, 0, sizeof(DownloadMsg));
+                strcpy(downloadMsg.fileName, uft->getRemotePath().toUtf8().data());
 
-            //下载路径默认为这样
-            qDebug() << QDir::currentPath() + QString("/penguin/") + m_stUserName + path.top() + _item->text();
-
-            UpdateFileThread *uft = new DownloadThread(\
-                        QDir::currentPath() + QString("/penguin/") + m_stUserName + path.top() + _item->text(), \
-                        m_stUserName + path.top() + _item->text(), \
-                        this\
-                        );
-            m_pDownloadTaskLists->append(uft);
-
-            //在这里添加按钮的槽函数
-            QPushButton *cancel = new QPushButton();
-            connect(cancel, &QPushButton::clicked, this, [&](){
-                qDebug() << "stop";
-                //uft->stop();
-            });
-            QPushButton *pause = new QPushButton();
-            connect(pause, &QPushButton::clicked, this, [&](){
-                qDebug() <<  "pause";
-                //utf->stop();
-            });
-            QProgressBar *bar = new QProgressBar();
-            bar->setMaximum(100);
-            connect(m_pDownloadTaskLists->last(), &UpdateFileThread::currentTaskProgress, this, [&](double d){
-                bar->setValue(d * 100);
-            });
-
-            load->addRow(_item->text(), bar, cancel, pause);
-
+                m_pConnectToServer->sendDownloadMsg(downloadMsg);
+            }
         }
     }
 }

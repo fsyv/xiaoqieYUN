@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QTimerEvent>
 #include <QUrl>
+#include <qDebug>
 
 class UpdateFileThread : public QThread
 {
@@ -27,6 +28,9 @@ public:
     //文件服务器地址+端口
     void setServerUrl(QString serverHost);
     void setServerUrl(QString serverIP, quint16 port);
+
+    bool operator ==(const UpdateFileThread &other) const;
+    bool operator ==(const UpdateFileThread *other) const;
 
 protected:
     virtual double getCurrentTaskProgress() = 0;

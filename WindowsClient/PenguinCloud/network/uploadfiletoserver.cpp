@@ -73,6 +73,11 @@ void UploadFileToServer::stop()
     m_pTcpSocket->waitForDisconnected(500);
 }
 
+bool UploadFileToServer::getRun() const
+{
+    return m_bRun;
+}
+
 int UploadFileToServer::sendMsg(Msg *msg)
 {
     msg->m_uiCheckCrc = 0xAFAFAFAF;

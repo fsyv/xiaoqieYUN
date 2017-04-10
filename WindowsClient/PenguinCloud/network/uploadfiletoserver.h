@@ -21,6 +21,8 @@ public:
     void pause();
     void stop();
 
+    bool getRun() const;
+
 private:
     QTcpSocket *m_pTcpSocket;
     QFile m_file;

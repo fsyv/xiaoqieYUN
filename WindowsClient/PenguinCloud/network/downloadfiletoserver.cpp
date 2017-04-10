@@ -110,6 +110,12 @@ void DownloadFileToServer::stop()
     //给0.5秒的暂停时间
     m_pTcpSocket->waitForDisconnected(500);
 }
+
+bool DownloadFileToServer::getRun() const
+{
+    return m_bRun;
+}
+
 int DownloadFileToServer::sendMsg(Msg *msg)
 {
     msg->m_uiCheckCrc = 0xAFAFAFAF;

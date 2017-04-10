@@ -6,9 +6,9 @@
 #include"msgtype.h"
 
 //#define SERVER_IP "182.254.219.254"
-//#define SERVER_IP "192.168.1.155"
+#define SERVER_IP "192.168.1.155"
 //#define SERVER_IP "192.168.89.129"
-#define SERVER_IP "127.0.0.1"
+//#define SERVER_IP "127.0.0.1"
 
 typedef struct _Msg{
     unsigned int m_uiCheckCrc;              //消息校验 0xAFAFAFAF

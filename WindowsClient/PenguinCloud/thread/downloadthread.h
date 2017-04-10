@@ -21,6 +21,8 @@ public:
     //暂停当前任务
     void pauseCurrenTask() override;
 	void run();
+
+    bool getCurrentStatus();
 private:
     double getCurrentTaskProgress() override;
     DownloadFileToServer *m_download;
