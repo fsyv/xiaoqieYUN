@@ -1,7 +1,11 @@
 #include "downloadmanage.h"
 DownloadManage::DownloadManage(BasicWidget *parent) : BasicWidget(parent)
 {
-    //this->setBackgroundColor(QColor(Qt::gray));
+    init();
+}
+
+void DownloadManage::init()
+{
     setDroped(false);
     hideCloseIcon();
 
@@ -16,23 +20,40 @@ DownloadManage::DownloadManage(BasicWidget *parent) : BasicWidget(parent)
     download->setColumnCount(3);
     download->setHorizontalHeaderLabels(headers);
 
-    QProgressBar *prog = new QProgressBar;
-    prog->setValue(0);
-    prog->setMaximum(1024);
-    //connect()
-    QPushButton *button = new QPushButton("cannel");
+}
+void DownloadManage::addRow(const QString &filename, QProgressBar* &progress, QPushButton* &cancel, QPushButton* &pause)
+{
+    QWidget *w1 = new QWidget();
+    QHBoxLayout *l = new QHBoxLayout();
+    l->addWidget(progress);
+    w1->setLayout(l);
 
-    QTableWidgetItem *item1 = new QTableWidgetItem("filename");
+
+    pause->setIcon(QIcon(":/resource/image/DownLoadManage/暂停.png"));
+    pause->setStyleSheet("border:2px groove gray;border-radius:10px;padding:2px 4px;");
+    pause->setFixedWidth(50);
+    cancel->setIcon(QIcon(":/resource/image/DownLoadManage/取消.png"));
+    cancel->setFixedWidth(50);
+
+    QWidget *w = new QWidget();
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->addWidget(pause);
+    layout->addWidget(cancel);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    w->setLayout(layout);
+
+    QTableWidgetItem *item1 = new QTableWidgetItem(filename);
     QTableWidgetItem *item2 = new QTableWidgetItem();
     QTableWidgetItem *item3 = new QTableWidgetItem();
 
     download->insertRow(download->rowCount());
-    download->setItem(0, 0, item1);
-    download->setItem(0, 1, item2);
-    download->setItem(0, 2, item3);
 
+    download->setItem(download->rowCount() - 1, 0, item1);
+    download->setItem(download->rowCount() - 1, 1, item2);
+    download->setItem(download->rowCount() - 1, 2, item3);
 
+    download->setCellWidget(download->rowCount() - 1, 1, w1);
+    download->setCellWidget(download->rowCount() - 1, 2, w);
 
-    download->setCellWidget(0, 1, prog);
-    download->setCellWidget(0, 2, button);
 }

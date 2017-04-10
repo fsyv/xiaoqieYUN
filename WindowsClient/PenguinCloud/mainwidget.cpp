@@ -47,7 +47,7 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(tableWidget, &FileTableWidget::requestPaste, this, &MainWidget::pasteSelected);
     connect(tableWidget, &FileTableWidget::requestPreview, this, &MainWidget::preview);
 
-    m_pFileMap = new QMap<QString, QFileInfo *>;
+   // m_pFileMap = new QMap<QString, QFileInfo *>;
     m_pUploadTaskLists = new QList<UpdateFileThread *>;
     m_pDownloadTaskLists = new QList<UpdateFileThread *>;
 }
@@ -307,30 +307,53 @@ void MainWidget::uploadFile_upload()
 
 void MainWidget::doloadFile_download()
 {
-    QTableWidgetItem *_item = tableWidget->item(tableWidget->currentRow(), 2);
+    qDebug() << "download";
 
-    if(!_item)
-        return ;
-
-    if(_item->text() == "文件夹")
+    for(int i = 0; i < tableWidget->rowCount(); ++i)
     {
-
-    }
-    else
-    {
-        QTableWidgetItem *_item = tableWidget->item(tableWidget->currentRow(), 1);
+        QTableWidgetItem *_item = tableWidget->item(i, 1);
 
         if(!_item)
             return ;
 
-        //下载路径默认为这样
-        m_pDownloadTaskLists->append(\
-                    new DownloadThread(\
+        if(tableWidget->item(i, 2)->text() == "文件夹")
+        {
+        }
+        else if(_item->isSelected())
+        {
+
+
+
+            //下载路径默认为这样
+            qDebug() << QDir::currentPath() + QString("/penguin/") + m_stUserName + path.top() + _item->text();
+
+            UpdateFileThread *uft = new DownloadThread(\
                         QDir::currentPath() + QString("/penguin/") + m_stUserName + path.top() + _item->text(), \
                         m_stUserName + path.top() + _item->text(), \
                         this\
-                        )\
-                    );
+                        );
+            m_pDownloadTaskLists->append(uft);
+
+            //在这里添加按钮的槽函数
+            QPushButton *cancel = new QPushButton();
+            connect(cancel, &QPushButton::clicked, this, [&](){
+                qDebug() << "stop";
+                //uft->stop();
+            });
+            QPushButton *pause = new QPushButton();
+            connect(pause, &QPushButton::clicked, this, [&](){
+                qDebug() <<  "pause";
+                //utf->stop();
+            });
+            QProgressBar *bar = new QProgressBar();
+            bar->setMaximum(100);
+            connect(m_pDownloadTaskLists->last(), &UpdateFileThread::currentTaskProgress, this, [&](double d){
+                bar->setValue(d * 100);
+            });
+
+            load->addRow(_item->text(), bar, cancel, pause);
+
+        }
     }
 }
 

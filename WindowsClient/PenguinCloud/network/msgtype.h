@@ -8,17 +8,17 @@ typedef enum _MsgType{
     Ack_Ready,          //准备就绪
     Put_Login,          //登录消息
     Get_FileLists,      //文件列表
-    Get_Preview,        //预览响应
+    Get_Preview,        //文件预览
     Get_Download,       //文件下载
     Put_Move,           //移动操作
-    Put_Preview,        //预览请求
     Put_Copy,           //复制操作
     Put_NewFolder,      //新建文件夹
     Put_Rename,         //重命名
     Put_Upload,         //上传操作
     Put_Delete,         //删除操作
     Put_Share,          //分享操作
-    Ack_Exit            //退出
+    Ack_Exit,            //退出
+    Put_Preview
 }MsgType;
 
 //错误类型

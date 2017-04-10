@@ -8,15 +8,15 @@ DownloadThread::DownloadThread(QString localPath, QString remotePath, QObject *p
 {
     m_fileinfo.setFile(localPath);
 
-    if(!m_fileinfo.exists())
-    {
-        throw localPath + ": not exits";
-    }
+//    if(!m_fileinfo.exists())
+//    {
+//        throw localPath + ": not exits";
+//    }
 
-    if(!m_fileinfo.isFile())
-    {
-        throw localPath + "not a File!";
-    }
+//    if(!m_fileinfo.isFile())
+//    {
+//        throw localPath + "not a File!";
+//    }
 }
 
 DownloadThread::~DownloadThread()

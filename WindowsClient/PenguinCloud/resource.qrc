@@ -60,5 +60,8 @@
         <file>resource/image/ImageView/sx_normal.png</file>
         <file>resource/image/ImageView/download.png</file>
         <file>resource/image/ImageView/download_normal.png</file>
+        <file>resource/image/DownLoadManage/取消.png</file>
+        <file>resource/image/DownLoadManage/下载.png</file>
+        <file>resource/image/DownLoadManage/暂停.png</file>
     </qresource>
 </RCC>

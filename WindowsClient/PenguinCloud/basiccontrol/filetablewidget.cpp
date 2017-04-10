@@ -51,7 +51,7 @@ FileTableWidget::FileTableWidget(QWidget *parent) : QTableWidget(parent)
 
     connect(this, &QTableWidget::currentCellChanged, this, &FileTableWidget::close_editor);
     connect(this, &QTableWidget::cellDoubleClicked, this, &FileTableWidget::opendir);
-    connect(this, &QTableWidget::entered, this, &FileTableWidget::test);
+    //connect(this, &QTableWidget::entered, this, &FileTableWidget::test);
     connect(this, &QTableWidget::itemSelectionChanged, this, &FileTableWidget::selectStatus);
 
     connect((MainWidget*)parent, &MainWidget::paste, this, [&](bool b)
@@ -65,6 +65,7 @@ void FileTableWidget::init()
     setAlternatingRowColors(true);
     setShowGrid(false);
     setSelectionBehavior(QAbstractItemView::SelectRows); //选中行
+    setSelectionMode(QAbstractItemView::SingleSelection);
     setEditTriggers(QAbstractItemView::NoEditTriggers);// 不可编辑
     setMouseTracking(true);    //开启捕获鼠标功能
 
@@ -155,6 +156,7 @@ void FileTableWidget::setTableRow(const QVector<QStringList> &_vec)
             {
                 QCheckBox *box = new QCheckBox;
                 box->setSizeIncrement(QSize(20, 20));
+                box->setMouseTracking(true);
                 item = new QTableWidgetItem;
                 connect(box, &QCheckBox::stateChanged, this, &FileTableWidget::selectThisRow);
 
@@ -222,19 +224,20 @@ void FileTableWidget::selectThisRow(int state)
 {
     if(state == Qt::Checked)
     {
-        QTableWidgetItem *_item = itemAt(mapFromGlobal(QCursor::pos() - QPoint(0, horizontalHeader()->height())));
+        QTableWidgetItem *_item = itemAt(mapFromGlobal(QCursor::pos()) - QPoint(-100, horizontalHeader()->height()));
         if(_item != NULL)
         {
             int row = _item->row();
-            if(item(row, 0) == NULL)
+            if(item(row, 1) == NULL)
                 return;
             for(int i = 0; i < 5; ++i)
                 item(row, i)->setSelected(true);
+            //setCurrentItem(item(row, 0));
         }
     }
     else if(state == Qt::Unchecked)
     {
-        QTableWidgetItem *_item = itemAt(mapFromGlobal(QCursor::pos() - QPoint(0, horizontalHeader()->height())));
+        QTableWidgetItem *_item = itemAt(mapFromGlobal(QCursor::pos()) - QPoint(0, horizontalHeader()->height()));
         if(_item != NULL)
         {
             int row = _item->row();
@@ -454,7 +457,8 @@ void FileTableWidget::opendir(int row, int column)
 {
     isOpen = true;
     QTableWidgetItem *_item = item(row, 2);
-    if(_item->text() == "文件夹")
+
+    if(_item != NULL && _item->text() == "文件夹")
     {
         emit requestDir(item(row, 1 )->text());
     }
