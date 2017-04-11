@@ -98,7 +98,7 @@ void *uploadFileThread(int sockfd, void *arg)
 
     memcpy(&uploadMsg, msg->m_aMsgData, msg->m_iMsgLen);
 
-    char file[1024] = "/var/penguin/";
+    char file[1024] = "/var/penguin";
     strcat(file, uploadMsg.fileName);
 
     printf("fileName %s\n", uploadMsg.fileName);
@@ -150,7 +150,7 @@ void *downloadFileThread(int sockfd, void *arg)
 
     memcpy(&downloadMsg, msg->m_aMsgData, msg->m_iMsgLen);
 
-    char file[1024] = "/var/penguin/";
+    char file[1024] = "/var/penguin";
     strcat(file, downloadMsg.fileName);
 
     printf("fileName %s\n", downloadMsg.fileName);
@@ -177,6 +177,7 @@ void *downloadFileThread(int sockfd, void *arg)
     {
         ret = fread(recvBuf, sizeof(char), MAX_RECV_BUF, fp);
         currentFileSeek += ret;
+        printf("ret = %d\n", ret);
         printf("currentFileSeek = %d\n", currentFileSeek);
         send(sockfd, (void *)recvBuf, ret, 0);
         memset(recvBuf, 0, ret);
