@@ -37,11 +37,16 @@ void DownloadThread::pauseCurrenTask()
         m_download->pause();
     }
 }
+
+void DownloadThread::setFileSize(qint64 fileSize)
+{
+    m_i64FileSize = fileSize;
+}
 void DownloadThread::run()
 {
     qDebug() << "DownloadThread::run()";
 
-    m_download = new DownloadFileToServer(m_stLocalPath, m_serverUrl);
+    m_download = new DownloadFileToServer(m_stLocalPath, m_serverUrl, m_i64FileSize);
     exec();
 }
 

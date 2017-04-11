@@ -39,6 +39,11 @@ void UpdateFileThread::start()
     startCheckCurrentProgressTimer();
 }
 
+void UpdateFileThread::setFileSize(qint64 fileSize)
+{
+
+}
+
 QString UpdateFileThread::getLocalPath() const
 {
     return m_stLocalPath;
@@ -68,7 +73,7 @@ void UpdateFileThread::setServerUrl(QString serverIP, quint16 port)
 {
     m_serverUrl.setHost(serverIP);
     m_serverUrl.setPort(port);
-    m_serverUrl.setPath(m_stRemotePath);
+    m_serverUrl.setPath(QString("/") + m_stRemotePath);
 }
 
 bool UpdateFileThread::operator ==(const UpdateFileThread &other) const
