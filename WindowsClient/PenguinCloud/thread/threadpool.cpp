@@ -9,11 +9,11 @@ ThreadPool::ThreadPool(int workerNumber) :
 m_iBossInspectionCycle(1000),
 m_bRun(true)
 {
-	//×î´ó¹¤ÈËÊıÁ¿
+	//æœ€å¤§å·¥äººæ•°é‡
 	m_iMaxWorker = 0;
-	//¹¤×÷ÖĞµÄ¹¤ÈËÊıÁ¿
+	//å·¥ä½œä¸­çš„å·¥äººæ•°é‡
 	m_iWorking = 0;
-	//¹¤×÷¶ÓÁĞ¹¤×÷µÄÊıÁ¿
+	//å·¥ä½œé˜Ÿåˆ—å·¥ä½œçš„æ•°é‡
 	m_iTaskNumber = 0;
 
 	setScale();
@@ -32,7 +32,7 @@ ThreadPool::~ThreadPool()
 	m_bRun = false;
 	boss.join();
 
-	//¸æËßËùÓĞ¹¤ÈË°ÑÊÖÖĞµÄ¹¤×÷×öÍê¾ÍÏÂ°àÁË
+	//å‘Šè¯‰æ‰€æœ‰å·¥äººæŠŠæ‰‹ä¸­çš„å·¥ä½œåšå®Œå°±ä¸‹ç­äº†
 	workerCondition.notify_all();
 	while (workers.size())
 	{
@@ -41,7 +41,7 @@ ThreadPool::~ThreadPool()
 	}
 }
 
-//Ìí¼Ó¹¤×÷
+//æ·»åŠ å·¥ä½œ
 void ThreadPool::addJob(ThreadObject *job)
 {
 	cout << "addJob" << endl;
@@ -54,46 +54,46 @@ void ThreadPool::addJob(ThreadObject *job)
 
 	taskQueueMutex.unlock();
 
-	//»½ĞÑÒ»¸öÕıÔÚĞİÏ¢µÄ¹¤ÈË
+	//å”¤é†’ä¸€ä¸ªæ­£åœ¨ä¼‘æ¯çš„å·¥äºº
 	workerCondition.notify_one();
 }
 
-//³ÉÎªÀÏ°å
+//æˆä¸ºè€æ¿
 void ThreadPool::createBoss()
 {
 	boss = thread(&ThreadPool::bossJob, this);
 }
 
-//¹ÍÓ¶¹¤ÈË
+//é›‡ä½£å·¥äºº
 void ThreadPool::hireWorker(const int &workerNumber)
 {
 
 }
 
-//½âÆ¸¹¤ÈË
+//è§£è˜å·¥äºº
 void ThreadPool::fireWorker(const int &workerNumber)
 {
 
 }
 
-//ÉèÖÃ×î´óµÈ´ı±È
+//è®¾ç½®æœ€å¤§ç­‰å¾…æ¯”
 void ThreadPool::setScale(const double &scale)
 {
 	m_dWWScale = scale;
 }
 
-//ÀÏ°åµÄ¹¤×÷
+//è€æ¿çš„å·¥ä½œ
 void ThreadPool::bossJob()
 {
 	while (m_bRun)
 	{
-		//cout << "ÀÏ°åÀ´ÁË" << "id = " << this_thread::get_id() << endl;
+		//cout << "è€æ¿æ¥äº†" << "id = " << this_thread::get_id() << endl;
 
 		this_thread::sleep_for(chrono::milliseconds(m_iBossInspectionCycle));
 	}
 }
 
-//¹¤ÈËµÄ¹¤×÷
+//å·¥äººçš„å·¥ä½œ
 void ThreadPool::workerJob()
 {
 	ThreadObject *object;
@@ -102,14 +102,14 @@ void ThreadPool::workerJob()
 		//unique_lock<mutex> lock(workerMutex);
 
 		workerMutex.lock();
-		cout << "±»Ëø×¡ÁË" << endl;
-		//Èç¹ûÈÎÎñ¶ÓÁĞÎª¿Õ¾ÍËø×¡
+		cout << "è¢«é”ä½äº†" << endl;
+		//å¦‚æœä»»åŠ¡é˜Ÿåˆ—ä¸ºç©ºå°±é”ä½
 		while (this->m_bRun && this->tasks.empty())
 			workerCondition.wait(workerMutex);
 
 		workerMutex.unlock();
 
-		cout << "¿ªËøÁË" << endl;
+		cout << "å¼€é”äº†" << endl;
 
 		taskQueueMutex.lock();
 

@@ -10,7 +10,7 @@ class ImagePreView : public BasicWidget
 public:
     ImagePreView(QWidget *parent = 0);
     void setPixmap(const QPixmap &pix);
-
+    ~ImagePreView();
 protected:
     void resizeEvent(QResizeEvent *event);
 

@@ -5,7 +5,7 @@ public:
 	ThreadObject();
 	~ThreadObject();
 
-	//×ÓÀàĞèÒªÖØĞ´Õâ¸ö·½·¨
+	//å­ç±»éœ€è¦é‡å†™è¿™ä¸ªæ–¹æ³•
 	virtual void run();
 	virtual void start();
 	virtual void pause();

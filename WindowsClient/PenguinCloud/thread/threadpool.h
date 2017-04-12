@@ -10,56 +10,56 @@ class ThreadObject;
 class ThreadPool
 {
 public:
-	//Ä¬ÈÏÎªÃ»ÓĞÔ±¹¤
+	//é»˜è®¤ä¸ºæ²¡æœ‰å‘˜å·¥
 	ThreadPool(int workerNumber = 0);
 	~ThreadPool();
 
-	//Ìí¼Ó¹¤×÷
+	//æ·»åŠ å·¥ä½œ
 	void addJob(ThreadObject *job);
-	//ÉèÖÃ×î´óµÈ´ı±È
+	//è®¾ç½®æœ€å¤§ç­‰å¾…æ¯”
 	void setScale(const double &scale = 0.618);
 
 private:
-	//³ÉÎªÀÏ°å
+	//æˆä¸ºè€æ¿
 	void createBoss();
-	//¹ÍÓ¶¹¤ÈË
+	//é›‡ä½£å·¥äºº
 	void hireWorker(const int &workerNumber = 1);
-	//½âÆ¸¹¤ÈË
+	//è§£è˜å·¥äºº
 	void fireWorker(const int &workerNumber = 1);
-	//ÀÏ°åµÄ¹¤×÷
+	//è€æ¿çš„å·¥ä½œ
 	void bossJob();
-	//¹¤ÈËµÄ¹¤×÷
+	//å·¥äººçš„å·¥ä½œ
 	void workerJob();
 
-	//¹¤ÈË
+	//å·¥äºº
 	std::queue<std::thread> workers;
-	//¹¤ÈËĞİÏ¢µÄËø
+	//å·¥äººä¼‘æ¯çš„é”
 	std::mutex workerMutex;
-	//¹¤ÈË½áÊøĞİÏ¢µÄÌõ¼şĞÅºÅÁ¿
+	//å·¥äººç»“æŸä¼‘æ¯çš„æ¡ä»¶ä¿¡å·é‡
 	std::condition_variable_any workerCondition;
-	//¹¤×÷¶ÓÁĞ
+	//å·¥ä½œé˜Ÿåˆ—
 	std::queue<ThreadObject *> tasks;
-	//¹¤×÷¶ÓÁĞËø
+	//å·¥ä½œé˜Ÿåˆ—é”
 	std::mutex taskQueueMutex;
-	//ÀÏ°å
+	//è€æ¿
 	std::thread boss;
-	//ÀÏ°å½áÊøĞİÏ¢µÄÌõ¼şĞÅºÅÁ¿
+	//è€æ¿ç»“æŸä¼‘æ¯çš„æ¡ä»¶ä¿¡å·é‡
 	std::condition_variable bossCondition;
 
-	//×î´ó¹¤ÈËÊıÁ¿
+	//æœ€å¤§å·¥äººæ•°é‡
 	int m_iMaxWorker;
-	//¹¤×÷ÖĞµÄ¹¤ÈËÊıÁ¿
+	//å·¥ä½œä¸­çš„å·¥äººæ•°é‡
 	int m_iWorking;
-	//¹¤×÷¶ÓÁĞ¹¤×÷µÄÊıÁ¿
+	//å·¥ä½œé˜Ÿåˆ—å·¥ä½œçš„æ•°é‡
 	int m_iTaskNumber;
-	//ÀÏ°å¶¨Ê±ÊÓ²ì¹¤×÷µÄÊ±¼ä(ms)
+	//è€æ¿å®šæ—¶è§†å¯Ÿå·¥ä½œçš„æ—¶é—´(ms)
 	int m_iBossInspectionCycle;
-	//¹¤×÷ÖĞµÄ¹¤ÈËºÍ×Ü¶ÓÁĞµÄ±ÈÖµ
-	//Õâ¸ö±ÈÖµÊÇÔö¼ÓÔ±¹¤»¹ÊÇ
-	//²ÃÔ±µÄÒÀ¾İ
+	//å·¥ä½œä¸­çš„å·¥äººå’Œæ€»é˜Ÿåˆ—çš„æ¯”å€¼
+	//è¿™ä¸ªæ¯”å€¼æ˜¯å¢åŠ å‘˜å·¥è¿˜æ˜¯
+	//è£å‘˜çš„ä¾æ®
 	//working : wait
 	double m_dWWScale;
-	//Ïß³Ì³Ø½áÊø±êÖ¾
+	//çº¿ç¨‹æ± ç»“æŸæ ‡å¿—
 	bool m_bRun;
 };
 

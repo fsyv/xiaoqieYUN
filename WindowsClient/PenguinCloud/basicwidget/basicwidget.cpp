@@ -1,4 +1,4 @@
-#include "basicwidget.h"
+﻿#include "basicwidget.h"
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPalette>
@@ -10,21 +10,26 @@
 BasicWidget::BasicWidget(QWidget *parent)
     : QWidget(parent)
 {
-   background_color = QColor(Qt::white); 
+   setAttribute(Qt::WA_DeleteOnClose);
    setWindowFlags(Qt::FramelessWindowHint);
+
+   background_color = QColor(Qt::white); 
+
    close_buttonn = new QPushButton(this);
    QPixmap pix(":/resource/image/close.png");
    close_buttonn->setIcon(pix);
    close_buttonn->setFixedSize(pix.size());
-   close_buttonn->setStyleSheet("border:none");
+   close_buttonn->setStyleSheet("border:none");\
+
    drop = true;
+
    connect(close_buttonn, &QPushButton::clicked, this, [&](){this->close();});
 
 }
 
 BasicWidget::~BasicWidget()
 {
-
+    delete close_buttonn;
 }
 void BasicWidget::hideCloseIcon()
 {

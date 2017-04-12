@@ -3,7 +3,8 @@
 #include "loginwidget.h"
 #include "mainwidget.h"
 #include "basiccontrol/imagepreview.h"
-#include "widget.h"
+#include "basiccontrol/pdfwidget.h"
+#include "basiccontrol/managewidget.h"
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -16,7 +17,9 @@ int main(int argc, char *argv[])
 
 //    ImagePreView w;
     LoginWidget w;
-//    Widget w;
+
+//    PdfWidget w;
+//    ManageWidget w;
     w.show();
 //    MainWidget w;s
 //    w.show();

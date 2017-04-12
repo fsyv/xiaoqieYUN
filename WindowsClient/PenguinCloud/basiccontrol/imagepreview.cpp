@@ -7,6 +7,10 @@ ImagePreView::ImagePreView(QWidget *parent) : BasicWidget(parent)
     resize(1300, 800);
 
 }
+ImagePreView::~ImagePreView()
+{
+    qDebug() << "析构";
+}
 
 void ImagePreView::init()
 {
