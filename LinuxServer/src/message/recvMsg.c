@@ -159,7 +159,7 @@ void recvDownloadMsg(int sockfd, Msg *msg)
 
     memcpy(&downloadMsg, msg->m_aMsgData, msg->m_iMsgLen);
 
-    //告诉客户端往哪儿传
+    //告诉客户端在哪儿下
     downloadMsg.serverFilePort = 36976;
 
     sendDownloadMsg(sockfd, downloadMsg);

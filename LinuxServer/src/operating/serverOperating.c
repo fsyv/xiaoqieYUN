@@ -25,8 +25,6 @@ char *getDirFileLists(char *userDir)
     char sysDir[1024] = "/var/penguin/";
     strcat(sysDir, userDir);
 
-    printf("%s\n", sysDir);
-
     DIR *dir = NULL;
     struct dirent *child = NULL;
     struct stat statBuf;
@@ -98,7 +96,7 @@ void *uploadFileThread(int sockfd, void *arg)
 
     memcpy(&uploadMsg, msg->m_aMsgData, msg->m_iMsgLen);
 
-    char file[1024] = "/var/penguin/";
+    char file[1024] = "/var/penguin";
     strcat(file, uploadMsg.fileName);
 
     printf("fileName %s\n", uploadMsg.fileName);
@@ -150,11 +148,12 @@ void *downloadFileThread(int sockfd, void *arg)
 
     memcpy(&downloadMsg, msg->m_aMsgData, msg->m_iMsgLen);
 
-    char file[1024] = "/var/penguin/";
+    char file[1024] = "/var/penguin";
     strcat(file, downloadMsg.fileName);
 
     printf("fileName %s\n", downloadMsg.fileName);
     printf("file %s\n", file);
+    printf("m_llCurrentSize %d\n", downloadMsg.m_llCurrentSize);
 
     //可写权限打开
     FILE *fp = fopen(file, "rb");
@@ -166,7 +165,7 @@ void *downloadFileThread(int sockfd, void *arg)
         return NULL;
     }
 
-    long long currentFileSeek = lseek(fp, downloadMsg.m_llCurrentSize, SEEK_CUR);
+    //long long currentFileSeek = lseek(fp, downloadMsg.m_llCurrentSize, SEEK_CUR);
 
     char *recvBuf = (char *)malloc(MAX_RECV_BUF + 1);
     memset(recvBuf, 0, MAX_RECV_BUF);
@@ -176,8 +175,9 @@ void *downloadFileThread(int sockfd, void *arg)
     while(!feof(fp))
     {
         ret = fread(recvBuf, sizeof(char), MAX_RECV_BUF, fp);
-        currentFileSeek += ret;
-        printf("currentFileSeek = %d\n", currentFileSeek);
+        //currentFileSeek += ret;
+        printf("ret = %d\n", ret);
+        //printf("currentFileSeek = %d\n", currentFileSeek);
         send(sockfd, (void *)recvBuf, ret, 0);
         memset(recvBuf, 0, ret);
     }

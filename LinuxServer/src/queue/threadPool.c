@@ -60,16 +60,12 @@ int addJobThreadPool(ThreadPool *threadPool, TaskQueue *taskQueue)
 
     pthread_mutex_lock(&(threadPool->queuemutex));
 
-    printf("a\n");
-
     if (threadPool->front == NULL)
     {
-        printf("b\n");
         threadPool->front = threadPool->rear = taskQueue;
     }
     else
     {
-        printf("c\n");
         threadPool->rear->next = taskQueue;
         threadPool->rear = taskQueue;
     }
@@ -112,7 +108,6 @@ void *threadpool_function(void *arg)
     pTaskQueue taskQueue = NULL;
     while (1)
     {
-        printf("11\n");
         pthread_mutex_lock(&(threadPool->taskmutex));
 
         while(!threadPool->m_iQueueLen)
@@ -136,8 +131,6 @@ void *threadpool_function(void *arg)
         }
 
         pthread_mutex_unlock(&(threadPool->queuemutex));
-
-        printf("threadpool_function\n");
 
         (*(taskQueue->p_fCallBackFunction))(taskQueue->sockfd, taskQueue->p_vArg);
 
