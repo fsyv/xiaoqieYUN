@@ -20,8 +20,13 @@ public:
     void stopCurrenTask() override;
     //暂停当前任务
     void pauseCurrenTask() override;
+    //设置文件大小
+    virtual void setFileSize(qint64 fileSize) override;
 	void run();
+
+    bool getCurrentStatus();
 private:
+    qint64 m_i64FileSize;
     double getCurrentTaskProgress() override;
     DownloadFileToServer *m_download;
     QFileInfo m_fileinfo;

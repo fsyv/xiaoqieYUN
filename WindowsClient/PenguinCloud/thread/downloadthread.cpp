@@ -10,15 +10,6 @@ DownloadThread::DownloadThread(QString localPath, QString remotePath, QObject *p
 {
     m_fileinfo.setFile(localPath);
 
-//    if(!m_fileinfo.exists())
-//    {
-//        throw localPath + ": not exits";
-//    }
-
-//    if(!m_fileinfo.isFile())
-//    {
-//        throw localPath + "not a File!";
-//    }
     //生成路径
     QDir dir;
     dir.mkpath(m_fileinfo.path());
@@ -46,10 +37,26 @@ void DownloadThread::pauseCurrenTask()
         m_download->pause();
     }
 }
+
+void DownloadThread::setFileSize(qint64 fileSize)
+{
+    m_i64FileSize = fileSize;
+}
 void DownloadThread::run()
 {
-    m_download = new DownloadFileToServer(m_stLocalPath, m_serverUrl);
+    qDebug() << "DownloadThread::run()";
+
+    m_download = new DownloadFileToServer(m_stLocalPath, m_serverUrl, m_i64FileSize);
     exec();
+}
+
+bool DownloadThread::getCurrentStatus()
+{
+    if(m_download)
+    {
+        return m_download->getRun();
+    }
+    return false;
 }
 double DownloadThread::getCurrentTaskProgress()
 {

@@ -49,6 +49,15 @@ void UploadThread::run()
     exec();
 }
 
+bool UploadThread::getCurrentStatus()
+{
+    if(m_upload)
+    {
+        return m_upload->getRun();
+    }
+    return false;
+}
+
 double UploadThread::getCurrentTaskProgress()
 {
     //从当前上传进度中取

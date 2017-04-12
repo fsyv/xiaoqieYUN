@@ -1,4 +1,4 @@
-#ifndef IMAGEPREVIEW_H
+﻿#ifndef IMAGEPREVIEW_H
 #define IMAGEPREVIEW_H
 
 #include "basicwidget/basicwidget.h"
@@ -6,6 +6,7 @@
 #include <QtWidgets>
 class ImagePreView : public BasicWidget
 {
+    Q_OBJECT
 public:
     ImagePreView(QWidget *parent = 0);
     void setPixmap(const QPixmap &pix);
@@ -13,10 +14,14 @@ public:
 protected:
     void resizeEvent(QResizeEvent *event);
 
+signals:
+    void next();
+    void before();
+
 public slots:
     void zoomin();  //放大
     void zoomout(); //缩小
-    void download();
+   // void download();
 
 
 private:

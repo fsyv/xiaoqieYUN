@@ -24,6 +24,8 @@ public:
 
     void run();
 
+    bool getCurrentStatus();
+
 private:
     double getCurrentTaskProgress() override;
 

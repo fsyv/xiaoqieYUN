@@ -1,15 +1,10 @@
-#include "imagepreview.h"
+﻿#include "imagepreview.h"
 
 ImagePreView::ImagePreView(QWidget *parent) : BasicWidget(parent)
 {
     init();
     setBackgroundColor(QColor("33, 33, 34"));
     resize(1300, 800);
-
-//    t = new QTimer(this);
-//    t->start(2000);
-
-//    connect(t, &QTimer::timeout, this, [&]() { t->stop();});
 
 }
 
@@ -19,11 +14,14 @@ void ImagePreView::init()
     left_button->setToolTip("上一张");
     left_button->setStyleSheet("QPushButton{border:none;image:url(\":/resource/image/ImageView/before_normal.png\")} "
                                "QPushButton:hover{image:url(\":/resource/image/ImageView/before.png\")}");
+    connect(left_button, &QPushButton::clicked, this, [&](){ emit before(); });
+
+
     right_button = new QPushButton(this);
     right_button->setToolTip("下一张");
     right_button->setStyleSheet("QPushButton{border:none;image:url(\":/resource/image/ImageView/next_normal.png\")} "
                                 "QPushButton:hover{image:url(\":/resource/image/ImageView/next.png\")}");
-
+    connect(right_button, &QPushButton::clicked, this, [&](){ emit next(); });
 
     download_button = new QPushButton(this);
     download_button->setToolTip(tr("下载"));

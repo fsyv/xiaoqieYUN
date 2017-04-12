@@ -10,6 +10,7 @@ UpdateFileThread::UpdateFileThread(QString localPath, QString remotePath, QObjec
 
 void UpdateFileThread::pause()
 {
+    qDebug() << "UpdateFileThread::pause";
     //停止timer
     stopCheckCurrentProgressTimer();
     //暂停也是让这个线程退出，但是干得事情不一样
@@ -20,6 +21,7 @@ void UpdateFileThread::pause()
 
 void UpdateFileThread::stop()
 {
+    qDebug() << "UpdateFileThread::stop";
     //停止timer
     stopCheckCurrentProgressTimer();
     //退出前需要处理一些东西
@@ -30,9 +32,16 @@ void UpdateFileThread::stop()
 
 void UpdateFileThread::start()
 {
+    qDebug() << "UpdateFileThread::start";
+
     //默认以最低优先级启动线程
     QThread::start(LowestPriority);
     startCheckCurrentProgressTimer();
+}
+
+void UpdateFileThread::setFileSize(qint64 fileSize)
+{
+
 }
 
 QString UpdateFileThread::getLocalPath() const
@@ -64,7 +73,29 @@ void UpdateFileThread::setServerUrl(QString serverIP, quint16 port)
 {
     m_serverUrl.setHost(serverIP);
     m_serverUrl.setPort(port);
-    m_serverUrl.setPath(m_stRemotePath);
+    m_serverUrl.setPath(QString("/") + m_stRemotePath);
+}
+
+bool UpdateFileThread::operator ==(const UpdateFileThread &other) const
+{
+    if(this->m_stLocalPath == other.getLocalPath() &&
+            this->m_stRemotePath == other.getRemotePath())
+        return true;
+    return false;
+}
+
+bool UpdateFileThread::operator ==(const UpdateFileThread *other) const
+{
+    if(!other)
+        return false;
+
+    if(other == this)
+        return true;
+
+    if(this->m_stLocalPath == other->getLocalPath() &&
+            this->m_stRemotePath == other->getRemotePath())
+        return true;
+    return false;
 }
 
 void UpdateFileThread::timerEvent(QTimerEvent *event)

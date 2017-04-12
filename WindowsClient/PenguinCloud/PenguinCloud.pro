@@ -16,6 +16,7 @@ include(logic/logic.pri)
 include(network/network.pri)
 include(tools/tools.pri)
 include(thread/thread.pri)
+include(file/file.pri)
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -30,11 +31,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
     loginwidget.cpp \
-    mainwidget.cpp
+    mainwidget.cpp \
+    widget.cpp
 
 HEADERS  += \
     loginwidget.h \
-    mainwidget.h
+    mainwidget.h \
+    widget.h
 
 FORMS    +=
 
@@ -43,4 +46,8 @@ RESOURCES += \
 
 SUBDIRS += \
     network/network.pro
+
+INCLUDEPATH += $$PWD/poppler
+win32: LIBS += -L$$PWD/poppler -llibpoppler
+win32: LIBS += -L$$PWD/poppler -llibpoppler-qt5
 

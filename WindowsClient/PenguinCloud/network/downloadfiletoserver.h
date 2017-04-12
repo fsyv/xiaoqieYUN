@@ -12,11 +12,15 @@ class DownloadFileToServer : public AbstractNetwork
 {
     Q_OBJECT
 public:
-    DownloadFileToServer(QString localFilePath, QUrl remoteUrl, QObject *parent = nullptr);
+    DownloadFileToServer(QString localFilePath, QUrl remoteUrl, qint64 fileSize, QObject *parent = nullptr);
     ~DownloadFileToServer();
     double getCurrentProgress();
     void pause();
     void stop();
+    bool getRun() const;
+
+    void setFileSize(const qint64 &fileSize);
+
 private:
     QTcpSocket *m_pTcpSocket;
     QFile m_file;
