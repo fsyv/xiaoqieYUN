@@ -1,36 +1,65 @@
-#ifndef THREADPOOL_H
-#define THREADPOOL_H
-
+#pragma once
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 #include <queue>
 #include <vector>
-#include <functional>
-#include <future>
 
-class UpdateFileThread;
-
+class ThreadObject;
 
 class ThreadPool
 {
 public:
-    ThreadPool(int taskCount);
-    ~ThreadPool();
+	//Ä¬ÈÏÎªÃ»ÓĞÔ±¹¤
+	ThreadPool(int workerNumber = 0);
+	~ThreadPool();
 
-    void enqueue();
+	//Ìí¼Ó¹¤×÷
+	void addJob(ThreadObject *job);
+	//ÉèÖÃ×î´óµÈ´ı±È
+	void setScale(const double &scale = 0.618);
 
 private:
-    //å·¥ä½œçº¿ç¨‹
-    std::vector<std::thread> workers;
-    //ä»»åŠ¡é˜Ÿåˆ—
-    std::queue<std::function<void()>> tasks;
+	//³ÉÎªÀÏ°å
+	void createBoss();
+	//¹ÍÓ¶¹¤ÈË
+	void hireWorker(const int &workerNumber = 1);
+	//½âÆ¸¹¤ÈË
+	void fireWorker(const int &workerNumber = 1);
+	//ÀÏ°åµÄ¹¤×÷
+	void bossJob();
+	//¹¤ÈËµÄ¹¤×÷
+	void workerJob();
 
-    //é”
-    //é˜Ÿåˆ—é”
-    std::mutex queueMutex;
-    //ä¿¡å·é‡
-    std::condition_variable cond;
+	//¹¤ÈË
+	std::queue<std::thread> workers;
+	//¹¤ÈËĞİÏ¢µÄËø
+	std::mutex workerMutex;
+	//¹¤ÈË½áÊøĞİÏ¢µÄÌõ¼şĞÅºÅÁ¿
+	std::condition_variable_any workerCondition;
+	//¹¤×÷¶ÓÁĞ
+	std::queue<ThreadObject *> tasks;
+	//¹¤×÷¶ÓÁĞËø
+	std::mutex taskQueueMutex;
+	//ÀÏ°å
+	std::thread boss;
+	//ÀÏ°å½áÊøĞİÏ¢µÄÌõ¼şĞÅºÅÁ¿
+	std::condition_variable bossCondition;
+
+	//×î´ó¹¤ÈËÊıÁ¿
+	int m_iMaxWorker;
+	//¹¤×÷ÖĞµÄ¹¤ÈËÊıÁ¿
+	int m_iWorking;
+	//¹¤×÷¶ÓÁĞ¹¤×÷µÄÊıÁ¿
+	int m_iTaskNumber;
+	//ÀÏ°å¶¨Ê±ÊÓ²ì¹¤×÷µÄÊ±¼ä(ms)
+	int m_iBossInspectionCycle;
+	//¹¤×÷ÖĞµÄ¹¤ÈËºÍ×Ü¶ÓÁĞµÄ±ÈÖµ
+	//Õâ¸ö±ÈÖµÊÇÔö¼ÓÔ±¹¤»¹ÊÇ
+	//²ÃÔ±µÄÒÀ¾İ
+	//working : wait
+	double m_dWWScale;
+	//Ïß³Ì³Ø½áÊø±êÖ¾
+	bool m_bRun;
 };
 
-#endif // THREADPOOL_H

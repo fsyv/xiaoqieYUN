@@ -15,8 +15,8 @@ int main(int argc, char *argv[])
     }
 
 //    ImagePreView w;
-//    LoginWidget w;
-    Widget w;
+    LoginWidget w;
+//    Widget w;
     w.show();
 //    MainWidget w;s
 //    w.show();

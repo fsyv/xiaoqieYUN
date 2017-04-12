@@ -415,8 +415,6 @@ void MainWidget::doloadFile_download()
 
                 load->addRow(_item->text(), bar, cancel, pause);
 
-
-                qDebug() << "remote name : " << uft->getRemotePath();
                 DownloadMsg downloadMsg;
                 memset(&downloadMsg, 0, sizeof(DownloadMsg));
                 strcpy(downloadMsg.fileName, uft->getRemotePath().toUtf8().data());
