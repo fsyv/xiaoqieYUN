@@ -44,7 +44,7 @@ private:
 	//老板
 	std::thread boss;
 	//老板结束休息的条件信号量
-	std::condition_variable bossCondition;
+    std::condition_variable_any bossCondition;
 
 	//最大工人数量
 	int m_iMaxWorker;

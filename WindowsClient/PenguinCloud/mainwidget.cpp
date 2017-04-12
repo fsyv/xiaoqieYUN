@@ -429,11 +429,7 @@ void MainWidget::doloadFile_download()
                     qDebug() << d;
                 });
 
-<<<<<<< HEAD
-                load->addRow(_item->text(), bar, cancel, pause);
-=======
                 manageUpAndDown->getDownloadManage()->addRow(_item->text(), bar, cancel, pause);
->>>>>>> d17c0632aeeb0ef959ebbf49afeecf5322513df9
 
                 DownloadMsg downloadMsg;
                 memset(&downloadMsg, 0, sizeof(DownloadMsg));
