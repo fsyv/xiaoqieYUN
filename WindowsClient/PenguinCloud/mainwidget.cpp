@@ -535,20 +535,21 @@ void MainWidget::preview(const QString &_path)
     qDebug() << wholepath;
     strcpy(previewMsg.path, wholepath.toUtf8().data());
     m_pConnectToServer->sendPreviewMsg(previewMsg);
+
+    qDebug() << "显示预览";
+    ImagePreView *pw = new ImagePreView();
+    QPixmap p1(":/resource/image/title.png");
+    pw->setPixmap(p1);
+    pw->show();
 }
 
 void MainWidget::show_prview(PreviewArray previewMsg)
 {
+    qDebug() << "显示预览";
     ImagePreView *pw = new ImagePreView();
 
-    char *arr = new char[previewMsg.length];
-    memset(arr, 0, previewMsg.length);
-    FILE *p = fopen("1.jpg", "wb");
-    fwrite(arr, sizeof(char), previewMsg.length, p);
-    fclose(p);
-    QPixmap p1("1.jpg");
+    QPixmap p1(":/resource/image/title.png");
     pw->setPixmap(p1);
-    delete []arr;
     pw->show();
 
 }

@@ -30,11 +30,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
     loginwidget.cpp \
-    mainwidget.cpp
+    mainwidget.cpp \
+    widget.cpp
 
 HEADERS  += \
     loginwidget.h \
-    mainwidget.h
+    mainwidget.h \
+    widget.h
 
 FORMS    +=
 
@@ -43,4 +45,8 @@ RESOURCES += \
 
 SUBDIRS += \
     network/network.pro
+
+INCLUDEPATH += $$PWD/poppler
+win32: LIBS += -L$$PWD/poppler -llibpoppler
+win32: LIBS += -L$$PWD/poppler -llibpoppler-qt5
 

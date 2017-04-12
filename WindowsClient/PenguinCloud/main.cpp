@@ -1,8 +1,9 @@
-#include <QApplication>
+﻿#include <QApplication>
 #include <QFile>
 #include "loginwidget.h"
 #include "mainwidget.h"
 #include "basiccontrol/imagepreview.h"
+#include "widget.h"
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -13,8 +14,9 @@ int main(int argc, char *argv[])
         a.setStyleSheet(file.readAll());
     }
 
-    //ImagePreView w;
-    LoginWidget w;
+//    ImagePreView w;
+//    LoginWidget w;
+    Widget w;
     w.show();
 //    MainWidget w;s
 //    w.show();
