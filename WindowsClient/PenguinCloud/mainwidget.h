@@ -17,6 +17,7 @@ class ConnectToServer;
 class QFileInfo;
 class DownloadManage;
 class UpdateFileThread;
+class FileObject;
 
 class MainWidget : public BasicWidget
 {
@@ -90,6 +91,8 @@ private:
     QMap<QString, UpdateFileThread *> *m_pUploadTaskLists;
     //下载任务列表
     QMap<QString, UpdateFileThread *> *m_pDownloadTaskLists;
+
+    QMap<QString, FileObject *> *m_pFileLists;
 
     QStringList wholeCopyPath; // 保存所有将要复制的文件的具体路径
     bool isCopy; // true是复制， false是移动

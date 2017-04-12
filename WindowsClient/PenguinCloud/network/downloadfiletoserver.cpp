@@ -2,12 +2,14 @@
 
 #include <QDir>
 
-DownloadFileToServer::DownloadFileToServer(QString localFilePath, QUrl remoteUrl, QObject *parent):
+DownloadFileToServer::DownloadFileToServer(QString localFilePath, QUrl remoteUrl, qint64 fileSize, QObject *parent):
     AbstractNetwork(parent),
     m_pTcpSocket(nullptr),
+    m_serverUrl(remoteUrl),
     m_bRun(true)
 {
     m_i64CurrentDownloadSize = 0LL;
+    m_i64FileSize = fileSize;
 
     QFileInfo fileInfo(localFilePath);
 
@@ -50,7 +52,6 @@ DownloadFileToServer::DownloadFileToServer(QString localFilePath, QUrl remoteUrl
     m_file.setFileName(localFilePath);
     if(m_file.open(QIODevice::WriteOnly))
     {
-        m_i64FileSize = quint64(m_file.size());
         //文件偏移到当前位置
         m_file.seek(m_i64CurrentDownloadSize);
         m_out.setDevice(&m_file);
@@ -67,7 +68,6 @@ DownloadFileToServer::DownloadFileToServer(QString localFilePath, QUrl remoteUrl
 
     memset(&downloadMsg, 0, sizeof(DownloadMsg));
     strcpy(downloadMsg.fileName, remoteUrl.path().toUtf8().data());
-    strcat(downloadMsg.fileName, fileInfo.fileName().toUtf8().data());
     downloadMsg.m_llCurrentSize = m_i64CurrentDownloadSize;
 
     //等待连接文件服务器
@@ -82,23 +82,26 @@ DownloadFileToServer::~DownloadFileToServer()
 
 double DownloadFileToServer::getCurrentProgress()
 {
+    qDebug() << "m_i64CurrentDownloadSize" << m_i64CurrentDownloadSize;
+    qDebug() << "m_i64FileSize" << m_i64FileSize;
     return double(1.0 * m_i64CurrentDownloadSize / m_i64FileSize);
 }
 
 void DownloadFileToServer::pause()
 {
+    qDebug() << "pause";
+
     m_bRun = false;
 
     QFile tmpFile(m_file.fileName() + ".tmp");
-    qDebug() << "m_file.fileName()"<< m_file.fileName();
     tmpFile.open(QIODevice::WriteOnly);
     QTextStream out(&tmpFile);
 
     //给0.5秒的断开网络时间
     m_pTcpSocket->waitForDisconnected(500);
 
-    out << "currentsize:" << QString::number(m_i64CurrentDownloadSize);
-    out << "serverUrl:" << m_serverUrl.toString() << endl;
+    out << "currentsize:" << QString::number(m_i64CurrentDownloadSize) << endl;
+    out << "serverUrl:" << m_serverUrl.toString().toUtf8();
     out.flush();
 
     tmpFile.close();
@@ -114,6 +117,12 @@ void DownloadFileToServer::stop()
 bool DownloadFileToServer::getRun() const
 {
     return m_bRun;
+}
+
+void DownloadFileToServer::setFileSize(const qint64 &fileSize)
+{
+    m_i64FileSize = fileSize;
+    qDebug() << "fileSize :" << m_i64FileSize;
 }
 
 int DownloadFileToServer::sendMsg(Msg *msg)

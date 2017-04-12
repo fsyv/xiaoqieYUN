@@ -8,6 +8,8 @@
 #include "tools/tools.h"
 #include "thread/uploadthread.h"
 #include "thread/downloadthread.h"
+#include "file/file.h"
+#include "file/folder.h"
 #include "basiccontrol/imagepreview.h"
 #include "basiccontrol/downloadmanage.h"
 
@@ -47,11 +49,12 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(tableWidget, &FileTableWidget::requestPaste, this, &MainWidget::pasteSelected);
     connect(tableWidget, &FileTableWidget::requestPreview, this, &MainWidget::preview);
 
-  //  m_pFileMap = new QMap<QString, QFileInfo *>;
+    //  m_pFileMap = new QMap<QString, QFileInfo *>;
 
 
     m_pUploadTaskLists = new QMap<QString, UpdateFileThread *>;
     m_pDownloadTaskLists = new QMap<QString, UpdateFileThread *>;
+    m_pFileLists = new QMap<QString, FileObject *>;
 }
 
 MainWidget::~MainWidget()
@@ -83,9 +86,9 @@ MainWidget::~MainWidget()
         {
             if(cur.value())
             {
-                cur.value()->pause();
-                //等待任务结束
-                cur.value()->wait(1000);
+//                cur.value()->pause();
+//                //等待任务结束
+//                cur.value()->wait(1000);
                 delete cur.value();
             }
         }
@@ -95,6 +98,11 @@ MainWidget::~MainWidget()
     if(m_pDownloadTaskLists)
         delete m_pDownloadTaskLists;
     m_pDownloadTaskLists = nullptr;
+
+    m_pFileLists->clear();
+    if(m_pFileLists)
+        delete m_pFileLists;
+    m_pFileLists = nullptr;
 }
 
 void MainWidget::setListViewItem()
@@ -250,6 +258,47 @@ void MainWidget::setFileTable()
 void MainWidget::recvFileLists(QByteArray byteArray)
 {
     tableWidget->setTableRow(Tools::getTableRow(byteArray));
+
+    QJsonParseError json_error;
+    QJsonDocument parse_doucment = QJsonDocument::fromJson(byteArray, &json_error);
+    if(json_error.error == QJsonParseError::NoError)
+    {
+        if(parse_doucment.isObject())
+        {
+            QJsonObject object = parse_doucment.object();
+            QJsonValue value =  object.value(object.keys().at(0));
+            QJsonArray array = value.toArray();
+            QString path = object.keys().at(0);
+            qDebug() << path;
+
+            m_pFileLists->clear();
+
+            for(int i = 0; i < array.size(); ++i)
+            {
+                QStringList list;
+
+                if(array.at(i).toObject().value("type") == QString("folder"))
+                {
+                    //文件夹
+                    QDateTime dateTime = QDateTime::fromTime_t(array.at(i).toObject()
+                                   .value("lastmodifytime").toInt());
+                    QString name = array.at(i).toObject().value("name").toString();
+
+                    m_pFileLists->insert(path + name, new Folder(name, dateTime));
+                }
+                else if(array.at(i).toObject().value("type") == QString("file"))
+                {
+                    //文件
+                    QDateTime dateTime = QDateTime::fromTime_t(array.at(i).toObject()
+                                   .value("lastmodifytime").toInt());
+                    QString name = array.at(i).toObject().value("name").toString();
+                    qint64 size = array.at(i).toObject().value("size").toVariant().toLongLong();
+
+                    m_pFileLists->insert(path + name, new File(name, size, dateTime));
+                }
+            }
+        }
+    }
 }
 
 void MainWidget::recvUploadFile_readyReadUploadMsg(UploadMsg uploadMsg)
@@ -261,16 +310,15 @@ void MainWidget::recvUploadFile_readyReadUploadMsg(UploadMsg uploadMsg)
 
 void MainWidget::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg)
 {
-    qDebug()<< "serverPort" << downloadMsg.serverFilePort;
-    qDebug()<< "downloadMsg.fileName" << downloadMsg.fileName;
-
     QString name(downloadMsg.fileName);
 
-    UpdateFileThread *thread = m_pDownloadTaskLists->value(name);
+    DownloadThread *thread = (DownloadThread *)m_pDownloadTaskLists->value(name);
 
     if(thread)
     {
         thread->setServerUrl(QString(SERVER_IP), downloadMsg.serverFilePort);
+        FileObject *fileObject = m_pFileLists->value(thread->getRemotePath());
+        thread->setFileSize(fileObject->getSize());
         thread->start();
     }
 }
@@ -305,7 +353,7 @@ void MainWidget::uploadFile_upload() noexcept
         return;
 
     for(const QString &str : fileList)
-    {     
+    {
         if(!m_pUploadTaskLists->keys().contains(str))
         {
             try{
@@ -343,11 +391,11 @@ void MainWidget::doloadFile_download()
 
                 //在这里添加按钮的槽函数
                 QPushButton *cancel = new QPushButton();
-                connect(cancel, &QPushButton::clicked, this, [&](){
+                connect(cancel, &QPushButton::clicked, this, [uft](){
                     uft->stop();
                 });
                 QPushButton *pause = new QPushButton();
-                connect(pause, &QPushButton::clicked, this, [&](){
+                connect(pause, &QPushButton::clicked, this, [uft](){
                     if(uft->getCurrentStatus())
                     {
                         uft->pause();
@@ -360,8 +408,9 @@ void MainWidget::doloadFile_download()
 
                 QProgressBar *bar = new QProgressBar();
                 bar->setMaximum(100);
-                connect(m_pDownloadTaskLists->last(), &UpdateFileThread::currentTaskProgress, this, [&](double d){
+                connect(uft, &UpdateFileThread::currentTaskProgress, this, [bar](double d){
                     bar->setValue(d * 100);
+                    qDebug() << d;
                 });
 
                 load->addRow(_item->text(), bar, cancel, pause);

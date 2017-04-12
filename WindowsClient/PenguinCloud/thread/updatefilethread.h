@@ -18,6 +18,8 @@ public:
     virtual void stop();
     //开始任务
     virtual void start();
+    //设置文件大小
+    virtual void setFileSize(qint64 fileSize);
 
     QString getLocalPath() const;
     void setLocalPath(const QString &stLocalPath);
