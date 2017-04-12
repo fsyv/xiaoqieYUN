@@ -1,7 +1,12 @@
-#include "downloadmanage.h"
+﻿#include "downloadmanage.h"
 DownloadManage::DownloadManage(BasicWidget *parent) : BasicWidget(parent)
 {
     init();
+}
+DownloadManage::~DownloadManage()
+{
+   // delete title;
+    delete download;
 }
 
 void DownloadManage::init()
@@ -9,11 +14,11 @@ void DownloadManage::init()
     setDroped(false);
     hideCloseIcon();
 
-    title = new QLabel(tr("下载管理"), this);
-    title->move(20, 20);
+//    title = new QLabel(tr("下载管理"), this);
+//    title->move(20, 20);
 
     download = new QTableWidget(this);
-    download->move(0, 60);
+    download->move(0, 20);
     download->resize(800, 600);
     QStringList headers;
     headers << "FileName" << "Progress" << "work";

@@ -23,10 +23,10 @@ MainWidget::MainWidget(QWidget *parent) :
     init();
     setListViewItem();
     setFileTable();
-    load = new DownloadManage(this);
-    load->move(1, 80);
-    load->setFixedSize(800, 480);
-    load->hide();
+    manageUpAndDown = new ManageWidget(this);
+    manageUpAndDown->move(1, 80);
+    manageUpAndDown->setFixedSize(800, 480);
+    manageUpAndDown->hide();
     this->setBackgroundColor(Qt::white);
 
     path.push("/");
@@ -177,17 +177,14 @@ void MainWidget::init()
     previous->setObjectName("MainWidget_PushButton");
     download_manage->setObjectName("MainWidget_PushButton");
 
-
-
     //一开始是不能后退的
     previous->setEnabled(false);
 
     connect(upload, SIGNAL(clicked()), this, SLOT(uploadFile_upload()));
     connect(previous, SIGNAL(clicked()), this, SLOT(previousDir()));
     connect(download, SIGNAL(clicked()), this, SLOT(doloadFile_download()));
-    connect(download_manage, &QPushButton::clicked, this, &MainWidget::show_download_manage);
+    connect(download_manage, &QPushButton::clicked, this, &MainWidget::show_manage);
     connect(dele, &QPushButton::clicked, this, &MainWidget::removeSelected);
-
 
     isCopy = false;
 }
@@ -357,7 +354,26 @@ void MainWidget::uploadFile_upload() noexcept
         if(!m_pUploadTaskLists->keys().contains(str))
         {
             try{
-                m_pUploadTaskLists->insert(str, new UploadThread(str, m_stUserName + path.top(), this));
+                UploadThread *upload_t =  new UploadThread(str, m_stUserName + path.top(), this);
+                m_pUploadTaskLists->insert(str, upload_t);
+
+
+                QPushButton *cancel = new QPushButton();
+                connect(cancel, &QPushButton::clicked, this, [upload_t](){
+                    //取消逻辑
+                });
+                QPushButton *pause = new QPushButton();
+                connect(pause, &QPushButton::clicked, this, [upload_t](){
+                    //暂停逻辑
+                });
+
+                QProgressBar *bar = new QProgressBar();
+                bar->setMaximum(100);
+                connect(upload_t, &UploadThread::currentTaskProgress, this, [bar](double d){
+                    //进度条逻辑
+                });
+
+                manageUpAndDown->getUploadManage()->addRow(str, bar, cancel, pause);
             }
             catch(QString e){
                 qDebug() << e;
@@ -413,10 +429,8 @@ void MainWidget::doloadFile_download()
                     qDebug() << d;
                 });
 
-                load->addRow(_item->text(), bar, cancel, pause);
+                manageUpAndDown->getDownloadManage()->addRow(_item->text(), bar, cancel, pause);
 
-
-                qDebug() << "remote name : " << uft->getRemotePath();
                 DownloadMsg downloadMsg;
                 memset(&downloadMsg, 0, sizeof(DownloadMsg));
                 strcpy(downloadMsg.fileName, uft->getRemotePath().toUtf8().data());
@@ -467,15 +481,15 @@ void MainWidget::renameError(RenameMsg r){
     qDebug() << "Rename Error";
 }
 
-void MainWidget::show_download_manage()
+void MainWidget::show_manage()
 {
-    if(load->isHidden())
+    if(manageUpAndDown->isHidden())
     {
-        load->show();
+        manageUpAndDown->show();
     }
     else
     {
-        load->hide();
+        manageUpAndDown->hide();
     }
 }
 
@@ -585,11 +599,12 @@ void MainWidget::preview(const QString &_path)
     strcpy(previewMsg.path, wholepath.toUtf8().data());
     m_pConnectToServer->sendPreviewMsg(previewMsg);
 
-    qDebug() << "显示预览";
-    ImagePreView *pw = new ImagePreView();
-    QPixmap p1(":/resource/image/title.png");
-    pw->setPixmap(p1);
-    pw->show();
+//    qDebug() << "显示预览";
+//    ImagePreView *pw = new ImagePreView();
+//    QPixmap p1(":/resource/image/title.png");
+//    pw->setPixmap(p1);
+//    pw->show();
+    setPreviewWidget(Tools::getFileType(_path));
 }
 
 void MainWidget::show_prview(PreviewArray previewMsg)
@@ -600,7 +615,32 @@ void MainWidget::show_prview(PreviewArray previewMsg)
     QPixmap p1(":/resource/image/title.png");
     pw->setPixmap(p1);
     pw->show();
-
 }
+
+void MainWidget::setPreviewWidget(FileType type)
+{
+    switch(type)
+    {
+    case PDF:
+    {
+        PdfWidget *pdfWidget = new PdfWidget();
+        pdfWidget->setPdfFile("H://1.pdf");
+        pdfWidget->close();
+
+    }
+        break;
+    case PICTURE:
+    {
+        ImagePreView *pre = new ImagePreView();
+        pre->show();
+    }
+        break;
+
+        //音乐啥的处理
+
+    }
+}
+
+
 
 

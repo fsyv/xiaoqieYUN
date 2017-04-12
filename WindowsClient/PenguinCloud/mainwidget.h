@@ -6,8 +6,10 @@
 #include <QQueue>
 #include "basicwidget/basicwidget.h"
 #include "network/msgtype.h"
+#include "basiccontrol/pdfwidget.h"
 #include "basiccontrol/filetablewidget.h"
-
+#include "basiccontrol/managewidget.h"
+#include "tools/tools.h"
 class QLabel;
 class QPushButton;
 class QToolButton;
@@ -25,17 +27,20 @@ class MainWidget : public BasicWidget
 public:
     MainWidget(QWidget *parent = 0);
     ~MainWidget();
-
     QString getUserName() const;
-    void setUserName(const QString &UserName);
-
-    QString getPrePath() const;
-    void setPrePath(const QString &PrePath);
-
     QString getCurrentPath() const;
+    QString getPrePath() const;
+
+    void setUserName(const QString &UserName);
+    void setPrePath(const QString &PrePath);
     void setCurrentPath(const QString &CurrentPath);
 
     void replyFileLists(const QString &FolderPath);
+
+
+    void setPreviewWidget(FileType);
+
+
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -55,7 +60,7 @@ public slots:
     void removeFileOrFolder(const QString &path);
     void rename(const QString &newName, const QString &oldName);
     void renameError(RenameMsg r);
-    void show_download_manage();
+    void show_manage();
     void removeSelected();
     void copySelectFilesOrFolder(const QStringList &path);
     void moveSelectFilesOrFolder(const QStringList &path);
@@ -79,6 +84,7 @@ private:
     QListView *listView;
     FileTableWidget *tableWidget;
     DownloadManage *load;
+    ManageWidget *manageUpAndDown;
 
 
     QLabel *sys_info;
