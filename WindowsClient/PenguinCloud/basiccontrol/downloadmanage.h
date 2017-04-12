@@ -1,4 +1,4 @@
-#ifndef DOWNLOADMANAGE_H
+﻿#ifndef DOWNLOADMANAGE_H
 #define DOWNLOADMANAGE_H
 
 #include <QtWidgets>
@@ -8,6 +8,7 @@ class DownloadManage : public BasicWidget
     Q_OBJECT
 public:
     explicit DownloadManage(BasicWidget *parent = 0);
+    ~DownloadManage();
     void addRow(const QString &filename, QProgressBar* &progress, QPushButton* &cancel, QPushButton* &paste);
 signals:
 
@@ -16,7 +17,7 @@ public slots:
 private:
     void init();
 
-    QLabel *title;
+    //QLabel *title;
     QTableWidget *download;
 };
 

@@ -36,8 +36,8 @@ LoginWidget::~LoginWidget()
 {
     m_pConnectToServer = nullptr;
 
-    if(m_pMainWidget)
-        delete m_pMainWidget;
+//    if(m_pMainWidget)
+//        delete m_pMainWidget;
     m_pMainWidget = nullptr;
 }
 

@@ -1,4 +1,4 @@
-#include "tools.h"
+﻿#include "tools.h"
 #include <QJsonDocument>
 #include <QJsonValue>
 #include <QJsonParseError>
@@ -46,4 +46,35 @@ QVector<QStringList> Tools::getTableRow(QByteArray &byteArray)
     }
 
     return vec;
+}
+
+FileType Tools::getFileType(const QString &filename)
+{
+     QStringList office;
+     QStringList music;
+     QStringList film;
+     QStringList picture;
+
+     office << "doc" << "xls" << "ppt" << "xlsx" << "pptx" << "pdf";
+     music << "wav" << "mp3";
+     film << "mp4" << "3gp" << "rm" << "rmvb";
+     picture << "png" << "jpg" << "ico";
+
+     QString format = filename.split('.').last();
+     if (office.contains(format.toLower()))
+     {
+        return PDF;
+     }
+     else if (music.contains(format.toLower()))
+     {
+        return MP3;
+     }
+     else if (film.contains(format.toLower()))
+     {
+        return MP4;
+     }
+     else if (picture.contains(format.toLower()))
+     {
+        return PICTURE;
+     }
 }
