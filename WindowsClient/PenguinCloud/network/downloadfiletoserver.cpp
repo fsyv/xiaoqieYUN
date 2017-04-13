@@ -101,7 +101,7 @@ void DownloadFileToServer::pause()
     m_pTcpSocket->waitForDisconnected(500);
 
     out << "currentsize:" << QString::number(m_i64CurrentDownloadSize) << endl;
-    out << "serverUrl:" << m_serverUrl.toString().toUtf8();
+    out << "serverUrl:" << m_serverUrl.toString().toUtf8().data();
     out.flush();
 
     tmpFile.close();
@@ -117,6 +117,13 @@ void DownloadFileToServer::stop()
 bool DownloadFileToServer::getRun() const
 {
     return m_bRun;
+}
+
+bool DownloadFileToServer::isFinished()
+{
+    //run等于false或者m_i64CurrentDownloadSize == m_i64FileSize时
+    //视为任务完成
+    return !m_bRun || m_i64CurrentDownloadSize == m_i64FileSize;
 }
 
 void DownloadFileToServer::setFileSize(const qint64 &fileSize)

@@ -44,10 +44,15 @@ void DownloadThread::setFileSize(qint64 fileSize)
 }
 void DownloadThread::run()
 {
-    qDebug() << "DownloadThread::run()";
-
     m_download = new DownloadFileToServer(m_stLocalPath, m_serverUrl, m_i64FileSize);
-    exec();
+
+    while(m_download->getTaskStatus())
+    {
+
+    }
+
+    delete m_download;
+    m_download = nullptr;
 }
 
 bool DownloadThread::getCurrentStatus()

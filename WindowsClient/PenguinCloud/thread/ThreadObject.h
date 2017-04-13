@@ -1,9 +1,13 @@
 #pragma once
-class ThreadObject
+
+#include <QObject>
+
+class ThreadObject : QObject
 {
+    Q_OBJECT
 public:
-	ThreadObject();
-	~ThreadObject();
+    ThreadObject(QObject *parent = nullptr);
+    virtual ~ThreadObject();
 
 	//子类需要重写这个方法
     virtual void run() = 0;

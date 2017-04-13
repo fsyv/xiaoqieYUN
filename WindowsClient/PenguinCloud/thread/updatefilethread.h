@@ -1,12 +1,12 @@
 #ifndef UPDATEFILETHREAD_H
 #define UPDATEFILETHREAD_H
 
-#include <QThread>
+#include "ThreadObject.h"
 #include <QTimerEvent>
 #include <QUrl>
 #include <qDebug>
 
-class UpdateFileThread : public QThread
+class UpdateFileThread : public ThreadObject
 {
     Q_OBJECT
 public:
@@ -38,7 +38,7 @@ protected:
     virtual double getCurrentTaskProgress() = 0;
 
     //定时检测当前任务进行状态
-    void timerEvent(QTimerEvent *event) override;
+    void timerEvent(QTimerEvent *event);
     void startCheckCurrentProgressTimer();
     void stopCheckCurrentProgressTimer();
 

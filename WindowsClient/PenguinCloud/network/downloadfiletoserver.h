@@ -18,6 +18,7 @@ public:
     void pause();
     void stop();
     bool getRun() const;
+    bool isFinished();
 
     void setFileSize(const qint64 &fileSize);
 

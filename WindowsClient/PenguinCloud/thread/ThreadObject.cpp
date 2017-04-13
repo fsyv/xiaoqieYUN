@@ -2,7 +2,8 @@
 
 #include<thread>
 
-ThreadObject::ThreadObject()
+ThreadObject::ThreadObject(QObject *parent) :
+    QObject(parent)
 {
 
 }

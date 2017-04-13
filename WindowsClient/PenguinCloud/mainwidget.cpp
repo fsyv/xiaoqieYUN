@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "network/connecttoserver.h"
 #include "tools/tools.h"
+#include "thread/ThreadPool.h"
 #include "thread/uploadthread.h"
 #include "thread/downloadthread.h"
 #include "file/file.h"
@@ -17,8 +18,10 @@ MainWidget::MainWidget(QWidget *parent) :
     BasicWidget(parent),
     m_pConnectToServer(nullptr),
     m_pUploadTaskLists(nullptr),
-    m_pDownloadTaskLists(nullptr)
+    m_pDownloadTaskLists(nullptr),
+    m_pThreadPool(nullptr)
 {
+    m_pThreadPool = new ThreadPool;
     resize(800, 600);
     init();
     setListViewItem();
@@ -103,6 +106,10 @@ MainWidget::~MainWidget()
     if(m_pFileLists)
         delete m_pFileLists;
     m_pFileLists = nullptr;
+
+    if(m_pThreadPool)
+        delete m_pThreadPool;
+    m_pThreadPool = nullptr;
 }
 
 void MainWidget::setListViewItem()
@@ -302,7 +309,7 @@ void MainWidget::recvUploadFile_readyReadUploadMsg(UploadMsg uploadMsg)
 {
     QString name(uploadMsg.fileName);
     m_pUploadTaskLists->value(name)->setServerUrl(QString(SERVER_IP), uploadMsg.serverFilePort);
-    m_pUploadTaskLists->value(name)->start();
+    m_pThreadPool->addJob(m_pUploadTaskLists->value(name));
 }
 
 void MainWidget::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg)
@@ -316,7 +323,7 @@ void MainWidget::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg)
         thread->setServerUrl(QString(SERVER_IP), downloadMsg.serverFilePort);
         FileObject *fileObject = m_pFileLists->value(thread->getRemotePath());
         thread->setFileSize(fileObject->getSize());
-        thread->start();
+        m_pThreadPool->addJob(thread);
     }
 }
 
