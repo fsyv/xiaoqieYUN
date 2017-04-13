@@ -3,8 +3,10 @@
 #include <mutex>
 #include <condition_variable>
 #include <queue>
-#include <vector>
-
+#include <map>
+#define MAX_CHANGE 10
+#define MIN_TIMER 1
+#define MAX_TIMER 1000
 class ThreadObject;
 
 class ThreadPool
@@ -37,14 +39,24 @@ private:
 	std::mutex workerMutex;
 	//工人结束休息的条件信号量
 	std::condition_variable_any workerCondition;
+
+	//工人编号
+	//用来判断是不是被解雇的依据
+	std::map<std::thread::id, bool> workersSerialNumber;
+	//编号锁
+	std::mutex serialMutex;
+
 	//工作队列
 	std::queue<ThreadObject *> tasks;
 	//工作队列锁
 	std::mutex taskQueueMutex;
+
 	//老板
 	std::thread boss;
+	//老板视察锁
+	std::mutex bossMutex;
 	//老板结束休息的条件信号量
-    std::condition_variable_any bossCondition;
+	std::condition_variable_any bossCondition;
 
 	//最大工人数量
 	int m_iMaxWorker;
@@ -59,7 +71,18 @@ private:
 	//裁员的依据
 	//working : wait
 	double m_dWWScale;
+	//理论工作量
+	int m_iTheoryWorking;
 	//线程池结束标志
 	bool m_bRun;
+	//最大人员变动，变动数超过这个之后
+	//老板视察工作的时间会缩短
+	int m_iMaxChange;
+	//老板视察工作最小时间差
+	//单位ms
+	int m_iMinTimer;
+	//老板视察工作最大时间差
+	//单位ms
+	int m_iMaxTimer;
 };
 
