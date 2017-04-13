@@ -2,20 +2,17 @@
 #define CONNECTTOFILESERVER_H
 
 #include <QUrl>
-#include <QTcpSocket>
 
 #include "abstractnetwork.h"
 
 
-class ConnectToFileServer : public AbstractNetwork, public QTcpSocket
+class ConnectToFileServer : public AbstractNetwork
 {
     Q_OBJECT
 public:
     ConnectToFileServer(QUrl serverUrl,QObject *parent = nullptr);
 
 private:
-    //实现父类sendMsg方法
-    int sendMsg(Msg *msg);
 
 };
 

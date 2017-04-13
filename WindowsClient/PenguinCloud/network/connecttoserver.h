@@ -1,9 +1,7 @@
 #ifndef CONNECTTOSERVER_H
 #define CONNECTTOSERVER_H
 
-#include <QObject>
 #include <QMutex>
-#include <QTcpSocket>
 
 #include "abstractnetwork.h"
 
@@ -26,10 +24,6 @@ private:
     static ConnectToServer* conn;
     static QMutex mutex;
 
-    //实现父类sendMsg方法
-    int sendMsg(Msg *msg);
-
-    QTcpSocket *p_tcpSocket;
     char *p_aRecvBuf;
     char *p_cRearBuf;
     char *p_cHeadBuf;

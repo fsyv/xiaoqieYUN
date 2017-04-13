@@ -1,7 +1,7 @@
 ﻿#ifndef ABSTRACTNETWORK_H
 #define ABSTRACTNETWORK_H
 
-#include <QObject>
+#include <QTcpSocket>
 
 #include"msgtype.h"
 
@@ -17,7 +17,7 @@ typedef struct _Msg{
     char m_aMsgData[0];						//消息内容
 }Msg, *pMsg;
 
-class AbstractNetwork: public QObject
+class AbstractNetwork: public QTcpSocket
 {
     Q_OBJECT
 public:
@@ -106,7 +106,7 @@ signals:
 
 protected:
     //sendMsg是纯虚函数，需要在子类中实现
-    virtual int sendMsg(Msg *msg) = 0;
+    virtual int sendMsg(Msg *msg);
     virtual void recvMsg(Msg *msg);
 
     int m_iMsgStructLen;
