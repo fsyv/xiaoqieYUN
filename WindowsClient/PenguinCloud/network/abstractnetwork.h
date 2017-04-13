@@ -10,6 +10,9 @@
 //#define SERVER_IP "192.168.89.129"
 //#define SERVER_IP "127.0.0.1"
 
+#define MAX_SEND_BUF (64 * 1024)
+#define MAX_READ_BUF MAX_SEND_BUF
+
 typedef struct _Msg{
     unsigned int m_uiCheckCrc;              //消息校验 0xAFAFAFAF
     MsgType m_eMsgType;				   		//消息类型

@@ -87,9 +87,9 @@ MainWidget::~MainWidget()
         {
             if(cur.value())
             {
-//                cur.value()->pause();
-//                //等待任务结束
-//                cur.value()->wait(1000);
+                //                cur.value()->pause();
+                //                //等待任务结束
+                //                cur.value()->wait(1000);
                 delete cur.value();
             }
         }
@@ -283,7 +283,7 @@ void MainWidget::recvFileLists(QByteArray byteArray)
                 {
                     //文件夹
                     QDateTime dateTime = QDateTime::fromTime_t(array.at(i).toObject()
-                                   .value("lastmodifytime").toInt());
+                                                               .value("lastmodifytime").toInt());
                     QString name = array.at(i).toObject().value("name").toString();
 
                     m_pFileLists->insert(path + name, new Folder(name, dateTime));
@@ -292,7 +292,7 @@ void MainWidget::recvFileLists(QByteArray byteArray)
                 {
                     //文件
                     QDateTime dateTime = QDateTime::fromTime_t(array.at(i).toObject()
-                                   .value("lastmodifytime").toInt());
+                                                               .value("lastmodifytime").toInt());
                     QString name = array.at(i).toObject().value("name").toString();
                     qint64 size = array.at(i).toObject().value("size").toVariant().toLongLong();
 
@@ -417,14 +417,7 @@ void MainWidget::doloadFile_download()
                 });
                 QPushButton *pause = new QPushButton();
                 connect(pause, &QPushButton::clicked, this, [uft](){
-                    if(uft->getCurrentStatus())
-                    {
-                        uft->pause();
-                    }
-                    else
-                    {
-                        uft->start();
-                    }
+                    uft->pause();
                 });
 
                 QProgressBar *bar = new QProgressBar();
@@ -604,11 +597,11 @@ void MainWidget::preview(const QString &_path)
     strcpy(previewMsg.path, wholepath.toUtf8().data());
     m_pConnectToServer->sendPreviewMsg(previewMsg);
 
-//    qDebug() << "显示预览";
-//    ImagePreView *pw = new ImagePreView();
-//    QPixmap p1(":/resource/image/title.png");
-//    pw->setPixmap(p1);
-//    pw->show();
+    //    qDebug() << "显示预览";
+    //    ImagePreView *pw = new ImagePreView();
+    //    QPixmap p1(":/resource/image/title.png");
+    //    pw->setPixmap(p1);
+    //    pw->show();
     setPreviewWidget(Tools::getFileType(_path));
 }
 

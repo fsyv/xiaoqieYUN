@@ -1,11 +1,24 @@
 #include "updatefilethread.h"
 
 UpdateFileThread::UpdateFileThread(QString localPath, QString remotePath, QObject *parent):
-    ThreadObject(parent)
+    ThreadObject(parent),
+    m_pSocket(nullptr),
+    m_i64CurrentSize(0LL),
+    m_bFinished(false)
 {
     m_iTimerID = 0;
     setLocalPath(localPath);
     setRemotePath(remotePath);
+}
+
+UpdateFileThread::~UpdateFileThread()
+{
+
+}
+
+void UpdateFileThread::start()
+{
+    startCheckCurrentProgressTimer();
 }
 
 void UpdateFileThread::pause()
@@ -28,7 +41,7 @@ void UpdateFileThread::stop()
 
 void UpdateFileThread::setFileSize(qint64 fileSize)
 {
-
+    m_i64FileSize = fileSize;
 }
 
 QString UpdateFileThread::getLocalPath() const
@@ -49,11 +62,6 @@ QString UpdateFileThread::getRemotePath() const
 void UpdateFileThread::setRemotePath(const QString &stRemotePath)
 {
     m_stRemotePath = stRemotePath;
-}
-
-void UpdateFileThread::setServerUrl(QString serverHost)
-{
-    m_serverUrl.setUrl(serverHost);
 }
 
 void UpdateFileThread::setServerUrl(QString serverIP, quint16 port)
@@ -85,11 +93,21 @@ bool UpdateFileThread::operator ==(const UpdateFileThread *other) const
     return false;
 }
 
+double UpdateFileThread::getCurrentTaskProgress()
+{
+    return double(1.0 * m_i64CurrentSize / m_i64FileSize);
+}
+
 void UpdateFileThread::timerEvent(QTimerEvent *event)
 {
     if(event->timerId() == m_iTimerID)
     {
-        emit currentTaskProgress(getCurrentTaskProgress());
+        double progress = getCurrentTaskProgress();
+        emit currentTaskProgress(progress);
+
+        //当前任务进度大于等于1.0就停止Timer
+        if(progress >= 1.0)
+            stopCheckCurrentProgressTimer();
     }
     else
     {
