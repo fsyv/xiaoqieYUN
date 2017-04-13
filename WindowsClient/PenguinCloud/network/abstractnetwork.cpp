@@ -3,7 +3,7 @@
 #include "string.h"
 
 AbstractNetwork::AbstractNetwork(QObject *parent):
-    QObject(parent)
+    QTcpSocket(parent)
 {
     m_iMsgStructLen = sizeof(Msg);
 }
@@ -346,6 +346,12 @@ void AbstractNetwork::recvExitMsg(Msg *msg)
     ExitMsg exitMsg;
     memcpy(&exitMsg, msg->m_aMsgData, msg->m_iMsgLen);
     emit readyReadExitMsg(exitMsg);
+}
+
+int AbstractNetwork::sendMsg(Msg *msg)
+{
+    msg->m_uiCheckCrc = 0xAFAFAFAF;
+    return write((char *)msg, m_iMsgStructLen + msg->m_iMsgLen);
 }
 
 void AbstractNetwork::recvMsg(Msg *msg)

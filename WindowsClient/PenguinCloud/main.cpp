@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
 
 //    ImagePreView w;
     LoginWidget w;
+
 //    PdfWidget w;
 //    ManageWidget w;
     w.show();
