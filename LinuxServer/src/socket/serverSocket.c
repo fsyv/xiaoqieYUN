@@ -13,6 +13,26 @@
 
 #include "../message/nstdmsgio.h"
 #include "../tools/tools.h"
+#include "../operating/serverOperating.h"
+#include "../queue/threadPool.h"
+
+
+//创建响应服务器
+void createServerService()
+{
+    int sockfd = createSocketServer(SERVER_PORT);
+    if(sockfd)
+        listenClient(sockfd);
+    closeSockfd(sockfd);
+}
+//创建文件服务器
+void createFileServer()
+{
+    int sockfd = createSocketServer(FILE_SERVER_PORT);
+    if(sockfd)
+        fileServerListen(sockfd);
+    closeSockfd(sockfd);
+}
 
 /**
  * 关闭服务端soc关闭服务端socketfdketfd
@@ -56,7 +76,7 @@ void setnblocking(int sockfd)
  * 创建服务器socket
  * @return 服务器描述字
  */
-int createSocketServer()
+int createSocketServer(unsigned int port)
 {
     int err = 0;
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -66,7 +86,7 @@ int createSocketServer()
         fprintf(stderr, "createSocketServer : %s \n", strerror(errno));
 #endif
         fprintf(stdout, "createSocketServer faild!!\n");
-        exit(-1);
+        return 0;
     }
 
 #ifdef Debug
@@ -82,10 +102,10 @@ int createSocketServer()
 
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
-    serverAddress.sin_port = htons(SERVER_PORT);
+    serverAddress.sin_port = htons(port);
 
 #ifdef Debug
-    fprintf(stdout, "Server Port at %d\n", SERVER_PORT);
+    fprintf(stdout, "Server Port at %d\n", port);
 #endif
 
     err = bind(sockfd, (struct sockaddr *)&serverAddress, serverAddressLen);
@@ -96,7 +116,7 @@ int createSocketServer()
 #endif
         fprintf(stdout, "bind faild!!\n");
         closeSockfd(sockfd);
-        exit(-1);
+        return 0;
     }
 #ifdef Debug
     fprintf(stdout, "bind  created!!\n");
@@ -124,14 +144,14 @@ void listenClient(int serverSocketfd)
 
     //监听
     int err = listen(serverSocketfd, MAX_LISTEN);
-    if(err)
+    if(err < 0)
     {
 #ifdef Debug
         fprintf(stderr, "listenClient : %s \n", strerror(errno));
 #endif
         fprintf(stdout, "listen faild!!\n");
         closeSockfd(serverSocketfd);
-        exit(-1);
+        return;
     }
 
 #ifdef Debug
@@ -163,6 +183,120 @@ void listenClient(int serverSocketfd)
     }
 }
 
+//文件服务器监听
+void fileServerListen(int fileServerSockfd)
+{
+    //epoll
+    //epoll_event结构体，用来创建和接收epoll事件
+    struct epoll_event ev, events[MAX_LISTEN];
+    //创建epoll fd
+    int epfd = epoll_create(MAX_LISTEN + 1);
+
+    ev.data.fd = fileServerSockfd;
+    ev.events = EPOLLIN;
+
+    //注册epoll事件
+    epoll_ctl(epfd, EPOLL_CTL_ADD, fileServerSockfd, &ev);
+
+    //监听
+    int err = listen(fileServerSockfd, MAX_LISTEN);
+    if(err < 0)
+    {
+#ifdef Debug
+        fprintf(stderr, "listenClient : %s \n", strerror(errno));
+#endif
+        fprintf(stdout, "listen faild!!\n");
+        closeSockfd(fileServerSockfd);
+        return;
+    }
+
+#ifdef Debug
+    fprintf(stdout, "Max Listen : %d \n", MAX_LISTEN);
+#endif
+
+    extern ThreadPool *m_pThreadPool;
+    TaskQueue *taskQueue = NULL;
+
+    char recvBuf[1025];
+    memset(recvBuf, 0, 1024);
+
+    //一次事件的总数
+    int numberFds = 0;
+    int i = 0;
+    int ret = 0;
+    int clientfd = 0;
+    Msg *msg = NULL, *sendMsg = NULL;
+    while(1)
+    {
+        //等待
+        numberFds = epoll_wait(epfd, events, MAX_LISTEN, EPOLL_TIME_OUT);
+
+        //处理EPOLL_TIME_OUT内发生的所有事件
+        for(i = 0; i < numberFds; ++i)
+        {
+            if (events[i].data.fd == fileServerSockfd)
+            {
+                printf("file client\n");
+                //新连接
+                newConnection(events[i].data.fd, epfd, &ev);
+            }
+            else if (events[i].events & EPOLLIN)
+            {
+                printf("file msg\n");
+                clientfd = events[i].data.fd;
+                //收到消息
+                ret = recv(clientfd, recvBuf, 1024, 0);
+
+                printf("fileServer Ret = %d\n", ret);
+
+                if (ret < 0)
+                {
+#ifdef Debug
+                    fprintf(stderr, "file server recv : %s \n", strerror(errno));
+#endif
+                    //删除这个fd
+                    ev.data.fd = clientfd;
+                    epoll_ctl(epfd, EPOLL_CTL_DEL, clientfd, &ev);
+                    close(clientfd);
+                    continue;
+                }
+
+                msg = (Msg *)recvBuf;
+                sendMsg = (Msg *)malloc(sizeof(Msg) + msg->m_iMsgLen);
+                memcpy(sendMsg, recvBuf, ret);
+
+                if (msg->m_eMsgType == Put_Upload)
+                {
+                    //上传
+                    taskQueue = (pTaskQueue)malloc(sizeof(TaskQueue));
+                    memset(taskQueue, 0, sizeof(TaskQueue));
+
+                    taskQueue->p_fCallBackFunction = &uploadFileThread;
+                }
+                else if(msg->m_eMsgType == Get_Download)
+                {
+                    //下载
+                    taskQueue = (pTaskQueue)malloc(sizeof(TaskQueue));
+                    memset(taskQueue, 0, sizeof(TaskQueue));
+
+                    taskQueue->p_fCallBackFunction = &downloadFileThread;
+                }
+                else
+                {
+                    continue;
+                }
+
+                taskQueue->sockfd = clientfd;
+                taskQueue->p_vArg = (void *)sendMsg;
+                addJobThreadPool(m_pThreadPool, taskQueue);
+
+                //删除这个fd
+                ev.data.fd = clientfd;
+                epoll_ctl(epfd, EPOLL_CTL_DEL, clientfd, &ev);
+            }
+        }
+    }
+}
 
 /**
  * 服务器监听到新的Tcp socket请求

@@ -8,10 +8,7 @@
 #include <unistd.h>
 #include <pthread.h>
 
-#include <sys/types.h>
-
 #include "socket/serverSocket.h"
-#include "socket/serverFileSocket.h"
 #include "queue/threadPool.h"
 
 //全局线程池
@@ -28,11 +25,9 @@ int main(int argc, char **argv)
     m_pThreadPool = createThreadPool(DEFAULT_THREAD_NUM);
 
     pthread_t filePthread;
-    pthread_create(&filePthread, NULL, createServerFileSocket, NULL);
+    pthread_create(&filePthread, NULL, createFileServer, NULL);
 
-    int sockfd = createSocketServer();
-    listenClient(sockfd);
-    closeSockfd(sockfd);
+    createServerService();
 
     destroyThreadPool(m_pThreadPool);
     return 0;
