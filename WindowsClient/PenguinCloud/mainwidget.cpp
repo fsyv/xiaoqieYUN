@@ -321,6 +321,7 @@ void MainWidget::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg)
         thread->setServerUrl(QString(SERVER_IP), downloadMsg.serverFilePort);
         FileObject *fileObject = m_pFileLists->value(thread->getRemotePath());
         thread->setFileSize(fileObject->getSize());
+        thread->start();
         m_pThreadPool->addJob(thread);
     }
 }
@@ -408,6 +409,7 @@ void MainWidget::doloadFile_download()
                             m_stUserName + path.top() + _item->text(), \
                             this\
                             );
+
                 m_pDownloadTaskLists->insert(uft->getRemotePath(), uft);
 
                 //在这里添加按钮的槽函数

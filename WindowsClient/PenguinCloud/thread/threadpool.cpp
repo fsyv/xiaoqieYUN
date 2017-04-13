@@ -38,7 +38,7 @@ ThreadPool::~ThreadPool()
     workerCondition.notify_all();
     while (workers.size())
     {
-        workers.front().join();
+        workers.front().detach();
         workers.pop();
     }
 }

@@ -74,7 +74,6 @@ void DownloadThread::pauseCurrenTask()
     QTextStream out(&tmpFile);
 
     out << "currentsize:" << QString::number(m_i64CurrentSize) << endl;
-    out << "serverUrl:" << m_serverUrl.toString().toUtf8().data();
     out.flush();
 
     tmpFile.close();
@@ -104,7 +103,7 @@ void DownloadThread::run()
 
     while(!m_bFinished && m_pSocket->isConnected())
     {
-        if(m_pSocket->isReadable())
+        if(m_pSocket->bytesAvailable())
             saveFileFromData(m_pSocket);
     }
 
