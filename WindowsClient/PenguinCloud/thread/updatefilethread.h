@@ -16,8 +16,6 @@ public:
     virtual void pause();
     //停止任务
     virtual void stop();
-    //开始任务
-    virtual void start();
     //设置文件大小
     virtual void setFileSize(qint64 fileSize);
 

@@ -46,10 +46,12 @@ void DownloadThread::run()
 {
     m_download = new DownloadFileToServer(m_stLocalPath, m_serverUrl, m_i64FileSize);
 
-    while(m_download->getTaskStatus())
+    startCheckCurrentProgressTimer();
+    while(m_download->isFinished())
     {
 
     }
+    stopCheckCurrentProgressTimer();
 
     delete m_download;
     m_download = nullptr;

@@ -53,14 +53,14 @@ DownloadFileToServer::DownloadFileToServer(QString localFilePath, QUrl remoteUrl
     if(m_file.open(QIODevice::WriteOnly))
     {
         //文件偏移到当前位置
-        m_file.seek(m_i64CurrentDownloadSize);
+        //m_file.seek(m_i64CurrentDownloadSize);
         m_out.setDevice(&m_file);
         m_out.setVersion(QDataStream::Qt_5_6);
     }
 
     m_pTcpSocket = new QTcpSocket(this);
     connect(m_pTcpSocket, SIGNAL(readyRead()), this, SLOT(readMessage()));
-	connect(m_pTcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(displayState(QAbstractSocket::SocketState)));
+    connect(m_pTcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(displayState(QAbstractSocket::SocketState)));
     connect(m_pTcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
     m_pTcpSocket->connectToHost(remoteUrl.host(), remoteUrl.port());
 
@@ -76,8 +76,13 @@ DownloadFileToServer::DownloadFileToServer(QString localFilePath, QUrl remoteUrl
 }
 DownloadFileToServer::~DownloadFileToServer()
 {
+    if(m_pTcpSocket->state() == QAbstractSocket::ConnectedState)
+        m_pTcpSocket->close();
+
+    delete m_pTcpSocket;
+    m_pTcpSocket = nullptr;
+
     m_file.close();
-    //    if(m_pTcpSocket->state() == )
 }
 
 double DownloadFileToServer::getCurrentProgress()
@@ -93,12 +98,12 @@ void DownloadFileToServer::pause()
 
     m_bRun = false;
 
+    if(m_pTcpSocket->state() == QAbstractSocket::ConnectedState)
+        m_pTcpSocket->close();
+
     QFile tmpFile(m_file.fileName() + ".tmp");
     tmpFile.open(QIODevice::WriteOnly);
     QTextStream out(&tmpFile);
-
-    //给0.5秒的断开网络时间
-    m_pTcpSocket->waitForDisconnected(500);
 
     out << "currentsize:" << QString::number(m_i64CurrentDownloadSize) << endl;
     out << "serverUrl:" << m_serverUrl.toString().toUtf8().data();
@@ -109,9 +114,14 @@ void DownloadFileToServer::pause()
 
 void DownloadFileToServer::stop()
 {
+    qDebug() << "stop";
+
     m_bRun = false;
-    //给0.5秒的暂停时间
-    m_pTcpSocket->waitForDisconnected(500);
+
+    if(m_pTcpSocket->state() == QAbstractSocket::ConnectedState)
+        m_pTcpSocket->close();
+
+    m_file.remove();
 }
 
 bool DownloadFileToServer::getRun() const
@@ -151,8 +161,6 @@ void DownloadFileToServer::readMessage()
 void DownloadFileToServer::displayState(QAbstractSocket::SocketState)
 {
     qDebug() << m_pTcpSocket->state();
-    //如果状态改成可上传，则开始上传
-    //updateFile();
 }
 void DownloadFileToServer::displayError(QAbstractSocket::SocketError)
 {

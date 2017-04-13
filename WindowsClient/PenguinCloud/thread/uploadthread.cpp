@@ -46,7 +46,6 @@ void UploadThread::pauseCurrenTask()
 void UploadThread::run()
 {
     m_upload = new UploadFileToServer(m_fileinfo.filePath(), m_serverUrl);
-    exec();
 }
 
 bool UploadThread::getCurrentStatus()

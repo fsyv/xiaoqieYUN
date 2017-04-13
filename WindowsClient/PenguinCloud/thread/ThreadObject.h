@@ -2,7 +2,7 @@
 
 #include <QObject>
 
-class ThreadObject : QObject
+class ThreadObject : public QObject
 {
     Q_OBJECT
 public:

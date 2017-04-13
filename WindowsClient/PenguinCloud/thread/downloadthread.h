@@ -6,8 +6,6 @@
 
 #include "updatefilethread.h"
 
-#include "../network/msgtype.h"
-
 class DownloadFileToServer;
 
 class DownloadThread : public UpdateFileThread

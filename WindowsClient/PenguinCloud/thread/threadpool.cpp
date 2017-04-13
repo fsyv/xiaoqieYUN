@@ -1,7 +1,6 @@
 #include "ThreadPool.h"
-#include "ThreadObject.h"
 
-#include <iostream>
+#include "ThreadObject.h"
 
 using namespace std;
 
@@ -47,8 +46,6 @@ ThreadPool::~ThreadPool()
 //添加工作
 void ThreadPool::addJob(ThreadObject *job)
 {
-    cout << "addJob" << endl;
-
     taskQueueMutex.lock();
 
     tasks.push(job);
@@ -61,10 +58,7 @@ void ThreadPool::addJob(ThreadObject *job)
     //就要把在休息中的老板唤醒
     //对工作进行视察
     if (m_iTaskNumber > 1)
-    {
-        cout << "老板起来了！！ m_iTaskNumber" << m_iTaskNumber << endl;
         bossCondition.notify_one();
-    }
 
     //唤醒一个正在休息的工人
     workerCondition.notify_one();
@@ -187,7 +181,6 @@ void ThreadPool::bossJob()
         //老板则进入休息状态
         if (m_iMaxWorker == 1 && m_iTaskNumber == 0)
         {
-            cout << "老板休息了" << endl;
             m_iBossInspectionCycle = m_iMaxTimer;
             bossCondition.wait(bossMutex);
         }
@@ -228,14 +221,11 @@ void ThreadPool::workerJob()
     while (m_bRun && workersSerialNumber[this_thread::get_id()])
     {
         workerMutex.lock();
-        cout << "被锁住了" << endl;
         //如果任务队列为空就锁住
         while (this->m_bRun && this->tasks.empty())
             workerCondition.wait(workerMutex);
 
         workerMutex.unlock();
-
-        cout << "开锁了" << endl;
 
         taskQueueMutex.lock();
 

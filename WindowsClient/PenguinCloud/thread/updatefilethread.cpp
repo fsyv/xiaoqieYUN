@@ -1,7 +1,7 @@
 #include "updatefilethread.h"
 
 UpdateFileThread::UpdateFileThread(QString localPath, QString remotePath, QObject *parent):
-    QThread(parent)
+    ThreadObject(parent)
 {
     m_iTimerID = 0;
     setLocalPath(localPath);
@@ -15,8 +15,6 @@ void UpdateFileThread::pause()
     stopCheckCurrentProgressTimer();
     //暂停也是让这个线程退出，但是干得事情不一样
     pauseCurrenTask();
-    //退出这个线程
-    QThread::exit();
 }
 
 void UpdateFileThread::stop()
@@ -26,17 +24,6 @@ void UpdateFileThread::stop()
     stopCheckCurrentProgressTimer();
     //退出前需要处理一些东西
     stopCurrenTask();
-    //退出这个线程
-    QThread::exit();
-}
-
-void UpdateFileThread::start()
-{
-    qDebug() << "UpdateFileThread::start";
-
-    //默认以最低优先级启动线程
-    QThread::start(LowestPriority);
-    startCheckCurrentProgressTimer();
 }
 
 void UpdateFileThread::setFileSize(qint64 fileSize)
@@ -106,7 +93,7 @@ void UpdateFileThread::timerEvent(QTimerEvent *event)
     }
     else
     {
-        QThread::timerEvent(event);
+        ThreadObject::timerEvent(event);
     }
 }
 

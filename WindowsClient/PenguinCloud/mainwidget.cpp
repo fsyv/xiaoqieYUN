@@ -70,8 +70,6 @@ MainWidget::~MainWidget()
             if(cur.value())
             {
                 cur.value()->pause();
-                //等待任务结束
-                cur.value()->wait(1000);
                 delete cur.value();
             }
         }
