@@ -1,5 +1,7 @@
 #include "downloadthread.h"
 
+#include <thread>
+
 #include <QDir>
 
 DownloadThread::DownloadThread(QString localPath, QString remotePath, QObject *parent):
@@ -101,7 +103,8 @@ void DownloadThread::run()
 
     m_pSocket->sendDownloadMsg(downloadMsg);
 
-    while(!m_bFinished && m_pSocket->isConnected())
+
+    while(m_pSocket->waitForReadyRead() && !m_bFinished && m_pSocket->isConnected())
     {
         if(m_pSocket->bytesAvailable())
             saveFileFromData(m_pSocket);
@@ -109,6 +112,5 @@ void DownloadThread::run()
 
     delete m_pSocket;
     m_pSocket = nullptr;
-
 }
 

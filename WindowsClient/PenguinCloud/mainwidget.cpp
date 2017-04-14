@@ -21,7 +21,7 @@ MainWidget::MainWidget(QWidget *parent) :
     m_pDownloadTaskLists(nullptr),
     m_pThreadPool(nullptr)
 {
-    m_pThreadPool = new ThreadPool;
+    m_pThreadPool = new ThreadPool();
     resize(800, 600);
     init();
     setListViewItem();

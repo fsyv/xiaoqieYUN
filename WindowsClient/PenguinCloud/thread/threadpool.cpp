@@ -4,7 +4,8 @@
 
 using namespace std;
 
-ThreadPool::ThreadPool(int workerNumber) :
+ThreadPool::ThreadPool(int workerNumber, QObject *parent) :
+    QObject(parent),
     m_iBossInspectionCycle(1000),
     m_bRun(true),
     m_iMaxChange(MAX_CHANGE),
@@ -32,13 +33,14 @@ ThreadPool::ThreadPool(int workerNumber) :
 ThreadPool::~ThreadPool()
 {
     m_bRun = false;
+    bossCondition.notify_one();
     boss.join();
 
     //告诉所有工人把手中的工作做完就下班了
     workerCondition.notify_all();
     while (workers.size())
     {
-        workers.front().detach();
+        workers.front().join();
         workers.pop();
     }
 }
@@ -67,7 +69,7 @@ void ThreadPool::addJob(ThreadObject *job)
 //成为老板
 void ThreadPool::createBoss()
 {
-    boss = thread(&ThreadPool::bossJob, this);
+    boss = std::thread(&ThreadPool::bossJob, this);
 }
 
 //雇佣工人
