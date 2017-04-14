@@ -1,19 +1,26 @@
 #pragma once
+
+#include <QObject>
+
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 #include <queue>
 #include <map>
+
+#include<qDebug>
+
 #define MAX_CHANGE 10
 #define MIN_TIMER 1
 #define MAX_TIMER 1000
 class ThreadObject;
 
-class ThreadPool
+class ThreadPool : QObject
 {
+    Q_OBJECT
 public:
     //默认为没有员工
-    ThreadPool(int workerNumber = 0);
+    ThreadPool(int workerNumber = 0, QObject *parent = nullptr);
     ~ThreadPool();
 
     //添加工作
