@@ -458,7 +458,7 @@ void MainWidget::doloadFile_download()
                 });
                 QPushButton *pause = new QPushButton();
                 pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
-                connect(pause, &QPushButton::clicked, this, [uft, pause](){
+//                connect(pause, &QPushButton::clicked, this, [uft, pause](){
 //                    if(uft->getCurrentStatus())
 //                    {
 //                        uft->pause();
@@ -469,7 +469,7 @@ void MainWidget::doloadFile_download()
 //                        uft->start();
 //                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
 //                    }
-                });
+//                });
 
                 connect(pause, &QPushButton::clicked, this, [uft](){
                     uft->pause();

@@ -20,9 +20,14 @@ BasicWidget::BasicWidget(QWidget *parent)
    close_buttonn->setObjectName("bw_close_widget");
 
    title = new QLabel(this);
-   title->setFixedSize(100, 30);
+   title->setFixedSize(100, 32);
    title->setObjectName("title");
+
+   icon = new QLabel(this);
+   icon->setFixedSize(32, 32);
+
    drop = true;
+
 
    connect(close_buttonn, &QPushButton::clicked, this, [&](){this->close();});
 
@@ -89,11 +94,17 @@ void BasicWidget::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
     close_buttonn->move(this->width()-close_buttonn->width(), 0);
-    title->move(0, 0);
+    icon->move(2, 0);
+    title->move(20, 0);
     qDebug() << close_buttonn->width();
 }
 
 void BasicWidget::setTitle(const QString &titlename)
 {
     title->setText(titlename);
+}
+
+void BasicWidget::setIcon(const QString &path)
+{
+    icon->setPixmap(QPixmap(path).scaled(16, 16));
 }

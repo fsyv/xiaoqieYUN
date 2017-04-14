@@ -40,5 +40,7 @@ void recvDeleteMsg(int sockfd, Msg *msg);
 void recvShareMsg(int sockfd, Msg *msg);
 //退出消息
 void recvExitMsg(int sockfd, Msg *msg);
+//register message
+void recvRegisterMsg(int sockfd, Msg *msg);
 
 #endif //LINUXSERVER_MESSAGE_RECVMSG_H

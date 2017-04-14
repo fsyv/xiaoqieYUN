@@ -30,6 +30,9 @@ int sendDeleteMsg(int sockfd, DeleteMsg deleteMsg);
 int sendShareMsg(int sockfd, ShareMsg shareMsg);
 //退出消息
 int sendExitMsg(int sockfd, ExitMsg exitMsg);
+//send RegisterMsg
+int sendRegisterMsg(int sockfd, RegisterStatus status);
+
 
 //发送消息
 int sendMsg(int sockfd, Msg *msg);

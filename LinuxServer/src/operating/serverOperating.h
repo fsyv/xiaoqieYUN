@@ -2,7 +2,7 @@
 #define LINUXSERVER_OPERATING_SERVEROPERATING_H
 
 #include "../message/nstdmsgio.h"
-
+#include "../database/database.h"
 #define MAX_RECV_BUF (64 * 1024)
 
 //获取目录下的文件
@@ -21,4 +21,7 @@ int removeFolder(char *folderPath);
 int moveSrcToDes(char *src, char *des);
 //复制文件或文件夹
 int copySrcToDes(char *src, char *des);
+
+//register
+int registerUser(const char *username, const char *password);
 #endif //LINUXSERVER_OPERATING_SERVEROPERATING_H

@@ -5,7 +5,7 @@ QPushButton#bw_close_widget {
 }
 QLabel#title{
     color:white;
-    font: bold 20px;
+    font: bold 14px;
 }
 
 /*************************LoginWidget*******************************/
@@ -139,3 +139,29 @@ QPushButton
     border:none;
 }
 
+QPushButton#btn_ok
+{
+    color:white;
+    background-color:rgb(18 , 141, 219);
+    border: 1px solid rgb(11 , 137 , 234);
+}
+
+QPushButton#btn_ok:hover
+{
+    color:white;
+    background-color:rgb(18 , 141, 219);
+    border: 1px solid rgb(11 , 137 , 234);
+}
+
+QPushButton#btn_ok:pressed
+{
+    color:white;
+    background-color:rgb(18 , 141, 219);
+    border: 1px solid rgb(12 , 138 , 235);
+    padding-left:3px;
+    padding-top:3px;
+}
+QLabel#message
+{
+    font-size:14px;
+}

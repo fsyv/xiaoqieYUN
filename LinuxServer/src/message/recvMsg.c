@@ -97,6 +97,13 @@ void recvMsg(int sockfd, Msg *msg)
 #endif
             recvCopyMsg(sockfd, msg);
             break;
+    	case Put_Register:
+//#ifdef Debug
+	    fprintf(stdout, "Put_Register\n");
+//#endif
+	    recvRegisterMsg(sockfd, msg);
+	    break;
+
     }
 }
 
@@ -121,6 +128,8 @@ void recvLoginMsg(int sockfd, Msg *msg)
 {
     LoginMsg loginMsg;
     memset(&loginMsg, 0, sizeof(LoginMsg));
+
+	printf("LOGIN_SUCCESS\n");
 
     memcpy(&loginMsg, msg->m_aMsgData, msg->m_iMsgLen);
     loginMsg.m_iLoginStatus = LOGIN_SUCCESS;
@@ -271,4 +280,32 @@ void recvCopyMsg(int sockfd, Msg *msg)
     {
         //错误处理
     }
+}
+
+void recvRegisterMsg(int sockfd, Msg *msg)
+{
+    	int ret;
+	
+	RegisterMsg registerMsg;
+	memset(&registerMsg, 0, sizeof(RegisterMsg));
+	memcpy(&registerMsg, msg->m_aMsgData, msg->m_iMsgLen);
+
+	ret = registerUser(registerMsg.username, registerMsg.password);
+
+	RegisterStatus rs;
+	
+	if (ret == 0)
+	{
+		//success
+		memset(&rs, 0, sizeof(RegisterStatus));
+		rs.status = 0;
+	}
+    	else if (ret == -1)
+	{
+		memset(&rs, 0, sizeof(RegisterStatus));
+                rs.status = 1;
+	}
+	sendRegisterMsg(sockfd, rs);
+	
+	printf("send Register Status\n");
 }

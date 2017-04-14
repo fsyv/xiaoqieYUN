@@ -69,5 +69,7 @@
         <file>resource/image/DownLoadManage/jixu_hover.png</file>
         <file>resource/image/DownLoadManage/pause.png</file>
         <file>resource/image/DownLoadManage/pause_hover.png</file>
+        <file>resource/image/linux.png</file>
+        <file>resource/image/hite.png</file>
     </qresource>
 </RCC>

@@ -20,6 +20,7 @@ public:
     void setDroped(bool _drop);
     void hideCloseIcon();
     void setTitle(const QString &title);
+    void setIcon(const QString &path);
 protected:
     void mouseMoveEvent(QMouseEvent *e);
     void mousePressEvent(QMouseEvent *e);
@@ -33,6 +34,7 @@ private:
     QPushButton *close_buttonn;
     bool drop;
     QLabel *title;
+    QLabel *icon;
 };
 
 #endif // BasicWidget_H

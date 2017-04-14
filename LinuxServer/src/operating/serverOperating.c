@@ -13,7 +13,7 @@
 #include <stdbool.h>
 #include "../cjson/cJSON.h"
 #include "../message/nstdmsgio.h"
-
+#include "../database/database.h"
 
 /**
  * 获取目录下的文件
@@ -330,4 +330,18 @@ int copySrcToDes(char *src, char *des)
     printf("%s\n", command);
 
     return system(command);
+}
+
+
+int registerUser(const char *username, const char *password)
+{
+	UserStatus us = regis(username, password);
+	if(us == MYSQL_REGISTER_SUCCESS)
+	{
+		return 0;
+	}
+	else
+	{
+		return -1;
+	}
 }

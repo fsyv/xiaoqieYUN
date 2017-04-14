@@ -195,10 +195,29 @@ int sendExitMsg(int sockfd, ExitMsg exitMsg)
     return ret;
 }
 
+//RegisterStatus
+int sendRegisterMsg(int sockfd, RegisterStatus status)
+{
+	Msg *msg = (Msg*)malloc(sizeof(Msg) + sizeof(RegisterStatus));
+	bzero(msg, sizeof(Msg)+sizeof(RegisterStatus));
+
+	msg->m_eMsgType = Get_Register;
+	msg->m_iMsgLen = sizeof(RegisterStatus);
+	memcpy(msg->m_aMsgData, (void *)&status, msg->m_iMsgLen);
+
+        int ret = sendMsg(sockfd, msg);
+
+        free(msg);
+	return ret;
+
+}
+
+
 //发送消息
 int sendMsg(int sockfd, Msg *msg)
 {
     msg->m_uiCheckCrc = 0xAFAFAFAF;
     return send(sockfd, (void *)msg, sizeof(Msg) + msg->m_iMsgLen, 0);
 }
+
 

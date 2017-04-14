@@ -87,18 +87,18 @@ int AbstractNetwork::sendFileListMsg(FileListsMsg fileListsMsg)
 
 int AbstractNetwork::sendPreviewMsg(PreviewMsg previewMsg)
 {
-    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(PreviewMsg) + 1];
-    memset(msg, 0, m_iMsgStructLen + sizeof(PreviewMsg));
+//    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(PreviewMsg) + 1];
+//    memset(msg, 0, m_iMsgStructLen + sizeof(PreviewMsg));
 
-    msg->m_eMsgType = Put_Preview;
-    msg->m_iMsgLen = sizeof(PreviewMsg);
-    memcpy(msg->m_aMsgData, (void *)&previewMsg, msg->m_iMsgLen);
+//    msg->m_eMsgType = Put_Preview;
+//    msg->m_iMsgLen = sizeof(PreviewMsg);
+//    memcpy(msg->m_aMsgData, (void *)&previewMsg, msg->m_iMsgLen);
 
-    int ret = sendMsg(msg);
+//    int ret = sendMsg(msg);
 
-    delete msg;
+//    delete msg;
 
-    return ret;
+//    return ret;
 }
 
 int AbstractNetwork::sendDownloadMsg(DownloadMsg downloadMsg)
@@ -360,6 +360,14 @@ void AbstractNetwork::recvShareMsg(Msg *msg)
     emit readyReadShareMsg(shareMsg);
 }
 
+void AbstractNetwork::recvRegisterStatusMsg(Msg *msg)
+{
+    RegisterStatus registerStatus;
+    memcpy(&registerStatus, msg->m_aMsgData, msg->m_iMsgLen);
+
+    emit readyReadRegisterStatusMsg(registerStatus);
+}
+
 void AbstractNetwork::recvExitMsg(Msg *msg)
 {
     ExitMsg exitMsg;
@@ -429,6 +437,9 @@ void AbstractNetwork::recvMsg(Msg *msg)
     case Ack_Exit:
         //准备就绪
         recvExitMsg(msg);
+        break;
+    case Get_Register:
+        recvRegisterStatusMsg(msg);
         break;
     }
 }

@@ -18,7 +18,7 @@ typedef enum _MsgType{
     Put_Delete,         //删除操作
     Put_Share,          //分享操作
     Ack_Exit,           //退出
-    Put_Preview,        //预览请求
+//    Put_Preview,        //预览请求
     Put_Register,       //注册请求
     Get_Register        //注册响应
 }MsgType;
@@ -129,5 +129,10 @@ typedef struct _RegisterMsg{
     // 保留段
     // 包括用户基本信息
 }RegisterMsg, *pRegisterMsg;
+
+//reponse client message
+typedef struct _RegisterStatus{
+        int status; // 0 success; 1 error;
+}RegisterStatus;
 
 #endif // MSGTYPE_H

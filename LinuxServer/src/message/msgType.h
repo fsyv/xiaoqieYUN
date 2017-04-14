@@ -17,7 +17,9 @@ typedef enum _MsgType{
     Put_Upload,         //上传操作
     Put_Delete,         //删除操作
     Put_Share,          //分享操作
-    Ack_Exit            //退出
+    Ack_Exit,            //退出
+    Put_Register,
+    Get_Register
 }MsgType;
 
 //错误类型
@@ -117,5 +119,15 @@ typedef struct _ExitMsg{
 
 }ExitMsg, *pExitMsg;
 
+typedef struct _RegisterMsg{
+    char username[64];      // 用户名
+    char password[128];     // 密码
+    // 保留段
+    // 包括用户基本信息
+}RegisterMsg, *pRegisterMsg;
 
+//reponse client message
+typedef struct _RegisterStatus{
+	int status; // 0 success; 1 error;
+}RegisterStatus;
 #endif //LINUXSERVER_MESSAGE_MSGTYPE_H
