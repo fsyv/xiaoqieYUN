@@ -17,9 +17,11 @@ UploadThread::UploadThread(QString localPath, QString remotePath, QObject *paren
     }
     else
     {
+        m_file.setFileName(fileInfo.filePath());
         if(m_file.open(QIODevice::ReadOnly))
         {
-            m_i64FileSize = quint64(m_file.size());
+            m_i64FileSize = qint64(m_file.size());
+            qDebug() << "m_i64FileSize" << m_i64FileSize;
         }
     }
 }
@@ -31,11 +33,14 @@ UploadThread::~UploadThread()
 
 void UploadThread::stopCurrenTask()
 {
-
+    m_bFinished = true;
+    //删除已经上传的文件
 }
 
 void UploadThread::pauseCurrenTask()
 {
+    qDebug() << "pause";
+    m_bFinished = true;
 
 }
 
@@ -52,9 +57,11 @@ void UploadThread::loadDataFromFile(ConnectToFileServer *server, const UploadMsg
 
     int ret = 0;
 
-    while(!dataStream.atEnd() && m_bFinished)
+    while(!dataStream.atEnd() && !m_bFinished)
     {
         ret = dataStream.readRawData(sendBuf, MAX_READ_BUF);
+
+        qDebug() << m_i64CurrentSize;
 
         m_i64CurrentSize += qint64(ret);
 
@@ -63,7 +70,8 @@ void UploadThread::loadDataFromFile(ConnectToFileServer *server, const UploadMsg
         memset(sendBuf, 0, ret);
     }
 
-    server->close();
+    server->waitForReadyRead();
+
     delete []sendBuf;
     m_bFinished = true;
 }
@@ -74,14 +82,17 @@ void UploadThread::run()
 
     UploadMsg uploadMsg;
 
-    memset(&uploadMsg, 0, sizeof(DownloadMsg));
+    memset(&uploadMsg, 0, sizeof(UploadMsg));
     strcpy(uploadMsg.fileName, m_stRemotePath.toUtf8().data());
+    QFileInfo fileInfo(m_stLocalPath);
+    strcat(uploadMsg.fileName, fileInfo.fileName().toUtf8().data());
 
     m_pSocket->sendUploadMsg(uploadMsg);
 
+
     while(!m_bFinished && m_pSocket->isConnected())
     {
-        if(m_pSocket->isReadable())
+        if(m_pSocket->waitForReadyRead())
         {
             QByteArray byteArray = m_pSocket->readAll();
             //翻译buf
@@ -91,6 +102,11 @@ void UploadThread::run()
             memcpy(&uploadMsg, msg->m_aMsgData, msg->m_iMsgLen);
 
             loadDataFromFile(m_pSocket, uploadMsg);
+        }
+        else
+        {
+            qDebug() << "任务超时";
+            m_bFinished = true;
         }
     }
 
