@@ -31,11 +31,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
     loginwidget.cpp \
-    mainwidget.cpp
+    mainwidget.cpp \
+    registerwidget.cpp
 
 HEADERS  += \
     loginwidget.h \
-    mainwidget.h
+    mainwidget.h \
+    registerwidget.h
 
 FORMS    +=
 

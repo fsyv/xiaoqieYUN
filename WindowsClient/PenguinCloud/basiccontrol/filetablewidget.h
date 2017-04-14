@@ -1,4 +1,4 @@
-#ifndef FILETABLEWIDGET_H
+﻿#ifndef FILETABLEWIDGET_H
 #define FILETABLEWIDGET_H
 
 #include <QTableWidget>
@@ -38,6 +38,7 @@ signals:
     void requestMove(const QStringList &path);
     void requestPaste();
     void requestPreview(const QString &path);
+    void requsetRefresh();
 protected:
     void mouseReleaseEvent(QMouseEvent *event);
 private:

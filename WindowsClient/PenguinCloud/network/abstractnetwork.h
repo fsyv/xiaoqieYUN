@@ -56,6 +56,9 @@ public:
     virtual int sendShareMsg(ShareMsg shareMsg);
     //退出消息
     virtual int sendExitMsg(ExitMsg exitMsg);
+    //发送注册信息
+    virtual int sendRegisterMsg(RegisterMsg registerMsg);
+
 
     //收到消息
     //确定成功消息
@@ -103,6 +106,7 @@ signals:
     void readyReadDeleteMsg(DeleteMsg);
     void readyReadShareMsg(ShareMsg);
     void readyReadExitMsg(ExitMsg);
+//    void readyReadRegisterMsg(RegisterMsg);
 
 protected:
     //sendMsg是纯虚函数，需要在子类中实现

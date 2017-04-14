@@ -61,6 +61,7 @@ public slots:
     void rename(const QString &newName, const QString &oldName);
     void renameError(RenameMsg r);
     void show_manage();
+    void refresh();
     void removeSelected();
     void copySelectFilesOrFolder(const QStringList &path);
     void moveSelectFilesOrFolder(const QStringList &path);

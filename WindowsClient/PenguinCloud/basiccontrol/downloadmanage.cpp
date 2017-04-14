@@ -1,6 +1,7 @@
 ﻿#include "downloadmanage.h"
 DownloadManage::DownloadManage(BasicWidget *parent) : BasicWidget(parent)
 {
+    setAttribute(Qt::WA_DeleteOnClose);
     init();
 }
 DownloadManage::~DownloadManage()
@@ -21,9 +22,18 @@ void DownloadManage::init()
     download->move(0, 20);
     download->resize(800, 600);
     QStringList headers;
-    headers << "FileName" << "Progress" << "work";
+    headers << "文件名称" << "下载进度" << "操作";
     download->setColumnCount(3);
     download->setHorizontalHeaderLabels(headers);
+    download->verticalHeader()->hide();
+    download->setSelectionBehavior(QAbstractItemView::SelectRows);
+    download->setShowGrid(false);
+    download->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    download->setColumnWidth(0, 200);
+    download->setColumnWidth(1, 510);
+    download->setColumnWidth(2, 85);
+
 
 }
 void DownloadManage::addRow(const QString &filename, QProgressBar* &progress, QPushButton* &cancel, QPushButton* &pause)
@@ -33,11 +43,7 @@ void DownloadManage::addRow(const QString &filename, QProgressBar* &progress, QP
     l->addWidget(progress);
     w1->setLayout(l);
 
-
-    pause->setIcon(QIcon(":/resource/image/DownLoadManage/暂停.png"));
-    pause->setStyleSheet("border:2px groove gray;border-radius:10px;padding:2px 4px;");
     pause->setFixedWidth(50);
-    cancel->setIcon(QIcon(":/resource/image/DownLoadManage/取消.png"));
     cancel->setFixedWidth(50);
 
     QWidget *w = new QWidget();
@@ -53,6 +59,8 @@ void DownloadManage::addRow(const QString &filename, QProgressBar* &progress, QP
     QTableWidgetItem *item3 = new QTableWidgetItem();
 
     download->insertRow(download->rowCount());
+    download->setRowHeight(download->rowCount() - 1, 30);
+
 
     download->setItem(download->rowCount() - 1, 0, item1);
     download->setItem(download->rowCount() - 1, 1, item2);

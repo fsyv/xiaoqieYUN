@@ -5,6 +5,7 @@
 #include "basiccontrol/imagepreview.h"
 #include "basiccontrol/pdfwidget.h"
 #include "basiccontrol/managewidget.h"
+#include "registerwidget.h"
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -19,6 +20,7 @@ int main(int argc, char *argv[])
     LoginWidget w;
 //    PdfWidget w;
 //    ManageWidget w;
+//    RegisterWidget w;
     w.show();
 //    MainWidget w;s
 //    w.show();

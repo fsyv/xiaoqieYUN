@@ -26,16 +26,18 @@ public:
 public slots:
     void conn();
     void login_success(LoginMsg loginMsg);
+    void registerwidget();
 private:
-    void init(); // 设置窗口属性以及变量的初始化
+    void init();                 // 设置窗口属性以及变量的初始化
     void setStyleSheetFromFile(const QString &filename);
 
-    QPushButton *login_button; // 登陆按钮
-    LineEdit *password_input; // 密码输入框
-    LineEdit *username_input; // 用户账号输入框
+    QPushButton *login_button;   // 登陆按钮
+    QPushButton *regist_button;  // 注册按钮
+    LineEdit *password_input;    // 密码输入框
+    LineEdit *username_input;    // 用户账号输入框
     QLabel *label_title;
-    QCheckBox *remember_password;
-    QLabel *find_passord;
+//    QCheckBox *remember_password;
+//    QLabel *find_passord;
     ConnectToServer *m_pConnectToServer;
     MainWidget *m_pMainWidget;
 };

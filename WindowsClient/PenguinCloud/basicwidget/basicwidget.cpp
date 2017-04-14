@@ -10,17 +10,18 @@
 BasicWidget::BasicWidget(QWidget *parent)
     : QWidget(parent)
 {
-   setAttribute(Qt::WA_DeleteOnClose);
+//   setAttribute(Qt::WA_DeleteOnClose);
    setWindowFlags(Qt::FramelessWindowHint);
 
    background_color = QColor(Qt::white); 
 
    close_buttonn = new QPushButton(this);
-   QPixmap pix(":/resource/image/close.png");
-   close_buttonn->setIcon(pix);
-   close_buttonn->setFixedSize(pix.size());
-   close_buttonn->setStyleSheet("border:none");\
+   close_buttonn->setFixedSize(32, 32);
+   close_buttonn->setObjectName("bw_close_widget");
 
+   title = new QLabel(this);
+   title->setFixedSize(100, 30);
+   title->setObjectName("title");
    drop = true;
 
    connect(close_buttonn, &QPushButton::clicked, this, [&](){this->close();});
@@ -88,5 +89,11 @@ void BasicWidget::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
     close_buttonn->move(this->width()-close_buttonn->width(), 0);
+    title->move(0, 0);
     qDebug() << close_buttonn->width();
+}
+
+void BasicWidget::setTitle(const QString &titlename)
+{
+    title->setText(titlename);
 }

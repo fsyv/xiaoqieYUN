@@ -1,4 +1,4 @@
-#ifndef MSGTYPE_H
+﻿#ifndef MSGTYPE_H
 #define MSGTYPE_H
 
 //消息类型
@@ -8,7 +8,7 @@ typedef enum _MsgType{
     Ack_Ready,          //准备就绪
     Put_Login,          //登录消息
     Get_FileLists,      //文件列表
-    Get_Preview,        //文件预览
+    Get_Preview,        //预览响应
     Get_Download,       //文件下载
     Put_Move,           //移动操作
     Put_Copy,           //复制操作
@@ -17,8 +17,10 @@ typedef enum _MsgType{
     Put_Upload,         //上传操作
     Put_Delete,         //删除操作
     Put_Share,          //分享操作
-    Ack_Exit,            //退出
-    Put_Preview
+    Ack_Exit,           //退出
+    Put_Preview,        //预览请求
+    Put_Register,       //注册请求
+    Get_Register        //注册响应
 }MsgType;
 
 //错误类型
@@ -119,4 +121,13 @@ typedef struct _PreviewArray{
     long length;
     char array[0];
 }PreviewArray, *pPreviewArray;
+
+//注册消息结构
+typedef struct _RegisterMsg{
+    char username[64];      // 用户名
+    char password[128];     // 密码
+    // 保留段
+    // 包括用户基本信息
+}RegisterMsg, *pRegisterMsg;
+
 #endif // MSGTYPE_H

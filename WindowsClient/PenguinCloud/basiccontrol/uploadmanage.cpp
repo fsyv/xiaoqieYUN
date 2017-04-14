@@ -19,9 +19,19 @@ void UploadManage::init()
     upload->move(0, 20);
     upload->resize(800, 600);
     QStringList headers;
-    headers << "FileName" << "Progress" << "work";
+    headers << "文件名称" << " 上传进度" << "操作";
     upload->setColumnCount(3);
     upload->setHorizontalHeaderLabels(headers);
+    upload->verticalHeader()->hide();
+    upload->setSelectionBehavior(QAbstractItemView::SelectRows);
+    upload->setShowGrid(false);
+    upload->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    upload->setColumnWidth(0, 200);
+    upload->setColumnWidth(1, 510);
+    upload->setColumnWidth(2, 85);
+
+
 }
 
 void UploadManage::addRow(const QString &filename, QProgressBar* &progress, QPushButton* &cancel, QPushButton* &pause)
@@ -32,11 +42,9 @@ void UploadManage::addRow(const QString &filename, QProgressBar* &progress, QPus
     w1->setLayout(l);
 
 
-    pause->setIcon(QIcon(":/resource/image/DownLoadManage/暂停.png"));
-    pause->setStyleSheet("border:2px groove gray;border-radius:10px;padding:2px 4px;");
     pause->setFixedWidth(50);
-    cancel->setIcon(QIcon(":/resource/image/DownLoadManage/取消.png"));
     cancel->setFixedWidth(50);
+
 
     QWidget *w = new QWidget();
     QHBoxLayout *layout = new QHBoxLayout;
@@ -51,6 +59,8 @@ void UploadManage::addRow(const QString &filename, QProgressBar* &progress, QPus
     QTableWidgetItem *item3 = new QTableWidgetItem();
 
     upload->insertRow(upload->rowCount());
+
+    upload->setRowHeight(upload->rowCount() - 1, 30);
 
     upload->setItem(upload->rowCount() - 1, 0, item1);
     upload->setItem(upload->rowCount() - 1, 1, item2);

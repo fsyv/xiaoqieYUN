@@ -1,5 +1,15 @@
-﻿/*************************LoginWidget*******************************/
-QPushButton#login_button {
+﻿/*************************BasicWidget*******************************/
+QPushButton#bw_close_widget {
+    border:none;
+    background: url(":/resource/image/close.png")
+}
+QLabel#title{
+    color:white;
+    font: bold 20px;
+}
+
+/*************************LoginWidget*******************************/
+QPushButton#button {
     background-color: #f0f4f8;
     border-width: 1px;
     border-radius: 15px;
@@ -7,18 +17,7 @@ QPushButton#login_button {
     font: 仿宋 20px;
     color:#0698f5;
 }
-QPushButton#login_button:pressed{
-    background-color: rgb(226, 238, 246);
-}
-QPushButton#register_button {
-    background-color: #f0f4f8;
-    border-width: 1px;
-    border-radius: 15px;
-    border-color: beige;
-    font: 仿宋 20px;
-    color:#0698f5;
-}
-QPushButton#register_button:pressed{
+QPushButton#button:pressed{
     background-color: rgb(226, 238, 246);
 }
 QCheckBox {
@@ -56,6 +55,9 @@ QCheckBox::indicator:checked:pressed {
 QLabel#find_passord{
     color:white;
 }
+QLineEdit{
+lineedit-password-character: 42
+}
 
 /******************************** MainWidget **************************************/
 QPushButton#MainWidget_PushButton
@@ -70,18 +72,70 @@ QPushButton#MainWidget_PushButton:hover
     background:"#7bbfea"
 }
 
-QTableWidget{
-    selection-background-color:
+/**********表头**********/
+QHeaderView{
+        color: rgb(183 , 183 , 183);
+        background: transparent;
+        border: 1px solid rgb(202, 212, 219);
+        min-height: 25px;
+        font: bold 14px;
+}
+QHeaderView::section:horizontal {
+        background: transparent;
+        padding-left:6px;
+        border:none;
+        border-right: 1px solid rgb(202, 212, 219);
+}
+QHeaderView::section:horizontal:hover {
+        background: transparent;
+}
+QHeaderView::section:horizontal:pressed {
+        background: rgb(224, 224, 224);
 }
 
+/**********表格**********/
+QTableWidget {
+        color:black;
+        border: 1px solid rgb(202, 212, 219);
+        border-top: transparent;
+}
+
+QTableWidget::item{
+        color:black;
+        background:transparent;
+        padding-left:5px;
+}
+
+QTableWidget::item:selected{
+        color:black;
+        background:transparent;
+}
+
+QTableWidget::item:hover{
+        color:black;
+        background:rgb(205,233,249);
+}
 
 QProgressBar{
-border:none;
-background:rgb(210, 225, 240);
-border-radius:3px;
-text-align:center;
+      border:none;
+      background:#696969;
+      border-radius:5px;
+      text-align:center;
 }
+
 QProgressBar::chunk {
-background:rgb(60, 140, 220);
-border-radius:3px;
+      background-color:rgb(58, 154, 255);
+      border-radius:4px;
 }
+
+QListView
+{
+border: 1px solid rgb(202, 212, 219);
+}
+
+/**********************下载上传窗口 **************************/
+QPushButton
+{
+    border:none;
+}
+

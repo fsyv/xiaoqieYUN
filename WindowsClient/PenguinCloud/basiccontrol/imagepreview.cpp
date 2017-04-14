@@ -2,6 +2,7 @@
 
 ImagePreView::ImagePreView(QWidget *parent) : BasicWidget(parent)
 {
+    setAttribute(Qt::WA_DeleteOnClose);
     init();
     setBackgroundColor(QColor("33, 33, 34"));
     resize(1300, 800);

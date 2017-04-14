@@ -48,7 +48,7 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(tableWidget, &FileTableWidget::requestMove, this, &MainWidget::moveSelectFilesOrFolder);
     connect(tableWidget, &FileTableWidget::requestPaste, this, &MainWidget::pasteSelected);
     connect(tableWidget, &FileTableWidget::requestPreview, this, &MainWidget::preview);
-
+    connect(tableWidget, &FileTableWidget::requsetRefresh, this, &MainWidget::refresh);
     //  m_pFileMap = new QMap<QString, QFileInfo *>;
 
 
@@ -126,7 +126,7 @@ void MainWidget::setListViewItem()
     listView->setModel(model);
 
     listView->move(1, 120);
-    listView->resize(150, 450);
+    listView->resize(150, 449);
 }
 
 void MainWidget::init()
@@ -195,7 +195,7 @@ void MainWidget::paintEvent(QPaintEvent *event)
 
     p.save();
     p.setPen(Qt::NoPen);
-    p.setBrush(QBrush("#0698f5"));
+    p.setBrush(QBrush("#1296db"));
     p.drawRect(0, 0, this->width(), 80);
     p.restore();
     p.save();
@@ -246,7 +246,7 @@ void MainWidget::replyFileLists(const QString &FolderPath)
 void MainWidget::setFileTable()
 {
     tableWidget = new FileTableWidget(this);
-    tableWidget->resize(649, 450);
+    tableWidget->resize(649, 449);
     tableWidget->move(150, 120);
 }
 
@@ -337,6 +337,11 @@ void MainWidget::previousDir()
     replyFileLists(path.top());
 }
 
+void MainWidget::refresh()
+{
+    replyFileLists(path.top());
+}
+
 void MainWidget::uploadFile_upload() noexcept
 {
     QStringList fileList = QFileDialog::getOpenFileNames(
@@ -359,12 +364,23 @@ void MainWidget::uploadFile_upload() noexcept
 
 
                 QPushButton *cancel = new QPushButton();
+                cancel->setIcon(QIcon(":/resource/image/DownLoadManage/cancel.png"));
                 connect(cancel, &QPushButton::clicked, this, [upload_t](){
                     //取消逻辑
                 });
                 QPushButton *pause = new QPushButton();
-                connect(pause, &QPushButton::clicked, this, [upload_t](){
-                    //暂停逻辑
+                pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
+                connect(pause, &QPushButton::clicked, this, [upload_t, pause](){
+                    if(upload_t->getCurrentStatus())
+                    {
+                        upload_t->pause();
+                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/jixu.png"));
+                    }
+                    else
+                    {
+                        upload_t->start();
+                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
+                    }
                 });
 
                 QProgressBar *bar = new QProgressBar();
@@ -373,7 +389,7 @@ void MainWidget::uploadFile_upload() noexcept
                     //进度条逻辑
                 });
 
-                manageUpAndDown->getUploadManage()->addRow(str, bar, cancel, pause);
+                manageUpAndDown->getUploadManage()->addRow(str.split('/').last(), bar, cancel, pause);
             }
             catch(QString e){
                 qDebug() << e;
@@ -407,18 +423,22 @@ void MainWidget::doloadFile_download()
 
                 //在这里添加按钮的槽函数
                 QPushButton *cancel = new QPushButton();
+                cancel->setIcon(QIcon(":/resource/image/DownLoadManage/cancel.png"));
                 connect(cancel, &QPushButton::clicked, this, [uft](){
                     uft->stop();
                 });
                 QPushButton *pause = new QPushButton();
-                connect(pause, &QPushButton::clicked, this, [uft](){
+                pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
+                connect(pause, &QPushButton::clicked, this, [uft, pause](){
                     if(uft->getCurrentStatus())
                     {
                         uft->pause();
+                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/jixu.png"));
                     }
                     else
                     {
                         uft->start();
+                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
                     }
                 });
 
@@ -429,7 +449,7 @@ void MainWidget::doloadFile_download()
                     qDebug() << d;
                 });
 
-                manageUpAndDown->getDownloadManage()->addRow(_item->text(), bar, cancel, pause);
+                manageUpAndDown->getDownloadManage()->addRow(_item->text().split('/').last(), bar, cancel, pause);
 
                 DownloadMsg downloadMsg;
                 memset(&downloadMsg, 0, sizeof(DownloadMsg));

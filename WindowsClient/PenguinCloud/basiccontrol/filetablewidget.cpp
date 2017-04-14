@@ -1,4 +1,4 @@
-#include "filetablewidget.h"
+﻿#include "filetablewidget.h"
 #include "mainwidget.h"
 #include "imagepreview.h"
 
@@ -347,7 +347,7 @@ void FileTableWidget::preview()
 
 void FileTableWidget::refresh()
 {
-    qDebug() << "refresh";
+    emit requsetRefresh();
 }
 
 void FileTableWidget::del()

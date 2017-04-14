@@ -60,8 +60,14 @@
         <file>resource/image/ImageView/sx_normal.png</file>
         <file>resource/image/ImageView/download.png</file>
         <file>resource/image/ImageView/download_normal.png</file>
-        <file>resource/image/DownLoadManage/取消.png</file>
         <file>resource/image/DownLoadManage/下载.png</file>
-        <file>resource/image/DownLoadManage/暂停.png</file>
+        <file>resource/image/close_hover.png</file>
+        <file>resource/image/register_bg.png</file>
+        <file>resource/image/DownLoadManage/cancel.png</file>
+        <file>resource/image/DownLoadManage/cancel_hover.png</file>
+        <file>resource/image/DownLoadManage/jixu.png</file>
+        <file>resource/image/DownLoadManage/jixu_hover.png</file>
+        <file>resource/image/DownLoadManage/pause.png</file>
+        <file>resource/image/DownLoadManage/pause_hover.png</file>
     </qresource>
 </RCC>

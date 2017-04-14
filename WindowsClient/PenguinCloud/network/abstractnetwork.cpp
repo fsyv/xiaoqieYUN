@@ -1,4 +1,4 @@
-#include "abstractnetwork.h"
+﻿#include "abstractnetwork.h"
 
 #include "string.h"
 
@@ -247,6 +247,25 @@ int AbstractNetwork::sendExitMsg(ExitMsg exitMsg)
     return ret;
 }
 
+//发送注册信息
+int AbstractNetwork::sendRegisterMsg(RegisterMsg registerMsg)
+{
+    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(RegisterMsg) + 1];
+    memset(msg, 0,  m_iMsgStructLen + sizeof(ExitMsg));
+
+    msg->m_eMsgType = Put_Register;
+    msg->m_iMsgLen = sizeof(RegisterMsg);
+    memcpy(msg->m_aMsgData, (void*)&registerMsg, msg->m_iMsgLen);
+
+    int ret = sendMsg(msg);
+
+    delete msg;
+
+    return ret;
+}
+
+
+//收到的消息
 void AbstractNetwork::recvAckOkMsg(Msg *msg)
 {
     emit readyReadAckOKMsg();

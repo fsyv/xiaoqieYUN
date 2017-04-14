@@ -5,9 +5,11 @@
 #include <QDebug>
 #include <QCheckBox>
 #include <QTcpSocket>
-#include "logic/rwfile.h"
-#include "network/connecttoserver.h"
 #include "mainwidget.h"
+#include "logic/rwfile.h"
+#include "registerwidget.h"
+#include "network/connecttoserver.h"
+
 
 LoginWidget::LoginWidget(QWidget *parent) :
     BasicWidget(parent),
@@ -15,7 +17,7 @@ LoginWidget::LoginWidget(QWidget *parent) :
     m_pMainWidget(nullptr)
 {
 
-    this->setBackgroundColor("#0698f5");
+    this->setBackgroundColor("#1296db");
     resize(320,400);
     init();
     setStyleSheetFromFile(":/resource/qss/login.qss");
@@ -34,11 +36,11 @@ LoginWidget::LoginWidget(QWidget *parent) :
 
 LoginWidget::~LoginWidget()
 {
-    m_pConnectToServer = nullptr;
+//    m_pConnectToServer = nullptr;
 
 //    if(m_pMainWidget)
-//        delete m_pMainWidget;
-    m_pMainWidget = nullptr;
+//       delete m_pMainWidget;
+//    m_pMainWidget = nullptr;
 }
 
 void LoginWidget::init()
@@ -53,25 +55,29 @@ void LoginWidget::init()
     password_input = new LineEdit(this);
     password_input->setLeftPixmap(":/resource/image/password.png");
     login_button = new QPushButton("登录",this);
-    login_button->resize(200,30);
-    remember_password = new QCheckBox("记住密码", this);
-    find_passord = new QLabel("找回密码", this);
+    login_button->resize(115,30);
+    regist_button = new QPushButton(tr("注册"), this);
+    regist_button->resize(65, 30);
+//    remember_password = new QCheckBox("记住密码", this);
+//    find_passord = new QLabel("找回密码", this);
 
     //绝对定位
     username_input->move((this->width() - username_input->width()) /2, 150);
-    password_input->move((this->width() - password_input->width()) /2 ,183);
-    login_button->move((this->width() - login_button->width()) /2 ,250);
-    remember_password->move(75, 225);
-    find_passord->move(180, 225);
-    find_passord->setObjectName("find_passord");
+    password_input->move((this->width() - password_input->width()) /2 ,190);
+    login_button->move(60, 250);
+    regist_button->move(195 ,250);
+//    remember_password->move(75, 225);
+//    find_passord->move(180, 225);
+//    find_passord->setObjectName("find_passord");
     //默认配置
     username_input->setPlaceholderText("账号");
     password_input->setPlaceholderText("密码");
     password_input->setEchoMode(QLineEdit::Password);
-    login_button->setObjectName("login_button");
-
+    login_button->setObjectName("button");
+    regist_button->setObjectName("button");
 
     connect(login_button, &QPushButton::clicked, this, &LoginWidget::conn);
+    connect(regist_button, &QPushButton::clicked, this, &LoginWidget::registerwidget);
 
 }
 void LoginWidget::setStyleSheetFromFile(const QString &filename)
@@ -93,6 +99,12 @@ void LoginWidget::conn()
     memcpy(loginMsg.m_aUserName, username_input->text().toUtf8().data(), username_input->text().length());
     memcpy(loginMsg.m_aUserPass, password_input->text().toUtf8().data(), password_input->text().length());
     ConnectToServer::getInstance()->sendLoginMsg(loginMsg);
+}
+
+void LoginWidget::registerwidget()
+{
+    RegisterWidget *w = new RegisterWidget(this);
+    w->show();
 }
 
 void LoginWidget::login_success(LoginMsg loginMsg)
