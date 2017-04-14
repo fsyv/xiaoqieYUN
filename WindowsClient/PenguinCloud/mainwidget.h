@@ -10,6 +10,7 @@
 #include "basiccontrol/filetablewidget.h"
 #include "basiccontrol/managewidget.h"
 #include "tools/tools.h"
+
 class QLabel;
 class QPushButton;
 class QToolButton;
@@ -20,6 +21,7 @@ class QFileInfo;
 class DownloadManage;
 class UpdateFileThread;
 class FileObject;
+class ThreadPool;
 
 class MainWidget : public BasicWidget
 {
@@ -104,6 +106,7 @@ private:
     QStringList wholeCopyPath; // 保存所有将要复制的文件的具体路径
     bool isCopy; // true是复制， false是移动
 
+    ThreadPool *m_pThreadPool;
 };
 
 #endif // MAINWIDGET_H

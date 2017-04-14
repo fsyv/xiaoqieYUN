@@ -11,6 +11,7 @@
 #include <sys/epoll.h>
 
 #define SERVER_PORT 36975
+#define FILE_SERVER_PORT 36976
 #define EPOLL_TIME_OUT 500
 
 //接收Buf最大缓存
@@ -18,14 +19,20 @@
 
 #define MAX_LISTEN 64 * 1024
 
+//创建响应服务器
+void createServerService();
+//创建文件服务器
+void createFileServer();
 //关闭服务端socketfd
 void closeSockfd(int sockfd);
 //设置socket为非拥塞
 void setnblocking(int sockfd);
-//创建服务器socket
-int createSocketServer();
+//创建socket
+int createSocketServer(unsigned int port);
 //监听socket然后创建用户线程
 void listenClient(int serverSocketfd);
+//文件服务器监听
+void fileServerListen(int fileServerSockfd);
 //服务器监听到新的Tcp socket请求
 void newConnection(int socketfd, int epfd, struct epoll_event *ev);
 //收到socket消息

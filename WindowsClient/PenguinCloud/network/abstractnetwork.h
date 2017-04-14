@@ -1,14 +1,17 @@
 ﻿#ifndef ABSTRACTNETWORK_H
 #define ABSTRACTNETWORK_H
 
-#include <QObject>
+#include <QTcpSocket>
 
 #include"msgtype.h"
 
-#define SERVER_IP "182.254.219.254"
-//#define SERVER_IP "192.168.1.155"
+//#define SERVER_IP "182.254.219.254"
+#define SERVER_IP "192.168.1.155"
 //#define SERVER_IP "192.168.89.129"
 //#define SERVER_IP "127.0.0.1"
+
+#define MAX_SEND_BUF (64 * 1024)
+#define MAX_READ_BUF MAX_SEND_BUF
 
 typedef struct _Msg{
     unsigned int m_uiCheckCrc;              //消息校验 0xAFAFAFAF
@@ -17,7 +20,7 @@ typedef struct _Msg{
     char m_aMsgData[0];						//消息内容
 }Msg, *pMsg;
 
-class AbstractNetwork: public QObject
+class AbstractNetwork: public QTcpSocket
 {
     Q_OBJECT
 public:
@@ -110,7 +113,7 @@ signals:
 
 protected:
     //sendMsg是纯虚函数，需要在子类中实现
-    virtual int sendMsg(Msg *msg) = 0;
+    virtual int sendMsg(Msg *msg);
     virtual void recvMsg(Msg *msg);
 
     int m_iMsgStructLen;

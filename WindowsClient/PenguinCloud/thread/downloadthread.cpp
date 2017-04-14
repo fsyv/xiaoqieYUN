@@ -1,67 +1,116 @@
 #include "downloadthread.h"
 
+#include <thread>
+
 #include <QDir>
 
-#include "../network/downloadfiletoserver.h"
-
 DownloadThread::DownloadThread(QString localPath, QString remotePath, QObject *parent):
-    UpdateFileThread(localPath, remotePath, parent),
-    m_download(nullptr)
+    UpdateFileThread(localPath, remotePath, parent)
 {
-    m_fileinfo.setFile(localPath);
+    QFileInfo fileInfo(localPath);
 
-    //生成路径
-    QDir dir;
-    dir.mkpath(m_fileinfo.path());
+    if(fileInfo.exists())
+    {
+        //文件存在
+        //检测是否是暂停的文件
+        QFileInfo tmpFileInfo(fileInfo.filePath() + QString(".tmp"));
+        if(tmpFileInfo.exists())
+        {
+            QFile file(tmpFileInfo.filePath());
+            if(file.open(QIODevice::ReadOnly))
+            {
+                QTextStream in(&file);
+
+                //读取当前已发送的大小
+                QString size = in.readLine();
+                size.remove("currentsize:");
+                m_i64CurrentSize = size.toULongLong();
+            }
+            //删除临时文件
+            QFile::remove(tmpFileInfo.filePath());
+        }
+        else
+        {
+            //文件已存在，且已经下载完成
+            QFile::remove(fileInfo.filePath());
+        }
+    }
+    else
+    {
+        //文件不存在
+        //生成路径
+        QDir dir;
+        dir.mkpath(fileInfo.path());
+    }
+
+    m_file.setFileName(fileInfo.filePath());
+    if(m_file.open(QIODevice::WriteOnly))
+    {
+        //文件偏移到当前位置
+        //m_file.seek(m_i64CurrentDownloadSize);
+        m_out.setDevice(&m_file);
+        m_out.setVersion(QDataStream::Qt_5_6);
+    }
 }
 
 DownloadThread::~DownloadThread()
 {
-    if(m_download)
-        delete m_download;
-    m_download = nullptr;
+    m_file.close();
 }
 
 void DownloadThread::stopCurrenTask()
 {
-    if(m_download)
-    {
-        m_download->stop();
-    }
+    m_bFinished = true;
+
+    m_file.remove();
 }
 
 void DownloadThread::pauseCurrenTask()
 {
-    if(m_download)
+    qDebug() << "pause";
+
+    m_bFinished = true;
+
+    QFile tmpFile(m_file.fileName() + ".tmp");
+    tmpFile.open(QIODevice::WriteOnly);
+    QTextStream out(&tmpFile);
+
+    out << "currentsize:" << QString::number(m_i64CurrentSize) << endl;
+    out.flush();
+
+    tmpFile.close();
+}
+
+void DownloadThread::saveFileFromData(ConnectToFileServer *server)
+{
+    QByteArray byteArray = server->readAll();
+    if(byteArray.length())
     {
-        m_download->pause();
+        m_i64CurrentSize += byteArray.length();
+        m_out.writeRawData(byteArray.data(), byteArray.length());
     }
 }
 
-void DownloadThread::setFileSize(qint64 fileSize)
-{
-    m_i64FileSize = fileSize;
-}
 void DownloadThread::run()
 {
-    qDebug() << "DownloadThread::run()";
+    m_pSocket = new ConnectToFileServer(m_serverUrl);
 
-    m_download = new DownloadFileToServer(m_stLocalPath, m_serverUrl, m_i64FileSize);
-    exec();
-}
+    DownloadMsg downloadMsg;
 
-bool DownloadThread::getCurrentStatus()
-{
-    if(m_download)
+    memset(&downloadMsg, 0, sizeof(DownloadMsg));
+    strcpy(downloadMsg.fileName, m_stRemotePath.toUtf8().data());
+    downloadMsg.m_llCurrentSize = m_i64CurrentSize;
+
+    m_pSocket->sendDownloadMsg(downloadMsg);
+
+
+    while(m_pSocket->waitForReadyRead() && !m_bFinished && m_pSocket->isConnected())
     {
-        return m_download->getRun();
+        if(m_pSocket->bytesAvailable())
+            saveFileFromData(m_pSocket);
     }
-    return false;
+
+    delete m_pSocket;
+    m_pSocket = nullptr;
 }
-double DownloadThread::getCurrentTaskProgress()
-{
-    //从当前上传进度中取
-    if(m_download)
-        return m_download->getCurrentProgress();
-    return 0.0;
-}
+

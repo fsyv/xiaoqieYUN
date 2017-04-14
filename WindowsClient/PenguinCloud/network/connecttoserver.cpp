@@ -8,18 +8,16 @@ QMutex ConnectToServer::mutex;
 
 ConnectToServer::ConnectToServer(QObject *parent) :
     AbstractNetwork(parent),
-    p_tcpSocket(nullptr),
     p_aRecvBuf(nullptr),
     p_cRearBuf(nullptr),
     p_cHeadBuf(nullptr)
 
 {
-    p_tcpSocket = new QTcpSocket(this);
-    connect(p_tcpSocket, SIGNAL(readyRead()), this, SLOT(readMessage()));
-    connect(p_tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(displayState(QAbstractSocket::SocketState)));
-    connect(p_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
-    p_tcpSocket->connectToHost(SERVER_IP, SERVER_PORT);
-    p_tcpSocket->waitForConnected(1000);
+    connect(this, SIGNAL(readyRead()), this, SLOT(readMessage()));
+    connect(this, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(displayState(QAbstractSocket::SocketState)));
+    connect(this, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
+    connectToHost(SERVER_IP, SERVER_PORT);
+    waitForConnected(1000);
 
     p_aRecvBuf = new char[2 * SEND_BUF_MAX_SIZE + 1];
     memset(p_aRecvBuf, 0, sizeof(char) * SEND_BUF_MAX_SIZE * 2);
@@ -30,21 +28,8 @@ ConnectToServer::ConnectToServer(QObject *parent) :
     m_iMsgLen = 0;
 }
 
-int ConnectToServer::sendMsg(Msg *msg)
-{
-    msg->m_uiCheckCrc = 0xAFAFAFAF;
-    return p_tcpSocket->write((char *)msg, m_iMsgStructLen + msg->m_iMsgLen);
-}
-
 ConnectToServer::~ConnectToServer()
 {
-    if(p_tcpSocket)
-    {
-        p_tcpSocket->close();
-        delete p_tcpSocket;
-    }
-    p_tcpSocket = nullptr;
-
     if(p_aRecvBuf)
         delete p_aRecvBuf;
     p_aRecvBuf = nullptr;
@@ -55,12 +40,12 @@ ConnectToServer::~ConnectToServer()
 
 void ConnectToServer::readMessage()
 {
-    int recvRet = p_tcpSocket->read(p_aRecvBuf, SEND_BUF_MAX_SIZE);
+    int recvRet = read(p_aRecvBuf, SEND_BUF_MAX_SIZE);
 
     //读数据错误
     if(recvRet < 0)
     {
-        p_tcpSocket->close();
+        close();
         return;
     }
 
@@ -183,12 +168,12 @@ stickyPackageLoop:
 
 void ConnectToServer::displayState(QAbstractSocket::SocketState)
 {
-    qDebug() << p_tcpSocket->state();
+    qDebug() << state();
 }
 
 void ConnectToServer::displayError(QAbstractSocket::SocketError)
 {
-    qDebug()<< p_tcpSocket->errorString();
+    qDebug()<< errorString();
 }
 
 ConnectToServer* ConnectToServer::getInstance()
@@ -204,10 +189,10 @@ ConnectToServer* ConnectToServer::getInstance()
     }
 
     //每次获取单实例时没网络不可达就会重新连接
-    if(conn->p_tcpSocket->state() == QAbstractSocket::UnconnectedState)
+    if(conn->state() == QAbstractSocket::UnconnectedState)
     {
-        conn->p_tcpSocket->connectToHost(SERVER_IP, SERVER_PORT);
-        conn->p_tcpSocket->waitForConnected(1000);
+        conn->connectToHost(SERVER_IP, SERVER_PORT);
+        conn->waitForConnected(1000);
     }
 
     return conn;

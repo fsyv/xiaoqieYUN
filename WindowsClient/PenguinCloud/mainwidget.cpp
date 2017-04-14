@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "network/connecttoserver.h"
 #include "tools/tools.h"
+#include "thread/ThreadPool.h"
 #include "thread/uploadthread.h"
 #include "thread/downloadthread.h"
 #include "file/file.h"
@@ -17,8 +18,10 @@ MainWidget::MainWidget(QWidget *parent) :
     BasicWidget(parent),
     m_pConnectToServer(nullptr),
     m_pUploadTaskLists(nullptr),
-    m_pDownloadTaskLists(nullptr)
+    m_pDownloadTaskLists(nullptr),
+    m_pThreadPool(nullptr)
 {
+    m_pThreadPool = new ThreadPool();
     resize(800, 600);
     init();
     setListViewItem();
@@ -67,8 +70,6 @@ MainWidget::~MainWidget()
             if(cur.value())
             {
                 cur.value()->pause();
-                //等待任务结束
-                cur.value()->wait(1000);
                 delete cur.value();
             }
         }
@@ -86,9 +87,9 @@ MainWidget::~MainWidget()
         {
             if(cur.value())
             {
-//                cur.value()->pause();
-//                //等待任务结束
-//                cur.value()->wait(1000);
+                //                cur.value()->pause();
+                //                //等待任务结束
+                //                cur.value()->wait(1000);
                 delete cur.value();
             }
         }
@@ -103,6 +104,10 @@ MainWidget::~MainWidget()
     if(m_pFileLists)
         delete m_pFileLists;
     m_pFileLists = nullptr;
+
+    if(m_pThreadPool)
+        delete m_pThreadPool;
+    m_pThreadPool = nullptr;
 }
 
 void MainWidget::setListViewItem()
@@ -278,7 +283,7 @@ void MainWidget::recvFileLists(QByteArray byteArray)
                 {
                     //文件夹
                     QDateTime dateTime = QDateTime::fromTime_t(array.at(i).toObject()
-                                   .value("lastmodifytime").toInt());
+                                                               .value("lastmodifytime").toInt());
                     QString name = array.at(i).toObject().value("name").toString();
 
                     m_pFileLists->insert(path + name, new Folder(name, dateTime));
@@ -287,7 +292,7 @@ void MainWidget::recvFileLists(QByteArray byteArray)
                 {
                     //文件
                     QDateTime dateTime = QDateTime::fromTime_t(array.at(i).toObject()
-                                   .value("lastmodifytime").toInt());
+                                                               .value("lastmodifytime").toInt());
                     QString name = array.at(i).toObject().value("name").toString();
                     qint64 size = array.at(i).toObject().value("size").toVariant().toLongLong();
 
@@ -302,7 +307,7 @@ void MainWidget::recvUploadFile_readyReadUploadMsg(UploadMsg uploadMsg)
 {
     QString name(uploadMsg.fileName);
     m_pUploadTaskLists->value(name)->setServerUrl(QString(SERVER_IP), uploadMsg.serverFilePort);
-    m_pUploadTaskLists->value(name)->start();
+    m_pThreadPool->addJob(m_pUploadTaskLists->value(name));
 }
 
 void MainWidget::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg)
@@ -317,6 +322,7 @@ void MainWidget::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg)
         FileObject *fileObject = m_pFileLists->value(thread->getRemotePath());
         thread->setFileSize(fileObject->getSize());
         thread->start();
+        m_pThreadPool->addJob(thread);
     }
 }
 
@@ -370,18 +376,18 @@ void MainWidget::uploadFile_upload() noexcept
                 });
                 QPushButton *pause = new QPushButton();
                 pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
-                connect(pause, &QPushButton::clicked, this, [upload_t, pause](){
-                    if(upload_t->getCurrentStatus())
-                    {
-                        upload_t->pause();
-                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/jixu.png"));
-                    }
-                    else
-                    {
-                        upload_t->start();
-                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
-                    }
-                });
+//                connect(pause, &QPushButton::clicked, this, [upload_t, pause](){
+//                    if(upload_t->getCurrentStatus())
+//                    {
+//                        upload_t->pause();
+//                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/jixu.png"));
+//                    }
+//                    else
+//                    {
+//                        upload_t->start();
+//                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
+//                    }
+//                });
 
                 QProgressBar *bar = new QProgressBar();
                 bar->setMaximum(100);
@@ -419,6 +425,7 @@ void MainWidget::doloadFile_download()
                             m_stUserName + path.top() + _item->text(), \
                             this\
                             );
+
                 m_pDownloadTaskLists->insert(uft->getRemotePath(), uft);
 
                 //在这里添加按钮的槽函数
@@ -430,16 +437,20 @@ void MainWidget::doloadFile_download()
                 QPushButton *pause = new QPushButton();
                 pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
                 connect(pause, &QPushButton::clicked, this, [uft, pause](){
-                    if(uft->getCurrentStatus())
-                    {
-                        uft->pause();
-                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/jixu.png"));
-                    }
-                    else
-                    {
-                        uft->start();
-                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
-                    }
+//                    if(uft->getCurrentStatus())
+//                    {
+//                        uft->pause();
+//                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/jixu.png"));
+//                    }
+//                    else
+//                    {
+//                        uft->start();
+//                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
+//                    }
+                });
+
+                connect(pause, &QPushButton::clicked, this, [uft](){
+                    uft->pause();
                 });
 
                 QProgressBar *bar = new QProgressBar();
@@ -460,7 +471,6 @@ void MainWidget::doloadFile_download()
         }
     }
 }
-
 
 void MainWidget::newFolder(const QString &folderName)
 {
@@ -619,11 +629,11 @@ void MainWidget::preview(const QString &_path)
     strcpy(previewMsg.path, wholepath.toUtf8().data());
     m_pConnectToServer->sendPreviewMsg(previewMsg);
 
-//    qDebug() << "显示预览";
-//    ImagePreView *pw = new ImagePreView();
-//    QPixmap p1(":/resource/image/title.png");
-//    pw->setPixmap(p1);
-//    pw->show();
+    //    qDebug() << "显示预览";
+    //    ImagePreView *pw = new ImagePreView();
+    //    QPixmap p1(":/resource/image/title.png");
+    //    pw->setPixmap(p1);
+    //    pw->show();
     setPreviewWidget(Tools::getFileType(_path));
 }
 

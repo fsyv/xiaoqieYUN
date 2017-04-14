@@ -69,10 +69,10 @@ int addJobThreadPool(ThreadPool *threadPool, TaskQueue *taskQueue)
         threadPool->rear->next = taskQueue;
         threadPool->rear = taskQueue;
     }
-    pthread_cond_broadcast(&(threadPool->queue_not_empty));
     ++(threadPool->m_iQueueLen);
-
     pthread_mutex_unlock(&(threadPool->queuemutex));
+
+    pthread_cond_signal(&(threadPool->queue_not_empty));
 }
 
 //销毁线程池
@@ -118,17 +118,11 @@ void *threadpool_function(void *arg)
         pthread_mutex_lock(&(threadPool->queuemutex));
 
         --(threadPool->m_iQueueLen);
-
-
         taskQueue = threadPool->front;
         if(threadPool->m_iQueueLen)
-        {
             threadPool->front = threadPool->front->next;
-        }
         else
-        {
             threadPool->front = threadPool->rear = 0;
-        }
 
         pthread_mutex_unlock(&(threadPool->queuemutex));
 
