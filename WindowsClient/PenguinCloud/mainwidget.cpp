@@ -306,8 +306,15 @@ void MainWidget::recvFileLists(QByteArray byteArray)
 void MainWidget::recvUploadFile_readyReadUploadMsg(UploadMsg uploadMsg)
 {
     QString name(uploadMsg.fileName);
-    m_pUploadTaskLists->value(name)->setServerUrl(QString(SERVER_IP), uploadMsg.serverFilePort);
-    m_pThreadPool->addJob(m_pUploadTaskLists->value(name));
+
+    UploadThread *thread = (UploadThread *)m_pUploadTaskLists->value(name);
+
+    if(thread)
+    {
+        thread->setServerUrl(QString(SERVER_IP), uploadMsg.serverFilePort);
+        thread->start();
+        m_pThreadPool->addJob(thread);
+    }
 }
 
 void MainWidget::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg)
@@ -373,6 +380,7 @@ void MainWidget::uploadFile_upload() noexcept
                 cancel->setIcon(QIcon(":/resource/image/DownLoadManage/cancel.png"));
                 connect(cancel, &QPushButton::clicked, this, [upload_t](){
                     //取消逻辑
+                    upload_t->stop();
                 });
                 QPushButton *pause = new QPushButton();
                 pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
@@ -389,13 +397,27 @@ void MainWidget::uploadFile_upload() noexcept
 //                    }
 //                });
 
+                connect(pause, &QPushButton::clicked, this, [upload_t](){
+                    //暂停逻辑
+                    upload_t->pause();
+                });
+
                 QProgressBar *bar = new QProgressBar();
                 bar->setMaximum(100);
                 connect(upload_t, &UploadThread::currentTaskProgress, this, [bar](double d){
                     //进度条逻辑
+                    bar->setValue(d * 100);
+                    qDebug() << d;
                 });
 
                 manageUpAndDown->getUploadManage()->addRow(str.split('/').last(), bar, cancel, pause);
+                manageUpAndDown->getUploadManage()->addRow(str, bar, cancel, pause);
+
+                UploadMsg uploadMsg;
+                memset(&uploadMsg, 0, sizeof(UploadMsg));
+                strcpy(uploadMsg.fileName, upload_t->getLocalPath().toUtf8().data());
+
+                m_pConnectToServer->sendUploadMsg(uploadMsg);
             }
             catch(QString e){
                 qDebug() << e;

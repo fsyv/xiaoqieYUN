@@ -65,10 +65,10 @@ typedef struct _PreviewMsg{
 
 //下载信息消息结构
 typedef struct _DownloadMsg{
-    char serverFileIP[16];                   //文件服务器地址
+    char serverFileIP[16];                  //文件服务器地址
     unsigned short serverFilePort;          //文件服务器端口
     long long m_llCurrentSize;              //当前传输进度
-    char fileName[64];                      //文件名
+    char fileName[MAX_PATH + 1];            //文件名
 }DownloadMsg, *pDownloadMsg;
 
 //移动消息结构
@@ -96,10 +96,10 @@ typedef struct _RenameMsg{
 
 //上传操作消息结构
 typedef struct _UploadMsg{
-    char serverFileIP[16];                   //文件服务器地址
+    char serverFileIP[16];                  //文件服务器地址
     unsigned short serverFilePort;          //文件服务器端口
     long long m_llCurrentSize;              //当前传输进度
-    char fileName[64];                       //文件名
+    char fileName[MAX_PATH + 1];            //文件名
 }UploadMsg, *pUploadMsg;
 
 //删除操作消息结构

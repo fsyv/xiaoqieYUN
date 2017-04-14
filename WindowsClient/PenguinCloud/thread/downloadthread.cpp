@@ -104,10 +104,15 @@ void DownloadThread::run()
     m_pSocket->sendDownloadMsg(downloadMsg);
 
 
-    while(m_pSocket->waitForReadyRead() && !m_bFinished && m_pSocket->isConnected())
+    while(!m_bFinished && m_pSocket->isConnected())
     {
-        if(m_pSocket->bytesAvailable())
+        if(m_pSocket->waitForReadyRead())
             saveFileFromData(m_pSocket);
+        else
+        {
+            qDebug() << "任务超时";
+            m_bFinished = true;
+        }
     }
 
     delete m_pSocket;

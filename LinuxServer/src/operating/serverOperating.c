@@ -113,8 +113,8 @@ void *uploadFileThread(int sockfd, void *arg)
         return NULL;
     }
 
-    long long currentFileSeek = fseek(fp, 0, SEEK_END);
-    printf("currentFileSeek = %lld\n", currentFileSeek);
+//    long long currentFileSeek = fseek(fp, 0, SEEK_END);
+//    printf("currentFileSeek = %lld\n", currentFileSeek);
 
     char *recvBuf = (char *)malloc(MAX_RECV_BUF + 1);
     memset(recvBuf, 0, MAX_RECV_BUF);
@@ -122,19 +122,23 @@ void *uploadFileThread(int sockfd, void *arg)
     int ret = 0;
 
     //把当前文件服务器文件索引发送给客户端
-    uploadMsg.m_llCurrentSize = currentFileSeek;
+    uploadMsg.m_llCurrentSize = 0;
     sendUploadMsg(sockfd, uploadMsg);
 
+    printf("waitting \n");
     while((ret = recv(sockfd, recvBuf, MAX_RECV_BUF, 0)) > 0)
     {
-        currentFileSeek += ret;
-        printf("currentFileSeek = %lld\n", currentFileSeek);
+        //currentFileSeek += ret;
+        printf("ret = %d\n", ret);
         fwrite(recvBuf, sizeof(char), ret, fp);
         memset(recvBuf, 0, ret);
     }
 
+    printf("stop \n");
+
     fclose(fp);
     free(recvBuf);
+    shutdown(sockfd, 0);
     return NULL;
 }
 
@@ -184,7 +188,7 @@ void *downloadFileThread(int sockfd, void *arg)
 
     free(recvBuf);
     fclose(fp);
-    close(sockfd);
+    shutdown(sockfd, 0);
     return NULL;
 }
 

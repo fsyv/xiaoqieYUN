@@ -22,11 +22,13 @@
 //创建响应服务器
 void createServerService();
 //创建文件服务器
-void createFileServer();
+void *createFileServer(void *arg);
 //关闭服务端socketfd
 void closeSockfd(int sockfd);
 //设置socket为非拥塞
 void setnblocking(int sockfd);
+//设置socket为拥塞
+void setblocking(int sockfd);
 //创建socket
 int createSocketServer(unsigned int port);
 //监听socket然后创建用户线程

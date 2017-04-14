@@ -26,7 +26,7 @@ void createServerService()
     closeSockfd(sockfd);
 }
 //创建文件服务器
-void createFileServer()
+void *createFileServer(void *arg)
 {
     int sockfd = createSocketServer(FILE_SERVER_PORT);
     if(sockfd)
@@ -61,7 +61,32 @@ void setnblocking(int sockfd)
         exit(-1);
     }
 
-    opts = opts|O_NONBLOCK;
+    printf("opts = %d\n", opts);
+    if(fcntl(sockfd,F_SETFL,opts)<0)
+    {
+#ifdef Debug
+        fprintf(stderr, "setnblocking : %s \n", strerror(errno));
+#endif
+        close(sockfd);
+        exit(-1);
+    }
+}
+
+//设置socket为拥塞
+void setblocking(int sockfd)
+{
+    int opts;
+    opts = fcntl(sockfd, F_GETFL);
+    if(opts<0)
+    {
+#ifdef Debug
+        fprintf(stderr, "setnblocking : %s \n", strerror(errno));
+#endif
+        close(sockfd);
+        exit(-1);
+    }
+
+    opts = O_RDWR;
     if(fcntl(sockfd,F_SETFL,opts)<0)
     {
 #ifdef Debug
@@ -217,7 +242,7 @@ void fileServerListen(int fileServerSockfd)
     extern ThreadPool *m_pThreadPool;
     TaskQueue *taskQueue = NULL;
 
-    char recvBuf[1025];
+    char recvBuf[2048 + 1];
     memset(recvBuf, 0, 1024);
 
     //一次事件的总数
@@ -242,12 +267,12 @@ void fileServerListen(int fileServerSockfd)
             else if (events[i].events & EPOLLIN)
             {
                 clientfd = events[i].data.fd;
-                memset(recvBuf, 0, 1024);
+                memset(recvBuf, 0, 2048);
 
                 while(1)
                 {
                     //收到消息
-                    ret = recv(clientfd, recvBuf, 1024, 0);
+                    ret = recv(clientfd, recvBuf, 2048, 0);
 
                     if(ret > 0)
                     {
@@ -283,6 +308,8 @@ void fileServerListen(int fileServerSockfd)
                 msg = (Msg *)recvBuf;
                 sendMsg = (Msg *)malloc(sizeof(Msg) + msg->m_iMsgLen);
                 memcpy(sendMsg, recvBuf, ret);
+
+                setblocking(clientfd);
 
                 if (msg->m_eMsgType == Put_Upload)
                 {

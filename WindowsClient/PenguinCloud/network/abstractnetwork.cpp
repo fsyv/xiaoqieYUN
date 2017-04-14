@@ -370,7 +370,9 @@ void AbstractNetwork::recvExitMsg(Msg *msg)
 int AbstractNetwork::sendMsg(Msg *msg)
 {
     msg->m_uiCheckCrc = 0xAFAFAFAF;
-    return write((char *)msg, m_iMsgStructLen + msg->m_iMsgLen);
+    int ret = write((char *)msg, m_iMsgStructLen + msg->m_iMsgLen);
+    flush();
+    return ret;
 }
 
 void AbstractNetwork::recvMsg(Msg *msg)
