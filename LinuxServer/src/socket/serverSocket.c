@@ -236,30 +236,49 @@ void fileServerListen(int fileServerSockfd)
         {
             if (events[i].data.fd == fileServerSockfd)
             {
-                printf("file client\n");
                 //新连接
                 newConnection(events[i].data.fd, epfd, &ev);
             }
             else if (events[i].events & EPOLLIN)
             {
-                printf("file msg\n");
                 clientfd = events[i].data.fd;
-                //收到消息
-                ret = recv(clientfd, recvBuf, 1024, 0);
+                memset(recvBuf, 0, 1024);
 
-                printf("fileServer Ret = %d\n", ret);
-
-                if (ret < 0)
+                while(1)
                 {
+                    //收到消息
+                    ret = recv(clientfd, recvBuf, 1024, 0);
+
+                    if(ret > 0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        if(errno == EAGAIN)
+                        {
+                            //这次没有数据了，下次再来
+                            continue;
+                        }
+                        else
+                        {
 #ifdef Debug
-                    fprintf(stderr, "file server recv : %s \n", strerror(errno));
+                            fprintf(stderr, "recv : %s \n", strerror(errno));
 #endif
-                    //删除这个fd
-                    ev.data.fd = clientfd;
-                    epoll_ctl(epfd, EPOLL_CTL_DEL, clientfd, &ev);
-                    close(clientfd);
-                    continue;
+                            ev.data.fd = clientfd;
+                            epoll_ctl(epfd, EPOLL_CTL_DEL, clientfd, &ev);
+                            closeSockfd(clientfd);
+                            break;
+                        }
+                    }
                 }
+
+                if(ret < 0)
+                {
+                    break;
+                }
+
+                recvBuf[ret] = 0;
 
                 msg = (Msg *)recvBuf;
                 sendMsg = (Msg *)malloc(sizeof(Msg) + msg->m_iMsgLen);
@@ -272,6 +291,9 @@ void fileServerListen(int fileServerSockfd)
                     memset(taskQueue, 0, sizeof(TaskQueue));
 
                     taskQueue->p_fCallBackFunction = &uploadFileThread;
+                    taskQueue->sockfd = clientfd;
+                    taskQueue->p_vArg = (void *)sendMsg;
+                    addJobThreadPool(m_pThreadPool, taskQueue);
                 }
                 else if(msg->m_eMsgType == Get_Download)
                 {
@@ -280,15 +302,14 @@ void fileServerListen(int fileServerSockfd)
                     memset(taskQueue, 0, sizeof(TaskQueue));
 
                     taskQueue->p_fCallBackFunction = &downloadFileThread;
+                    taskQueue->sockfd = clientfd;
+                    taskQueue->p_vArg = (void *)sendMsg;
+                    addJobThreadPool(m_pThreadPool, taskQueue);
                 }
                 else
                 {
-                    continue;
+                    closeSockfd(clientfd);
                 }
-
-                taskQueue->sockfd = clientfd;
-                taskQueue->p_vArg = (void *)sendMsg;
-                addJobThreadPool(m_pThreadPool, taskQueue);
 
                 //删除这个fd
                 ev.data.fd = clientfd;
