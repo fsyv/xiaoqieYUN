@@ -2,6 +2,7 @@
 
 ManageWidget::ManageWidget(QWidget *parent) : BasicWidget(parent)
 {
+    setDroped(false);
     resize(800, 600);
     init();
 }

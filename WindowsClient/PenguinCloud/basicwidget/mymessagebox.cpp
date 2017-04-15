@@ -71,7 +71,13 @@ void MyMessageBox::setInfo(const QString &_message, const QString& btn1_text, co
     switch(type)
     {
         case Warn: //警告
-            icon->setPixmap(QPixmap(":/resource/image/hite.png"));
+            icon->setPixmap(QPixmap(":/resource/image/warn.png"));
+            break;
+        case Error:
+            icon->setPixmap(QPixmap(":/resource/image/error.png"));
+            break;
+        case Ok:
+            icon->setPixmap(QPixmap(":/resource/image/ok.png"));
             break;
         default:
             break;

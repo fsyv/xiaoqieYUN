@@ -1,4 +1,4 @@
-# Install script for directory: /home/liuzheng/YUNPAN/xiaoqieYUN/LinuxServer/src/socket
+# Install script for directory: /root/src/socket
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

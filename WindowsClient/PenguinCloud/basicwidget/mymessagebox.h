@@ -5,7 +5,9 @@
 #include <QtWidgets>
 
 typedef enum _IconType{
-    Warn = 0
+    Warn = 0,
+    Error = 1,
+    Ok
 }IconType;
 
 class MyMessageBox : public BasicWidget

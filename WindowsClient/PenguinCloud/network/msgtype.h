@@ -42,8 +42,9 @@ typedef struct _ReadyMsg{
 
 #define LOGIN_SUCCESS 1
 #define PUT_LOGIN 0
-#define LOGIN_FAILED_PASSWD -1
-#define LOGIN_FAILED_USERNAME -2
+#define LOGIN_FAILED -1
+//#define LOGIN_FAILED_PASSWD -1
+//#define LOGIN_FAILED_USERNAME -2
 //登录消息结构
 typedef struct _LoginMsg{
     int m_iLoginStatus;         //登录状态

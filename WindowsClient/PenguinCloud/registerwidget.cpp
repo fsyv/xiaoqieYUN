@@ -108,3 +108,5 @@ void RegisterWidget::showRegisterStatus(RegisterStatus rs)
     }
 
 }
+
+

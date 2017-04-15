@@ -20,6 +20,7 @@ int sendAckOkMsg(int sockfd)
 //确定失败消息
 int sendAckErrorMsg(int sockfd, ErrorMsg errorMsg)
 {
+    printf("sendErrorMsg\n");
     Msg *msg = (Msg *)malloc(sizeof(Msg) + sizeof(ErrorMsg));
     bzero(msg, sizeof(Msg) + sizeof(ErrorMsg));
 
