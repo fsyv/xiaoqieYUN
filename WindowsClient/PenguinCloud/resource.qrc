@@ -70,6 +70,8 @@
         <file>resource/image/DownLoadManage/pause.png</file>
         <file>resource/image/DownLoadManage/pause_hover.png</file>
         <file>resource/image/linux.png</file>
-        <file>resource/image/hite.png</file>
+        <file>resource/image/error.png</file>
+        <file>resource/image/warn.png</file>
+        <file>resource/image/ok.png</file>
     </qresource>
 </RCC>

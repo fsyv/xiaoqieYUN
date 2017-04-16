@@ -9,7 +9,7 @@
 #include "logic/rwfile.h"
 #include "registerwidget.h"
 #include "network/connecttoserver.h"
-
+#include "basicwidget/mymessagebox.h"
 
 LoginWidget::LoginWidget(QWidget *parent) :
     BasicWidget(parent),
@@ -124,13 +124,11 @@ void LoginWidget::login_success(LoginMsg loginMsg)
 
         m_pMainWidget->show();
     }
-    else if(loginMsg.m_iLoginStatus == LOGIN_FAILED_PASSWD)
+    else if(loginMsg.m_iLoginStatus == LOGIN_FAILED)
     {
-
-    }
-    else if(loginMsg.m_iLoginStatus == LOGIN_FAILED_USERNAME)
-    {
-
+        MyMessageBox* m = MyMessageBox::showMessageBox(this, "密码错误，请重试!", "重试", "退出", Error);
+        connect(m, &MyMessageBox::btn1, this, [m](){m->close();});
+        connect(m, &MyMessageBox::btn2, this, [m, this](){m->close(); this->close();});
     }
 
 }

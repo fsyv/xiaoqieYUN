@@ -43,13 +43,14 @@ typedef struct _ReadyMsg{
 
 #define LOGIN_SUCCESS 1
 #define PUT_LOGIN 0
-#define LOGIN_FAILED_PASSWD -1
-#define LOGIN_FAILED_USERNAME -2
+#define LOGIN_FAILED -1
+//#define LOGIN_FAILED_PASSWD -1
+//#define LOGIN_FAILED_USERNAME -2
 //登录消息结构
 typedef struct _LoginMsg{
     int m_iLoginStatus;         //登录状态
-    char m_aUserName[10];       //用户名
-    char m_aUserPass[16];       //登录密码
+    char m_aUserName[11];       //用户名
+    char m_aUserPass[17];       //登录密码
 }LoginMsg, *pLoginMsg;
 
 #define MAX_PATH 1024

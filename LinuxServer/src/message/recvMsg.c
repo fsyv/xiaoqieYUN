@@ -126,16 +126,23 @@ void recvReadyMsg(int sockfd, Msg *msg)
  */
 void recvLoginMsg(int sockfd, Msg *msg)
 {
+    int ret;
     LoginMsg loginMsg;
     memset(&loginMsg, 0, sizeof(LoginMsg));
 
-	printf("LOGIN_SUCCESS\n");
+    printf("LOGIN_SUCCESS\n");
 
     memcpy(&loginMsg, msg->m_aMsgData, msg->m_iMsgLen);
-    loginMsg.m_iLoginStatus = LOGIN_SUCCESS;
+    printf("%s %s\n", loginMsg.m_aUserName, loginMsg.m_aUserPass);
+    ret = login(loginMsg.m_aUserName, loginMsg.m_aUserPass);
+
+    printf("%d\n", ret);
+    if (ret == MYSQL_LOGIN_SUCCESS)
+        loginMsg.m_iLoginStatus = LOGIN_SUCCESS;
+    else
+	loginMsg.m_iLoginStatus = LOGIN_FAILED;
     sendLoginMsg(sockfd, loginMsg);
 }
-
 //文件列表消息
 void recvFileListMsg(int sockfd, Msg *msg)
 {
@@ -230,6 +237,8 @@ void recvRenameMsg(int sockfd, Msg *msg)
     memcpy(&renameMsg, msg->m_aMsgData, msg->m_iMsgLen);
 
     ret = renameFileOrFolder(renameMsg.oldName, renameMsg.newName);
+    
+    printf("sendRenameError\n");
 
     if(ret == -1)
     {
@@ -285,7 +294,7 @@ void recvCopyMsg(int sockfd, Msg *msg)
 void recvRegisterMsg(int sockfd, Msg *msg)
 {
     	int ret;
-	
+	char path[1024] = "/var/penguin/";
 	RegisterMsg registerMsg;
 	memset(&registerMsg, 0, sizeof(RegisterMsg));
 	memcpy(&registerMsg, msg->m_aMsgData, msg->m_iMsgLen);
@@ -299,6 +308,8 @@ void recvRegisterMsg(int sockfd, Msg *msg)
 		//success
 		memset(&rs, 0, sizeof(RegisterStatus));
 		rs.status = 0;
+		strcat(path, registerMsg.username);
+		mkdir(path);	
 	}
     	else if (ret == -1)
 	{

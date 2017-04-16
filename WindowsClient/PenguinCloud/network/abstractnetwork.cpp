@@ -62,6 +62,8 @@ int AbstractNetwork::sendLoginMsg(LoginMsg loginMsg)
     msg->m_iMsgLen = sizeof(LoginMsg);
     memcpy(msg->m_aMsgData, (void *)&loginMsg, msg->m_iMsgLen);
 
+    qDebug() << loginMsg.m_aUserName << loginMsg.m_aUserPass;
+
     int ret = sendMsg(msg);
 
     delete msg;

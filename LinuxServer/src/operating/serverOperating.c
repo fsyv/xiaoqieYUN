@@ -345,3 +345,18 @@ int registerUser(const char *username, const char *password)
 		return -1;
 	}
 }
+
+int loginUser(const char *username, const char *password)
+{
+	UserStatus us = login(username, password);
+
+	if (us = MYSQL_LOGIN_SUCCESS)
+	{
+		return 0;
+	}
+	else
+	{
+		return -1;
+	}
+
+}

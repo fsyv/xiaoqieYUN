@@ -1,18 +1,21 @@
-﻿#include "mainwidget.h"
-#include <QtWidgets>
+﻿#include <QDir>
 #include <QString>
-#include <QDir>
+#include <QtWidgets>
 #include <QStatusBar>
+
 #include <stdio.h>
-#include "network/connecttoserver.h"
+#include "file/file.h"
+#include "mainwidget.h"
+#include "file/folder.h"
 #include "tools/tools.h"
 #include "thread/ThreadPool.h"
 #include "thread/uploadthread.h"
 #include "thread/downloadthread.h"
-#include "file/file.h"
-#include "file/folder.h"
+#include "network/connecttoserver.h"
+#include "basicwidget/mymessagebox.h"
 #include "basiccontrol/imagepreview.h"
 #include "basiccontrol/downloadmanage.h"
+
 
 MainWidget::MainWidget(QWidget *parent) :
     BasicWidget(parent),
@@ -553,10 +556,15 @@ void MainWidget::removeSelected()
         {
             removeFileOrFolder(elem);
         }
-        QMessageBox::warning(this, tr("Hint"), tr("Delete OK"));
+        MyMessageBox *m = MyMessageBox::showMessageBox(this, "删除成功!", "", "确定",  Ok);
+        connect(m, &MyMessageBox::btn2, this, [m](){m->close();});
     }
     else
-        QMessageBox::warning(this, tr("Warning"), tr("未选中任何项目"));
+    {
+        MyMessageBox *m = MyMessageBox::showMessageBox(this, "未选中任何项目!", "", "确定",  Warn);
+        connect(m, &MyMessageBox::btn2, this, [m](){m->close();});
+    }
+
 }
 
 void MainWidget::copySelectFilesOrFolder(const QStringList &_path)
