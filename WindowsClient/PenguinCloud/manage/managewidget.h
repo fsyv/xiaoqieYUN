@@ -11,7 +11,7 @@ class ManageTabWidget;
 class UploadWidget;
 class DownloadWidget;
 class FinishedWidget;
-class UpdateFileThread;
+class File;
 QT_END_NAMESPACE
 
 class ManageWidget : public QWidget
@@ -21,11 +21,13 @@ public:
     ManageWidget(QWidget *parent = nullptr);
     ~ManageWidget();
 
-    void addUploadTask(UpdateFileThread *);
-    void addDownloadTask(UpdateFileThread *);
+    //添加上传任务
+    void addUploadTask(File *file);
+    //添加下载任务
+    void addDownloadTask(File *file);
 
 protected:
-    void addFinishedTask();
+    void addFinishedTask(File *file);
 
 private:
     QVBoxLayout *m_pVBoxLayout;

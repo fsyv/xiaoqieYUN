@@ -19,16 +19,6 @@ DownloadWidget::DownloadWidget(QWidget *parent) :
     m_pListWidget = new ManageListWidget;
     m_pVBosLayout = new QVBoxLayout(this);
 
-
-    for(int i = 0; i < 10; ++i)
-    {
-        QListWidgetItem *item = new QListWidgetItem(m_pListWidget);
-        item->setSizeHint(QSize(1, 50));
-
-        m_pListWidget->setItemWidget(item, new DownloadList());
-    }
-
-
     m_pVBosLayout->addWidget(m_pTopWidget);
     m_pVBosLayout->addWidget(m_pListWidget);
 }
@@ -37,3 +27,14 @@ DownloadWidget::~DownloadWidget()
 {
 
 }
+
+void DownloadWidget::addTask(File *file)
+{
+    m_pWaittingTask->append(file);
+
+    QListWidgetItem *item = new QListWidgetItem(m_pListWidget);
+    item->setSizeHint(QSize(1, 50));
+
+    m_pListWidget->setItemWidget(item, new DownloadList());
+}
+

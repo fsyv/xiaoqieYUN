@@ -19,7 +19,7 @@ public:
     qint64 getSize() const;
     void setSize(const qint64 &i64Size);
 
-private:
+protected:
     QString m_stName;
     QDateTime m_latModiryTime;
     qint64 m_i64Size;
