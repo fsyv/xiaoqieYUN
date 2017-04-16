@@ -271,7 +271,6 @@ void MainWidget::recvFileLists(QByteArray byteArray)
             QJsonValue value =  object.value(object.keys().at(0));
             QJsonArray array = value.toArray();
             QString path = object.keys().at(0);
-            qDebug() << path;
 
             m_pFileLists->clear();
 

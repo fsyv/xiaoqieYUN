@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
         a.setStyleSheet(file.readAll());
     }
 
+
 //    ImagePreView w;
     LoginWidget w;
 
