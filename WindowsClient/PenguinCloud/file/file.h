@@ -11,6 +11,7 @@ public:
     File(const File &file);
     File(QString localName, QString remoteName);
     File();
+    ~File();
 
     bool operator ==(const File &file) const;
 
@@ -18,7 +19,7 @@ public:
     void setMD5(const QByteArray &value);
 
     QString getLocalName() const;
-    void setLacalName(const QString &localName);
+    void setLocalName(const QString &localName);
 
     void updateMD5();
 

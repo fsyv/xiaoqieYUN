@@ -6,6 +6,7 @@
 
 #include "basicwidget/basicwidget.h"
 #include "network/msgtype.h"
+#include "tools/tools.h"
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -38,14 +39,10 @@ public:
 
     void replyFileLists(const QString &FolderPath);
 
-
     void setPreviewWidget(FileType);
-
-
 
 protected:
     void paintEvent(QPaintEvent *event);
-
 
 signals:
     void paste(bool);

@@ -2,6 +2,7 @@
 
 #include <QLabel>
 #include <QProgressBar>
+#include <QFileInfo>
 #include "../BasisCtrl/picturelabel.h"
 #include "../BasisCtrl/pauselabel.h"
 #include "../BasisCtrl/stoplabel.h"
@@ -36,13 +37,14 @@ void DownloadList::setFile(File *file)
 {
     m_pFile = file;
 
-    QFileInfo fileInfo(file->getName());
+    QFileInfo fileInfo(file->getRemoteName());
 
     //加载文件Ico
 
     setIco();
     setName(fileInfo.fileName());
     setSize(m_i64CurrentSize, m_pFile->getSize());
+    m_pSurplusTime->setText("--");
     updateProgressBar(0);
     setSpeed("等待中...");
 
@@ -152,7 +154,7 @@ void DownloadList::setName(QString name)
     //设置文件名字
     //如果文件名太长，显示...
     QFontMetrics elideFont(m_pFileName->font());
-    m_pFileName->setText(elideFont.elidedText(fileInfo.fileName(), Qt::ElideRight, m_pFileName->width()));
+    m_pFileName->setText(elideFont.elidedText(name, Qt::ElideRight, m_pFileName->width()));
 }
 
 void DownloadList::setSize(qint64 currentSize, qint64 totalSize)

@@ -1,9 +1,10 @@
 #ifndef FILEOBJECT_H
 #define FILEOBJECT_H
 
-#include<QObject>
+#include <QObject>
+#include <QDateTime>
 
-class FileObject : QObject
+class FileObject : public QObject
 {
     Q_OBJECT
 public:

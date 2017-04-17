@@ -3,8 +3,9 @@
 PauseLabel::PauseLabel(QWidget *parent):
     QLabel(parent)
 {
-    startPicture = QString("://Resource/paly_normal.png");
-    pausePicture = QString("://Resource/pause_normal.png");
+
+    startPicture = QString("://resource/manage/paly_normal.png");
+    pausePicture = QString("://resource/manage/pause_normal.png");
 
     resize(16, 16);
     setScaledContents(true);
@@ -36,12 +37,12 @@ void PauseLabel::mouseReleaseEvent(QMouseEvent *event)
         switch (m_eButtonLogin) {
         case ButtonLogin::START:
             m_eButtonLogin = ButtonLogin::PAUSE;
-            setPixmap(QPixmap("://Resource/pause_enter.png"));
+            setPixmap(QPixmap("://resource/manage/pause_enter.png"));
             emit start();
             break;
         case ButtonLogin::PAUSE:
             m_eButtonLogin = ButtonLogin::START;
-            setPixmap(QPixmap("://Resource/paly_enter.png"));
+            setPixmap(QPixmap("://resource/manage/paly_enter.png"));
             emit pause();
             break;
         }
@@ -56,10 +57,10 @@ void PauseLabel::enterEvent(QEvent *event)
 {
     switch (m_eButtonLogin) {
     case ButtonLogin::START:
-        setPixmap(QPixmap("://Resource/paly_enter.png"));
+        setPixmap(QPixmap("://resource/manage/paly_enter.png"));
         break;
     case ButtonLogin::PAUSE:
-        setPixmap(QPixmap("://Resource/pause_enter.png"));
+        setPixmap(QPixmap("://resource/manage/pause_enter.png"));
         break;
     }
 

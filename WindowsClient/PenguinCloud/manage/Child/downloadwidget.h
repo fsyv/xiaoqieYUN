@@ -5,6 +5,8 @@
 #include <QMap>
 #include <QList>
 
+#include "../file/file.h"
+
 QT_BEGIN_NAMESPACE
 class QWidget;
 class TopWidget;
@@ -16,6 +18,7 @@ QT_END_NAMESPACE
 
 class DownloadWidget : public QWidget
 {
+    Q_OBJECT
 public:
     DownloadWidget(QWidget *parent = nullptr);
     ~DownloadWidget();

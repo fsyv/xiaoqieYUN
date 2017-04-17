@@ -81,10 +81,10 @@ FileType Tools::getFileType(const QString &filename)
 
 QString Tools::sizeToString(const qint64 &fileSize)
 {
-    long double size = long double(fileSize);
+    quint64 size = quint64(fileSize);
     QString unit;
     QStringList units;
-    units << "KB" << "MB" << "GB" << "TB";
+    units << "字节"<< "KB" << "MB" << "GB" << "TB";
 
     int i = 0;
 

@@ -13,11 +13,14 @@ DownloadWidget::DownloadWidget(QWidget *parent) :
     QWidget(parent),
     m_pTopWidget(nullptr),
     m_pListWidget(nullptr),
-    m_pVBosLayout(nullptr)
+    m_pVBosLayout(nullptr),
+    m_pWaittingTask(nullptr)
 {
     m_pTopWidget = new DownloadTopWidget;
     m_pListWidget = new ManageListWidget;
     m_pVBosLayout = new QVBoxLayout(this);
+
+    m_pWaittingTask = new QList<File *>;
 
     m_pVBosLayout->addWidget(m_pTopWidget);
     m_pVBosLayout->addWidget(m_pListWidget);
@@ -25,7 +28,19 @@ DownloadWidget::DownloadWidget(QWidget *parent) :
 
 DownloadWidget::~DownloadWidget()
 {
+    delete m_pTopWidget;
+    m_pTopWidget = nullptr;
 
+    delete m_pListWidget;
+    m_pListWidget = nullptr;
+
+    delete m_pVBosLayout;
+    m_pVBosLayout = nullptr;
+
+    m_pWaittingTask->clear();
+
+    delete m_pWaittingTask;
+    m_pWaittingTask = nullptr;
 }
 
 void DownloadWidget::addTask(File *file)

@@ -3,8 +3,8 @@
 FileObject::FileObject(QString remoteName, qint64 size, QDateTime dateTime) :
     QObject(),
     m_stRemoteName(remoteName),
-    m_i64Size(size),
-    m_latModiryTime(dateTime)
+    m_latModiryTime(dateTime),
+    m_i64Size(size)
 {
 
 }

@@ -29,6 +29,11 @@ File::File() :
 
 }
 
+File::~File()
+{
+
+}
+
 bool File::operator ==(const File &file) const
 {
     //如果远程相对路径不同视为不同的文件
@@ -56,7 +61,7 @@ QString File::getLocalName() const
     return m_stLocalName;
 }
 
-void File::setLacalName(const QString &localName)
+void File::setLocalName(const QString &localName)
 {
     m_stLocalName = localName;
 }

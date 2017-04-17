@@ -36,5 +36,4 @@ SOURCES += \
     $$PWD/ManageListWidget/managelistwidgetitem.cpp \
     $$PWD/ManageTabWidget/managetabwidget.cpp
 
-RESOURCES += \
-    $$PWD/resource.qrc
+RESOURCES +=

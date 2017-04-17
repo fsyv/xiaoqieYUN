@@ -5,7 +5,7 @@ StopLabel::StopLabel(QWidget *parent) :
     currentPictureIndex(0),
     m_bFlush(false)
 {
-    setPixmap(QPixmap("://Resource/stop_normal.png"));
+    setPixmap(QPixmap("://resource/manage/stop_normal.png"));
     resize(16, 16);
     setScaledContents(true);
     //鼠标跟踪
@@ -20,7 +20,7 @@ StopLabel::~StopLabel()
 void StopLabel::mousePressEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton)
-        setPixmap(QPixmap("://Resource/stop_press.png"));
+        setPixmap(QPixmap("://resource/manage/stop_press.png"));
     else
         event->ignore();
 
@@ -33,7 +33,7 @@ void StopLabel::mouseReleaseEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton)
     {
-        setPixmap(QPixmap("://Resource/stop_normal.png"));
+        setPixmap(QPixmap("://resource/manage/stop_normal.png"));
         emit stop();
     }
     else
@@ -50,19 +50,19 @@ void StopLabel::mouseMoveEvent(QMouseEvent *event)
     {
         switch (currentPictureIndex++) {
         case 0:
-            setPixmap(QPixmap("://Resource/stop_enter_1.png"));
+            setPixmap(QPixmap("://resource/manage/stop_enter_1.png"));
             break;
         case 1:
-            setPixmap(QPixmap("://Resource/stop_enter_2.png"));
+            setPixmap(QPixmap("://resource/manage/stop_enter_2.png"));
             break;
         case 2:
-            setPixmap(QPixmap("://Resource/stop_enter_3.png"));
+            setPixmap(QPixmap("://resource/manage/stop_enter_3.png"));
             break;
         case 3:
-            setPixmap(QPixmap("://Resource/stop_enter_4.png"));
+            setPixmap(QPixmap("://resource/manage/stop_enter_4.png"));
             break;
         case 4:
-            setPixmap(QPixmap("://Resource/stop_enter_5.png"));
+            setPixmap(QPixmap("://resource/manage/stop_enter_5.png"));
             break;
         default:
             currentPictureIndex = 0;
@@ -82,6 +82,6 @@ void StopLabel::enterEvent(QEvent *event)
 void StopLabel::leaveEvent(QEvent *event)
 {
     m_bFlush = true;
-    setPixmap(QPixmap("://Resource/stop_normal.png"));
+    setPixmap(QPixmap("://resource/manage/stop_normal.png"));
     QLabel::leaveEvent(event);
 }

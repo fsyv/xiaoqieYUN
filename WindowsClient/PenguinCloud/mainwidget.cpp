@@ -8,7 +8,6 @@
 #include "tools/tools.h"
 #include "file/file.h"
 #include "file/folder.h"
-#include "tools/tools.h"
 #include "thread/ThreadPool.h"
 #include "thread/uploadthread.h"
 #include "thread/downloadthread.h"
@@ -26,7 +25,6 @@ MainWidget::MainWidget(QWidget *parent) :
     m_pConnectToServer(nullptr),
     m_pManageWidget(nullptr)
 {
-    m_pThreadPool = new ThreadPool();
     resize(800, 600);
     init();
     setListViewItem();
@@ -169,6 +167,7 @@ void MainWidget::paintEvent(QPaintEvent *event)
     p.drawRect(0, 80, this->width(), 40);
     p.restore();
     p.drawRect(0, 0, width() - 1, height() - 1);
+
 }
 
 QString MainWidget::getUserName() const
@@ -237,8 +236,6 @@ void MainWidget::recvFileLists(QByteArray byteArray)
 
             for(int i = 0; i < array.size(); ++i)
             {
-                QStringList list;
-
                 if(array.at(i).toObject().value("type") == QString("folder"))
                 {
                     //文件夹
@@ -256,40 +253,10 @@ void MainWidget::recvFileLists(QByteArray byteArray)
                     QString name = array.at(i).toObject().value("name").toString();
                     qint64 size = array.at(i).toObject().value("size").toVariant().toLongLong();
 
-                    m_pFileLists->insert(path + name, new File(name, size, dateTime));
+                    m_pFileLists->insert(path + name, new File(QString(""), path + name, size, dateTime));
                 }
             }
         }
-    }
-}
-
-void MainWidget::recvUploadFile_readyReadUploadMsg(UploadMsg uploadMsg)
-{
-    QString name(uploadMsg.fileName);
-
-    UploadThread *thread = (UploadThread *)m_pUploadTaskLists->value(name);
-
-    if(thread)
-    {
-        thread->setServerUrl(QString(SERVER_IP), uploadMsg.serverFilePort);
-        thread->start();
-        m_pThreadPool->addJob(thread);
-    }
-}
-
-void MainWidget::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg)
-{
-    QString name(downloadMsg.fileName);
-
-    DownloadThread *thread = (DownloadThread *)m_pDownloadTaskLists->value(name);
-
-    if(thread)
-    {
-        thread->setServerUrl(QString(SERVER_IP), downloadMsg.serverFilePort);
-        FileObject *fileObject = m_pFileLists->value(thread->getRemotePath());
-        thread->setFileSize(fileObject->getSize());
-        thread->start();
-        m_pThreadPool->addJob(thread);
     }
 }
 
@@ -351,9 +318,9 @@ void MainWidget::doloadFile_download()
         }
         else if(_item->isSelected())
         {
-            m_pManageWidget->addDownloadTask(new File(QDir::currentPath() + QString("/penguin/") + m_stUserName + path.top() + _item->text(),\
-                                                      m_stUserName + path.top() + _item->text())
-                                             );
+            File *file = (File *)m_pFileLists->value(m_stUserName + path.top() + _item->text());
+            file->setLocalName(QDir::currentPath() + QString("/penguin/") + file->getRemoteName());
+            m_pManageWidget->addDownloadTask(file);
         }
     }
 }
@@ -399,13 +366,13 @@ void MainWidget::renameError(RenameMsg r){
 
 void MainWidget::show_manage()
 {
-    if(manageUpAndDown->isHidden())
+    if(m_pManageWidget->isHidden())
     {
-        manageUpAndDown->show();
+        m_pManageWidget->show();
     }
     else
     {
-        manageUpAndDown->hide();
+        m_pManageWidget->hide();
     }
 }
 
