@@ -3,14 +3,11 @@
 
 #include<QMap>
 #include <QStack>
-#include <QQueue>
+
 #include "basicwidget/basicwidget.h"
 #include "network/msgtype.h"
-#include "basiccontrol/pdfwidget.h"
-#include "basiccontrol/filetablewidget.h"
-#include "basiccontrol/managewidget.h"
-#include "tools/tools.h"
 
+QT_BEGIN_NAMESPACE
 class QLabel;
 class QPushButton;
 class QToolButton;
@@ -21,7 +18,9 @@ class QFileInfo;
 class DownloadManage;
 class UpdateFileThread;
 class FileObject;
-class ThreadPool;
+class ManageWidget;
+class FileTableWidget;
+QT_END_NAMESPACE
 
 class MainWidget : public BasicWidget
 {
@@ -52,8 +51,6 @@ signals:
     void paste(bool);
 public slots:
     void recvFileLists(QByteArray byteArray);
-    void recvUploadFile_readyReadUploadMsg(UploadMsg uploadMsg);
-    void recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg);
     void getDir(QString dirname);
     void previousDir();
     void uploadFile_upload() noexcept;
@@ -87,8 +84,8 @@ private:
     QPushButton *previous;
     QListView *listView;
     FileTableWidget *tableWidget;
-    DownloadManage *load;
-    ManageWidget *manageUpAndDown;
+
+    ManageWidget *m_pManageWidget;
 
 
     QLabel *sys_info;
@@ -97,17 +94,10 @@ private:
 
     QStack<QString> path;// current dir
 
-    //上传任务列表
-    QMap<QString, UpdateFileThread *> *m_pUploadTaskLists;
-    //下载任务列表
-    QMap<QString, UpdateFileThread *> *m_pDownloadTaskLists;
-
     QMap<QString, FileObject *> *m_pFileLists;
 
     QStringList wholeCopyPath; // 保存所有将要复制的文件的具体路径
     bool isCopy; // true是复制， false是移动
-
-    ThreadPool *m_pThreadPool;
 };
 
 #endif // MAINWIDGET_H

@@ -30,6 +30,12 @@ private:
     QMap<File *, UpdateFileThread *> *m_pExecutingTask;
     QList<File *> *m_pWaittingTask;
 
+protected slots:
+    void startTask(File *file);
+    void pauseTask(File *file);
+    void stopTask(File *file);
+    void finishedTask(File *file);
+
 signals:
     void taskFinished(File);
 };

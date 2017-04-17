@@ -21,6 +21,9 @@ public:
 
     void setFile(File *file);
 
+    PauseLabel *getPauseButton() const;
+    StopLabel *getStopButton() const;
+
 private:
     void initWidget();
     void setWidgetLayout();
@@ -34,6 +37,7 @@ private:
     void setSpeed(qint64 speed);
 
     File *m_pFile;
+    qint64 m_i64CurrentSize;
 
     PictureLabel *m_pFileIco;
     QLabel *m_pFileName;
@@ -46,10 +50,18 @@ private:
 
 protected:
     void resizeEvent(QResizeEvent *e);
+    void updateTask_currentSize(qint64 currentSize);
+
+protected slots:
+    void start_pauseButton();
+    void pause_pauseButton();
+    void stop_stopButton();
 
 signals:
-
-public slots:
+    void start(File *);
+    void pause(File *);
+    void stop(File *);
+    void finished(File *);
 };
 
 #endif // DOWNLOADLIST_H

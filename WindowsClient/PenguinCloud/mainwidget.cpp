@@ -1,11 +1,12 @@
-﻿#include <QDir>
+﻿#include "mainwidget.h"
+
+#include <QDir>
 #include <QString>
 #include <QtWidgets>
 #include <QStatusBar>
 
-#include <stdio.h>
+#include "tools/tools.h"
 #include "file/file.h"
-#include "mainwidget.h"
 #include "file/folder.h"
 #include "tools/tools.h"
 #include "thread/ThreadPool.h"
@@ -14,33 +15,32 @@
 #include "network/connecttoserver.h"
 #include "basicwidget/mymessagebox.h"
 #include "basiccontrol/imagepreview.h"
-#include "basiccontrol/downloadmanage.h"
+#include "basiccontrol/pdfwidget.h"
+#include "basiccontrol/filetablewidget.h"
+
+#include "manage/managewidget.h"
 
 
 MainWidget::MainWidget(QWidget *parent) :
     BasicWidget(parent),
     m_pConnectToServer(nullptr),
-    m_pUploadTaskLists(nullptr),
-    m_pDownloadTaskLists(nullptr),
-    m_pThreadPool(nullptr)
+    m_pManageWidget(nullptr)
 {
     m_pThreadPool = new ThreadPool();
     resize(800, 600);
     init();
     setListViewItem();
     setFileTable();
-    manageUpAndDown = new ManageWidget(this);
-    manageUpAndDown->move(1, 80);
-    manageUpAndDown->setFixedSize(800, 480);
-    manageUpAndDown->hide();
+    m_pManageWidget = new ManageWidget(this);
+    m_pManageWidget->move(1, 80);
+    m_pManageWidget->setFixedSize(800, 480);
+    m_pManageWidget->hide();
     this->setBackgroundColor(Qt::white);
 
     path.push("/");
 
     m_pConnectToServer = ConnectToServer::getInstance();
     connect(m_pConnectToServer, SIGNAL(readyReadFileListMsg(QByteArray)), this, SLOT(recvFileLists(QByteArray)));
-    connect(m_pConnectToServer, SIGNAL(readyReadUploadMsg(UploadMsg)), this, SLOT(recvUploadFile_readyReadUploadMsg(UploadMsg)));
-    connect(m_pConnectToServer, SIGNAL(readyReadDownloadMsg(DownloadMsg)), this, SLOT(recvDownloadFile_readyReadDownloadMsg(DownloadMsg)));
     connect(m_pConnectToServer, &ConnectToServer::readyReadAckErrorMsg, this, &MainWidget::errorHandle);
     connect(m_pConnectToServer, &ConnectToServer::readyReadPreviewMsg, this, &MainWidget::show_prview);
 
@@ -55,62 +55,20 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(tableWidget, &FileTableWidget::requestPaste, this, &MainWidget::pasteSelected);
     connect(tableWidget, &FileTableWidget::requestPreview, this, &MainWidget::preview);
     connect(tableWidget, &FileTableWidget::requsetRefresh, this, &MainWidget::refresh);
-    //  m_pFileMap = new QMap<QString, QFileInfo *>;
 
-
-    m_pUploadTaskLists = new QMap<QString, UpdateFileThread *>;
-    m_pDownloadTaskLists = new QMap<QString, UpdateFileThread *>;
     m_pFileLists = new QMap<QString, FileObject *>;
 }
 
 MainWidget::~MainWidget()
 {
-    //清空上传列表
-    if(m_pUploadTaskLists->count())
-    {
-        for(auto cur = m_pUploadTaskLists->begin(); cur != m_pUploadTaskLists->end(); ++cur)
-        {
-            if(cur.value())
-            {
-                cur.value()->pause();
-                delete cur.value();
-            }
-        }
-        m_pUploadTaskLists->clear();
-    }
-
-    if(m_pUploadTaskLists)
-        delete m_pUploadTaskLists;
-    m_pUploadTaskLists = nullptr;
-
-    //清空下载
-    if(m_pDownloadTaskLists->count())
-    {
-        for(auto cur = m_pDownloadTaskLists->begin(); cur != m_pDownloadTaskLists->end(); ++cur)
-        {
-            if(cur.value())
-            {
-                //                cur.value()->pause();
-                //                //等待任务结束
-                //                cur.value()->wait(1000);
-                delete cur.value();
-            }
-        }
-        m_pDownloadTaskLists->clear();
-    }
-
-    if(m_pDownloadTaskLists)
-        delete m_pDownloadTaskLists;
-    m_pDownloadTaskLists = nullptr;
-
     m_pFileLists->clear();
     if(m_pFileLists)
         delete m_pFileLists;
     m_pFileLists = nullptr;
 
-    if(m_pThreadPool)
-        delete m_pThreadPool;
-    m_pThreadPool = nullptr;
+    if(m_pManageWidget)
+        delete m_pManageWidget;
+    m_pManageWidget = nullptr;
 }
 
 void MainWidget::setListViewItem()
@@ -369,62 +327,13 @@ void MainWidget::uploadFile_upload() noexcept
     if(!fileList.count())
         return;
 
+    //上传的时候生成一个文件对象，具体上传又ManageWidget来处理
     for(const QString &str : fileList)
     {
-        if(!m_pUploadTaskLists->keys().contains(str))
-        {
-            try{
-                UploadThread *upload_t =  new UploadThread(str, m_stUserName + path.top(), this);
-                m_pUploadTaskLists->insert(str, upload_t);
-
-
-                QPushButton *cancel = new QPushButton();
-                cancel->setIcon(QIcon(":/resource/image/DownLoadManage/cancel.png"));
-                connect(cancel, &QPushButton::clicked, this, [upload_t](){
-                    //取消逻辑
-                    upload_t->stop();
-                });
-                QPushButton *pause = new QPushButton();
-                pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
-//                connect(pause, &QPushButton::clicked, this, [upload_t, pause](){
-//                    if(upload_t->getCurrentStatus())
-//                    {
-//                        upload_t->pause();
-//                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/jixu.png"));
-//                    }
-//                    else
-//                    {
-//                        upload_t->start();
-//                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
-//                    }
-//                });
-
-                connect(pause, &QPushButton::clicked, this, [upload_t](){
-                    //暂停逻辑
-                    upload_t->pause();
-                });
-
-                QProgressBar *bar = new QProgressBar();
-                bar->setMaximum(100);
-                connect(upload_t, &UploadThread::currentTaskProgress, this, [bar](double d){
-                    //进度条逻辑
-                    bar->setValue(d * 100);
-                    qDebug() << d;
-                });
-
-                manageUpAndDown->getUploadManage()->addRow(str.split('/').last(), bar, cancel, pause);
-                manageUpAndDown->getUploadManage()->addRow(str, bar, cancel, pause);
-
-                UploadMsg uploadMsg;
-                memset(&uploadMsg, 0, sizeof(UploadMsg));
-                strcpy(uploadMsg.fileName, upload_t->getLocalPath().toUtf8().data());
-
-                m_pConnectToServer->sendUploadMsg(uploadMsg);
-            }
-            catch(QString e){
-                qDebug() << e;
-            }
-        }
+        QFileInfo fileInfo(str);
+        m_pManageWidget->addUploadTask(new File(fileInfo.filePath(),\
+                                                m_stUserName + path.top() + fileInfo.fileName())
+                                       );
     }
 }
 
@@ -442,56 +351,9 @@ void MainWidget::doloadFile_download()
         }
         else if(_item->isSelected())
         {
-            if(!m_pDownloadTaskLists->keys().contains(m_stUserName + path.top() + _item->text()))
-            {
-                DownloadThread *uft = new DownloadThread(\
-                            QDir::currentPath() + QString("/penguin/") + m_stUserName + path.top() + _item->text(), \
-                            m_stUserName + path.top() + _item->text(), \
-                            this\
-                            );
-
-                m_pDownloadTaskLists->insert(uft->getRemotePath(), uft);
-
-                //在这里添加按钮的槽函数
-                QPushButton *cancel = new QPushButton();
-                cancel->setIcon(QIcon(":/resource/image/DownLoadManage/cancel.png"));
-                connect(cancel, &QPushButton::clicked, this, [uft](){
-                    uft->stop();
-                });
-                QPushButton *pause = new QPushButton();
-                pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
-//                connect(pause, &QPushButton::clicked, this, [uft, pause](){
-//                    if(uft->getCurrentStatus())
-//                    {
-//                        uft->pause();
-//                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/jixu.png"));
-//                    }
-//                    else
-//                    {
-//                        uft->start();
-//                        pause->setIcon(QIcon(":/resource/image/DownLoadManage/pause.png"));
-//                    }
-//                });
-
-                connect(pause, &QPushButton::clicked, this, [uft](){
-                    uft->pause();
-                });
-
-                QProgressBar *bar = new QProgressBar();
-                bar->setMaximum(100);
-                connect(uft, &UpdateFileThread::currentTaskProgress, this, [bar](double d){
-                    bar->setValue(d * 100);
-                    qDebug() << d;
-                });
-
-                manageUpAndDown->getDownloadManage()->addRow(_item->text().split('/').last(), bar, cancel, pause);
-
-                DownloadMsg downloadMsg;
-                memset(&downloadMsg, 0, sizeof(DownloadMsg));
-                strcpy(downloadMsg.fileName, uft->getRemotePath().toUtf8().data());
-
-                m_pConnectToServer->sendDownloadMsg(downloadMsg);
-            }
+            m_pManageWidget->addDownloadTask(new File(QDir::currentPath() + QString("/penguin/") + m_stUserName + path.top() + _item->text(),\
+                                                      m_stUserName + path.top() + _item->text())
+                                             );
         }
     }
 }

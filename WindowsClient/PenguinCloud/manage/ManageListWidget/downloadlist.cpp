@@ -6,10 +6,12 @@
 #include "../BasisCtrl/pauselabel.h"
 #include "../BasisCtrl/stoplabel.h"
 #include "../file/file.h"
+#include "../tools/tools.h"
 
 DownloadList::DownloadList(QWidget *parent) :
     QWidget(parent),
     m_pFile(nullptr),
+    m_i64CurrentSize(0LL),
     m_pFileIco(nullptr),
     m_pFileName(nullptr),
     m_pFileSize(nullptr),
@@ -40,10 +42,22 @@ void DownloadList::setFile(File *file)
 
     setIco();
     setName(fileInfo.fileName());
-    setSize(0LL, m_pFile->getSize());
+    setSize(m_i64CurrentSize, m_pFile->getSize());
     updateProgressBar(0);
     setSpeed("等待中...");
 
+    //加入就开始任务
+    m_pPauseButton->startClick();
+}
+
+PauseLabel *DownloadList::getPauseButton() const
+{
+    return m_pPauseButton;
+}
+
+StopLabel *DownloadList::getStopButton() const
+{
+    return m_pStopButton;
 }
 
 void DownloadList::initWidget()
@@ -143,7 +157,9 @@ void DownloadList::setName(QString name)
 
 void DownloadList::setSize(qint64 currentSize, qint64 totalSize)
 {
-
+    QString cSize = Tools::sizeToString(currentSize);
+    QString tSize = Tools::sizeToString(totalSize);
+    m_pFileSize->setText(cSize + QString("/") + tSize);
 }
 
 void DownloadList::updateProgressBar(int progress)
@@ -158,11 +174,35 @@ void DownloadList::setSpeed(QString speed)
 
 void DownloadList::setSpeed(qint64 speed)
 {
-
+    QString speedStr = Tools::sizeToString(speed);
+    setSpeed(speedStr + QString("/s"));
 }
 
 void DownloadList::resizeEvent(QResizeEvent *e)
 {
     setWidgetLayout();
     QWidget::resizeEvent(e);
+}
+
+void DownloadList::updateTask_currentSize(qint64 currentSize)
+{
+    setSpeed(currentSize - m_i64CurrentSize);
+    m_i64CurrentSize = currentSize;
+    setSize(m_i64CurrentSize, m_pFile->getSize());
+    updateProgressBar(m_i64CurrentSize * 1.0 / m_pFile->getSize() * 100);
+}
+
+void DownloadList::start_pauseButton()
+{
+    emit start(m_pFile);
+}
+
+void DownloadList::pause_pauseButton()
+{
+    emit pause(m_pFile);
+}
+
+void DownloadList::stop_stopButton()
+{
+    emit stop(m_pFile);
 }

@@ -5,6 +5,7 @@
 
 class Folder : public FileObject
 {
+    Q_OBJECT
 public:
     Folder(QString name, QDateTime dateTime);
 };

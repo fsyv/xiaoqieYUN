@@ -78,3 +78,23 @@ FileType Tools::getFileType(const QString &filename)
         return PICTURE;
      }
 }
+
+QString Tools::sizeToString(const qint64 &fileSize)
+{
+    long double size = long double(fileSize);
+    QString unit;
+    QStringList units;
+    units << "KB" << "MB" << "GB" << "TB";
+
+    int i = 0;
+
+    for(auto unit : units)
+    {
+        if(size < 1024.0)
+            break;
+
+        size /= 1024.0;
+        ++i;
+    }
+    return QString::number(size) + QString(" ") + units.at(i);
+}

@@ -30,11 +30,49 @@ DownloadWidget::~DownloadWidget()
 
 void DownloadWidget::addTask(File *file)
 {
-    m_pWaittingTask->append(file);
+    if(!m_pWaittingTask->contains(file))
+    {
+        m_pWaittingTask->append(file);
 
-    QListWidgetItem *item = new QListWidgetItem(m_pListWidget);
-    item->setSizeHint(QSize(1, 50));
+        QListWidgetItem *item = new QListWidgetItem(m_pListWidget);
+        item->setSizeHint(QSize(1, 50));
 
-    m_pListWidget->setItemWidget(item, new DownloadList());
+        DownloadList *downloadList = new DownloadList();
+
+        connect(downloadList, SIGNAL(start(File*)), this, SLOT(startTask(File*)));
+        connect(downloadList, SIGNAL(pause(File*)), this, SLOT(pauseTask(File*)));
+        connect(downloadList, SIGNAL(stop(File*)), this, SLOT(stopTask(File*)));
+        connect(downloadList, SIGNAL(finished(File*)), this, SLOT(finishedTask(File*)));
+
+        downloadList->setFile(file);
+
+        m_pListWidget->setItemWidget(item, downloadList);
+    }
+    else
+    {
+        //任务已存在，先不处理
+        delete file;
+    }
+
+}
+
+void DownloadWidget::startTask(File *file)
+{
+
+}
+
+void DownloadWidget::pauseTask(File *file)
+{
+
+}
+
+void DownloadWidget::stopTask(File *file)
+{
+
+}
+
+void DownloadWidget::finishedTask(File *file)
+{
+
 }
 
