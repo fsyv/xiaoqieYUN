@@ -33,14 +33,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp \
     loginwidget.cpp \
     mainwidget.cpp \
-    registerwidget.cpp \
-    stable.cpp
+    registerwidget.cpp
 
 HEADERS  += \
     loginwidget.h \
     mainwidget.h \
-    registerwidget.h \
-    stable.h
+    registerwidget.h
 
 FORMS    +=
 
@@ -49,9 +47,6 @@ RESOURCES += \
 
 SUBDIRS += \
     network/network.pro
-
-CONFIG+=precompile_header
-PRECOMPILED_HEADER=stable.h
 
 INCLUDEPATH += $$PWD/poppler
 win32: LIBS += -L$$PWD/poppler -llibpoppler

@@ -23,12 +23,6 @@ File::File(QString localName, QString remoteName) :
 
 }
 
-File::File(QString remoteName) :
-    File(QString(""), remoteName)
-{
-
-}
-
 File::File() :
     File(QString(""), QString(""), 0, QDateTime::currentDateTime())
 {
@@ -42,9 +36,9 @@ File::~File()
 
 bool File::operator ==(const File &file) const
 {
-    //如果远程相对文件名相同视为同一个文件
-    if(m_stRemoteName == file.getRemoteName())
-        return true;
+    //如果远程相对路径不同视为不同的文件
+    if(m_stRemoteName != file.getRemoteName())
+        return false;
 
     if(MD5 == file.getMD5())
         return true;

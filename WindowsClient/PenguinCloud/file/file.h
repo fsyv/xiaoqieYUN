@@ -10,7 +10,6 @@ public:
     File(QString localName, QString remoteName, qint64 size, QDateTime dateTime);
     File(const File &file);
     File(QString localName, QString remoteName);
-    File(QString remoteName);
     File();
     ~File();
 

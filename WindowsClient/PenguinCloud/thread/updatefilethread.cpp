@@ -93,20 +93,20 @@ bool UpdateFileThread::operator ==(const UpdateFileThread *other) const
     return false;
 }
 
-qint64 UpdateFileThread::getCurrentTaskProgress()
+double UpdateFileThread::getCurrentTaskProgress()
 {
-    return m_i64CurrentSize;
+    return double(1.0 * m_i64CurrentSize / m_i64FileSize);
 }
 
 void UpdateFileThread::timerEvent(QTimerEvent *event)
 {
     if(event->timerId() == m_iTimerID)
     {
-        qint64 progress = getCurrentTaskProgress();
+        double progress = getCurrentTaskProgress();
         emit currentTaskProgress(progress);
 
-        //当前任务完成就停止Timer
-        if(m_bFinished)
+        //当前任务进度大于等于1.0就停止Timer
+        if(progress >= 1.0)
             stopCheckCurrentProgressTimer();
     }
     else
