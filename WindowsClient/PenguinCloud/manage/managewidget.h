@@ -37,6 +37,9 @@ private:
     UploadWidget *m_pUploadWidget;
     DownloadWidget *m_pDownloadWidget;
     FinishedWidget *m_pFinishedWidget;
+
+protected slots:
+    void task_finished(File *file);
 };
 
 #endif // MANAGEWIDGET_H

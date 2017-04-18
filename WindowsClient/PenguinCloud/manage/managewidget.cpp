@@ -28,6 +28,8 @@ ManageWidget::ManageWidget(QWidget *parent):
 
     m_pVBoxLayout = new QVBoxLayout(this);
     m_pVBoxLayout->addWidget(m_pTabWidget);
+
+    connect(m_pDownloadWidget, &DownloadWidget::finished, this, &ManageWidget::task_finished);
 }
 
 ManageWidget::~ManageWidget()
@@ -48,4 +50,9 @@ void ManageWidget::addDownloadTask(File *file)
 void ManageWidget::addFinishedTask(File *file)
 {
 
+}
+
+void ManageWidget::task_finished(File *file)
+{
+    addFinishedTask(file);
 }

@@ -12,10 +12,8 @@ class QWidget;
 class TopWidget;
 class ManageListWidget;
 class QVBoxLayout;
-class UpdateFileThread;
 class File;
-class ConnectToServer;
-class ThreadPool;
+class QListWidgetItem;
 QT_END_NAMESPACE
 
 class DownloadWidget : public QWidget
@@ -35,24 +33,18 @@ private:
     ManageListWidget *m_pListWidget;
     QVBoxLayout *m_pVBosLayout;
 
-    QMap<File *, UpdateFileThread *> *m_pExecutingTask;
-    QList<File *> *m_pWaittingTask;
+    QList<QListWidgetItem *> *m_pRunningTask;
+    QList<QListWidgetItem *> *m_pWaittingTask;
 
     //最大任务数量
     int m_iMaxTaskNumbers;
-    ConnectToServer *m_pConnectToServer;
-
-    ThreadPool *m_pThreadPool;
 
 protected slots:
     void startTask(File *file);
-    void pauseTask(File *file);
-    void stopTask(File *file);
     void finishedTask(File *file);
-    void recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg);
 
 signals:
-    void taskFinished(File *);
+    void finished(File *);
 };
 
 #endif // DOWNLOADWIDGET_H
