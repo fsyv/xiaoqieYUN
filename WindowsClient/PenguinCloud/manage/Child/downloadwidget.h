@@ -5,7 +5,6 @@
 #include <QMap>
 #include <QList>
 
-#include "../file/file.h"
 #include "../network/msgtype.h"
 
 QT_BEGIN_NAMESPACE
@@ -53,7 +52,7 @@ protected slots:
     void recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg);
 
 signals:
-    void taskFinished(File);
+    void taskFinished(File *);
 };
 
 #endif // DOWNLOADWIDGET_H

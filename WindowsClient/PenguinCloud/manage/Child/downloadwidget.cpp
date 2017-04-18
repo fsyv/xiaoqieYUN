@@ -1,15 +1,12 @@
 #include "downloadwidget.h"
 
-#include <QVBoxLayout>
-
-#include <QPushButton>
+#include "../stable.h"
 
 #include "../network/connecttoserver.h"
 #include "../network/connecttofileserver.h"
 #include "../ChildTopWidget/downloadtopwidget.h"
 #include "../ManageListWidget/managelistwidget.h"
 #include "../ManageListWidget/downloadlist.h"
-#include "../thread/threadpool.h"
 #include "../thread/downloadthread.h"
 
 

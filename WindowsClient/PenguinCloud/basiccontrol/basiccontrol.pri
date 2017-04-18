@@ -13,4 +13,3 @@ SOURCES += \
     $$PWD/filetablewidget.cpp \
     $$PWD/imagepreview.cpp \
     $$PWD/pdfwidget.cpp
-

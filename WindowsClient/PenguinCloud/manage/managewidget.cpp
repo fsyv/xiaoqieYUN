@@ -1,6 +1,6 @@
 #include "managewidget.h"
 
-#include <QVBoxLayout>
+#include "../stable.h"
 
 #include "ManageTabWidget/managetabwidget.h"
 
