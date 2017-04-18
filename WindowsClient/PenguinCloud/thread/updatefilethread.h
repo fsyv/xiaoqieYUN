@@ -40,7 +40,7 @@ public:
     bool operator ==(const UpdateFileThread *other) const;
 
 protected:
-    virtual double getCurrentTaskProgress() final;
+    virtual qint64 getCurrentTaskProgress() final;
 
     //定时检测当前任务进行状态
     void timerEvent(QTimerEvent *event);
@@ -70,7 +70,7 @@ protected:
     //包括暂停或者取消或者成功下载完
     bool m_bFinished;
 signals:
-    void currentTaskProgress(double);
+    void currentTaskProgress(qint64);
 };
 
 #endif // UPDATEFILETHREAD_H

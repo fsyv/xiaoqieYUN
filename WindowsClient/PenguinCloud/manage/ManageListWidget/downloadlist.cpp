@@ -73,6 +73,9 @@ void DownloadList::initWidget()
     m_pCurrentSpeed = new QLabel(this);
     m_pPauseButton = new PauseLabel(this);
     m_pStopButton = new StopLabel(this);
+    connect(m_pPauseButton, SIGNAL(start()), this, SLOT(start_pauseButton()));
+    connect(m_pPauseButton, SIGNAL(pause()), this, SLOT(pause_pauseButton()));
+    connect(m_pStopButton, SIGNAL(stop()), this, SLOT(stop_stopButton()));
 }
 
 void DownloadList::setWidgetLayout()
@@ -188,6 +191,7 @@ void DownloadList::resizeEvent(QResizeEvent *e)
 
 void DownloadList::updateTask_currentSize(qint64 currentSize)
 {
+    qDebug() << "currentSize" << currentSize;
     setSpeed(currentSize - m_i64CurrentSize);
     m_i64CurrentSize = currentSize;
     setSize(m_i64CurrentSize, m_pFile->getSize());
