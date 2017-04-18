@@ -1,17 +1,19 @@
 #ifndef FILEOBJECT_H
 #define FILEOBJECT_H
 
-#include <QtCore>
+#include <QObject>
+#include <QDateTime>
 
-class FileObject
+class FileObject : public QObject
 {
+    Q_OBJECT
 public:
-    FileObject(QString name, qint64 size, QDateTime dateTime);
-    FileObject(QString name, QDateTime dateTime);
+    FileObject(QString remoteName, qint64 size, QDateTime dateTime);
+    FileObject(QString remoteName, QDateTime dateTime);
     virtual ~FileObject();
 
-    QString getName() const;
-    void setName(const QString &name);
+    QString getRemoteName() const;
+    void setRemoteName(const QString &remoteName);
 
     QDateTime getLatModiryTime() const;
     void setLatModiryTime(const QDateTime &latModiryTime);
@@ -19,8 +21,9 @@ public:
     qint64 getSize() const;
     void setSize(const qint64 &i64Size);
 
-private:
-    QString m_stName;
+protected:
+    //远程相对于用户名的路径
+    QString m_stRemoteName;
     QDateTime m_latModiryTime;
     qint64 m_i64Size;
 };

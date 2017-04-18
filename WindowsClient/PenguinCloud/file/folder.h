@@ -5,8 +5,9 @@
 
 class Folder : public FileObject
 {
+    Q_OBJECT
 public:
-    Folder(QString name, QDateTime dateTime);
+    Folder(QString remoteName, QDateTime dateTime);
 };
 
 #endif // FOLDER_H

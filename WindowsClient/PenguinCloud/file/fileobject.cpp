@@ -1,15 +1,16 @@
 #include "fileobject.h"
 
-FileObject::FileObject(QString name, qint64 size, QDateTime dateTime) :
-    m_stName(name),
-    m_i64Size(size),
-    m_latModiryTime(dateTime)
+FileObject::FileObject(QString remoteName, qint64 size, QDateTime dateTime) :
+    QObject(),
+    m_stRemoteName(remoteName),
+    m_latModiryTime(dateTime),
+    m_i64Size(size)
 {
 
 }
 
-FileObject::FileObject(QString name, QDateTime dateTime) :
-    FileObject(name, 0LL, dateTime)
+FileObject::FileObject(QString remoteName, QDateTime dateTime) :
+    FileObject(remoteName, 0LL, dateTime)
 {
 
 }
@@ -19,14 +20,14 @@ FileObject::~FileObject()
 
 }
 
-QString FileObject::getName() const
+QString FileObject::getRemoteName() const
 {
-    return m_stName;
+    return m_stRemoteName;
 }
 
-void FileObject::setName(const QString &name)
+void FileObject::setRemoteName(const QString &remoteName)
 {
-    m_stName = name;
+    m_stRemoteName = remoteName;
 }
 
 QDateTime FileObject::getLatModiryTime() const

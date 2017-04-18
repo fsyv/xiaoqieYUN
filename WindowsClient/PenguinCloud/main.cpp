@@ -7,7 +7,6 @@
 #include "basicwidget/mymessagebox.h"
 #include "basiccontrol/pdfwidget.h"
 #include "basiccontrol/imagepreview.h"
-#include "basiccontrol/managewidget.h"
 
 
 #include <QUrl>

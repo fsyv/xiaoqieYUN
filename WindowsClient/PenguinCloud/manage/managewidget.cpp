@@ -35,12 +35,17 @@ ManageWidget::~ManageWidget()
 
 }
 
-void ManageWidget::addUploadTask(UpdateFileThread *)
+void ManageWidget::addUploadTask(File *file)
 {
 
 }
 
-void ManageWidget::addDownloadTask(UpdateFileThread *)
+void ManageWidget::addDownloadTask(File *file)
+{
+    m_pDownloadWidget->addTask(file);
+}
+
+void ManageWidget::addFinishedTask(File *file)
 {
 
 }

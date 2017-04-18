@@ -5,8 +5,28 @@
 
 class File : public FileObject
 {
+    Q_OBJECT
 public:
-    File(QString name, qint64 size, QDateTime dateTime);
+    File(QString localName, QString remoteName, qint64 size, QDateTime dateTime);
+    File(const File &file);
+    File(QString localName, QString remoteName);
+    File();
+    ~File();
+
+    bool operator ==(const File &file) const;
+
+    QByteArray getMD5() const;
+    void setMD5(const QByteArray &value);
+
+    QString getLocalName() const;
+    void setLocalName(const QString &localName);
+
+    void updateMD5();
+
+private:
+    //本地绝对路径
+    QString m_stLocalName;
+    QByteArray MD5;
 };
 
 #endif // FILE_H

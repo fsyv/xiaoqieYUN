@@ -70,8 +70,16 @@
         <file>resource/image/DownLoadManage/pause.png</file>
         <file>resource/image/DownLoadManage/pause_hover.png</file>
         <file>resource/image/linux.png</file>
-        <file>resource/image/error.png</file>
-        <file>resource/image/warn.png</file>
-        <file>resource/image/ok.png</file>
+        <file>resource/manage/paly_enter.png</file>
+        <file>resource/manage/paly_normal.png</file>
+        <file>resource/manage/pause_enter.png</file>
+        <file>resource/manage/pause_normal.png</file>
+        <file>resource/manage/stop_enter_1.png</file>
+        <file>resource/manage/stop_enter_2.png</file>
+        <file>resource/manage/stop_enter_3.png</file>
+        <file>resource/manage/stop_enter_4.png</file>
+        <file>resource/manage/stop_enter_5.png</file>
+        <file>resource/manage/stop_normal.png</file>
+        <file>resource/manage/stop_press.png</file>
     </qresource>
 </RCC>
