@@ -18,34 +18,16 @@ typedef enum _MsgType{
     Put_Delete,         //删除操作
     Put_Share,          //分享操作
     Ack_Exit,           //退出
+//    Put_Preview,        //预览请求
     Put_Register,       //注册请求
-    Get_Register,       //注册响应
-    Put_Preview,        //预览请求
+    Get_Register        //注册响应
 }MsgType;
-
-typedef enum _ResponeStatus
-{
-    Success = 0,
-    Failed
-}ResponeStatus;
 
 //错误类型
 typedef enum _ErrorType{
     DataPackError = 0,        //错误得数据包
     RenameError               //重命名错误
 }ErrorType;
-
-//预览文件类型结构
-typedef enum _FileType{
-    Office = 0,          // office文档
-    Music,               // 音乐
-    Video,               // 视频
-    Image                // 图片
-    // ...               //压缩文件
-}FileType;
-
-
-
 //发生了错误
 typedef struct _ErrorMsg{
     ErrorType m_eErrorType;
@@ -77,6 +59,11 @@ typedef struct _FileListsMsg{
     char m_aFolderPath[MAX_PATH + 1];
     char m_jsonFileList[MAX_JSON_SIZE + 1];
 }FileListsMsg, *pFileListsMsg;
+
+//预览信息消息结构
+typedef struct _PreviewMsg{
+    char path[MAX_PATH + 1];
+}PreviewMsg, *pPreviewMsg;
 
 //下载信息消息结构
 typedef struct _DownloadMsg{
@@ -130,6 +117,11 @@ typedef struct _RenameMsg{
     char oldName[MAX_PATH + 1]; //old name
 }RenameMsg, *pRenameMsg;
 
+//返回预览图片数组
+typedef struct _PreviewArray{
+    long length;
+    char array[0];
+}PreviewArray, *pPreviewArray;
 
 //注册消息结构
 typedef struct _RegisterMsg{
@@ -143,16 +135,5 @@ typedef struct _RegisterMsg{
 typedef struct _RegisterStatus{
         int status; // 0 success; 1 error;
 }RegisterStatus;
-
-//预览请求
-typedef struct _PreviewMsg{
-        FileType fileType;      //  请求的文件类型
-        char filepath[1024];    //  文件路径
-}PreviewMsg, *pPreviewMsg;
-//返回预览图片数组
-typedef struct _PreviewStatus{
-    ResponeStatus status;
-    FileType filetype;
-}PreviewStatus, *pPreviewStatus;
 
 #endif // MSGTYPE_H

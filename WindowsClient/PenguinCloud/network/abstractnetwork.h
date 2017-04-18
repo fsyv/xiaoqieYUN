@@ -74,6 +74,8 @@ public:
     virtual void recvLoginMsg(Msg *msg);
     //文件列表消息
     virtual void recvFileListMsg(Msg *msg);
+    //预览信息消息
+    virtual void recvPreviewMsg(Msg *msg);
     //下载消息
     virtual void recvDownloadMsg(Msg *msg);
     //移动消息
@@ -92,8 +94,6 @@ public:
     virtual void recvExitMsg(Msg *msg);
     //注册响应消息
     virtual void recvRegisterStatusMsg(Msg *msg);
-    //预览响应详细
-    virtual void recvPreviewStatusMsg(Msg *msg);
 
 signals:
     //消息信号
@@ -102,6 +102,7 @@ signals:
     void readyReadReadyMsg(ReadyMsg);
     void readyReadLoginMsg(LoginMsg);
     void readyReadFileListMsg(QByteArray);
+    void readyReadPreviewMsg(PreviewArray);
     void readyReadDownloadMsg(DownloadMsg);
     void readyReadMoveMsg(MoveMsg);
     void readyReadNewFolderMsg(NewFolderMsg);
@@ -111,7 +112,7 @@ signals:
     void readyReadShareMsg(ShareMsg);
     void readyReadExitMsg(ExitMsg);
     void readyReadRegisterStatusMsg(RegisterStatus);
-    void readyReadPreviewStatusMsg(PreviewStatus);
+
 protected:
     //sendMsg是纯虚函数，需要在子类中实现
     virtual int sendMsg(Msg *msg);

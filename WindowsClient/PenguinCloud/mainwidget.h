@@ -38,7 +38,7 @@ public:
     void setCurrentPath(const QString &CurrentPath);
 
     void replyFileLists(const QString &FolderPath);
-    void setPreviewWidget(FileType, const QString&);
+
     void setPreviewWidget(FileType);
 
 protected:
@@ -64,7 +64,7 @@ public slots:
     void pasteSelected();
     void errorHandle(ErrorMsg msg);                                         // 错误处理
     void preview(const QString &path);
-    void show_prview(PreviewStatus previewStatus);
+    void show_prview(PreviewArray previewMsg);
 
 private:
     void init();

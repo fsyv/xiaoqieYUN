@@ -52,30 +52,30 @@ FileType Tools::getFileType(const QString &filename)
 {
      QStringList office;
      QStringList music;
-     QStringList video;
-     QStringList image;
+     QStringList film;
+     QStringList picture;
 
-     office << "doc" << "docx" << "xls" << "ppt" << "xlsx" << "pptx" << "pdf";
+     office << "doc" << "xls" << "ppt" << "xlsx" << "pptx" << "pdf";
      music << "wav" << "mp3";
-     video << "mp4" << "3gp" << "rm" << "rmvb";
-     image << "png" << "jpg" << "ico";
+     film << "mp4" << "3gp" << "rm" << "rmvb";
+     picture << "png" << "jpg" << "ico";
 
      QString format = filename.split('.').last();
      if (office.contains(format.toLower()))
      {
-        return Office;
+        return PDF;
      }
      else if (music.contains(format.toLower()))
      {
-        return Music;
+        return MP3;
      }
-     else if (video.contains(format.toLower()))
+     else if (film.contains(format.toLower()))
      {
-        return Video;
+        return MP4;
      }
-     else if (image.contains(format.toLower()))
+     else if (picture.contains(format.toLower()))
      {
-        return Image;
+        return PICTURE;
      }
 }
 

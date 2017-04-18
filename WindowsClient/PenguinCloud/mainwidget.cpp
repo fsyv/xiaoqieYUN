@@ -12,15 +12,14 @@
 #include "thread/uploadthread.h"
 #include "thread/downloadthread.h"
 #include "network/connecttoserver.h"
-#include "basiccontrol/pdfwidget.h"
 #include "basicwidget/mymessagebox.h"
 #include "basiccontrol/imagepreview.h"
 #include "basiccontrol/pdfwidget.h"
 #include "basiccontrol/filetablewidget.h"
 
 #include "manage/managewidget.h"
-#include "network/loadfile.h"
-#include "basiccontrol/filetablewidget.h"
+
+
 MainWidget::MainWidget(QWidget *parent) :
     BasicWidget(parent),
     m_pConnectToServer(nullptr),
@@ -41,7 +40,7 @@ MainWidget::MainWidget(QWidget *parent) :
     m_pConnectToServer = ConnectToServer::getInstance();
     connect(m_pConnectToServer, SIGNAL(readyReadFileListMsg(QByteArray)), this, SLOT(recvFileLists(QByteArray)));
     connect(m_pConnectToServer, &ConnectToServer::readyReadAckErrorMsg, this, &MainWidget::errorHandle);
-    connect(m_pConnectToServer, &ConnectToServer::readyReadPreviewStatusMsg, this, &MainWidget::show_prview);
+    connect(m_pConnectToServer, &ConnectToServer::readyReadPreviewMsg, this, &MainWidget::show_prview);
 
 
     connect(tableWidget, &FileTableWidget::requestDir, this, &MainWidget::getDir);
@@ -484,49 +483,41 @@ void MainWidget::preview(const QString &_path)
     memset(&previewMsg, 0, sizeof(PreviewMsg));
 
     QString wholepath = getUserName() + path.top() +  _path;
-    previewMsg.fileType = Tools::getFileType(_path);
-    strcpy(previewMsg.filepath, wholepath.toUtf8().data());
+    qDebug() << wholepath;
+    strcpy(previewMsg.path, wholepath.toUtf8().data());
     m_pConnectToServer->sendPreviewMsg(previewMsg);
 
-//    setPreviewWidget(Tools::getFileType(_path));
+    //    qDebug() << "显示预览";
+    //    ImagePreView *pw = new ImagePreView();
+    //    QPixmap p1(":/resource/image/title.png");
+    //    pw->setPixmap(p1);
+    //    pw->show();
+    setPreviewWidget(Tools::getFileType(_path));
 }
 
-void MainWidget::show_prview(PreviewStatus previewStatus)
+void MainWidget::show_prview(PreviewArray previewMsg)
 {
-    if(previewStatus.status == Success)
-    {
-        setPreviewWidget(previewStatus.filetype, "/1.pdf");
-    }
-    else if(previewStatus.status == Failed)
-    {
-        MyMessageBox *m = MyMessageBox::showMessageBox(this, "该文件不支持预览", "", "确定",  Error);
-        connect(m, &MyMessageBox::btn2, this, [m](){m->close();});
-    }
+    qDebug() << "显示预览";
+    ImagePreView *pw = new ImagePreView();
 
+    QPixmap p1(":/resource/image/title.png");
+    pw->setPixmap(p1);
+    pw->show();
 }
 
-void MainWidget::setPreviewWidget(FileType type,  const QString& filename)
+void MainWidget::setPreviewWidget(FileType type)
 {
-    QString http = "http://120.24.84.247/";
-    //http += getUserName();
     switch(type)
     {
-    case Office:
+    case PDF:
     {
-        http += filename.split("/").last().split('.').first();
-        http += ".pdf";
         PdfWidget *pdfWidget = new PdfWidget();
-        LoadFile *l = new LoadFile();
-        l->loadFileFormUrl(http);
-        connect(l, &LoadFile::loadCompleted, this, [pdfWidget,l](){
-            qDebug() << "setFile";
-            pdfWidget->setPdfFile(l->getFilePath1());}
-        );
+        pdfWidget->setPdfFile("H://1.pdf");
         pdfWidget->close();
 
     }
         break;
-    case Image:
+    case PICTURE:
     {
         ImagePreView *pre = new ImagePreView();
         pre->show();
