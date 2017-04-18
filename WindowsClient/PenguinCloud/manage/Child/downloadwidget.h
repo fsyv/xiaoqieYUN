@@ -6,6 +6,7 @@
 #include <QList>
 
 #include "../file/file.h"
+#include "../network/msgtype.h"
 
 QT_BEGIN_NAMESPACE
 class QWidget;
@@ -14,6 +15,8 @@ class ManageListWidget;
 class QVBoxLayout;
 class UpdateFileThread;
 class File;
+class ConnectToServer;
+class ThreadPool;
 QT_END_NAMESPACE
 
 class DownloadWidget : public QWidget
@@ -25,6 +28,9 @@ public:
 
     void addTask(File *file);
 
+    int getMaxTaskNumbers() const;
+    void setMaxTaskNumbers(int iMaxTaskNumbers);
+
 private:
     TopWidget *m_pTopWidget;
     ManageListWidget *m_pListWidget;
@@ -33,11 +39,18 @@ private:
     QMap<File *, UpdateFileThread *> *m_pExecutingTask;
     QList<File *> *m_pWaittingTask;
 
+    //最大任务数量
+    int m_iMaxTaskNumbers;
+    ConnectToServer *m_pConnectToServer;
+
+    ThreadPool *m_pThreadPool;
+
 protected slots:
     void startTask(File *file);
     void pauseTask(File *file);
     void stopTask(File *file);
     void finishedTask(File *file);
+    void recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg);
 
 signals:
     void taskFinished(File);

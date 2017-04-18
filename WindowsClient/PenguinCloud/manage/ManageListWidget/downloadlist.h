@@ -16,6 +16,15 @@ class DownloadList : public QWidget
 {
     Q_OBJECT
 public:
+    enum class CurrentStatus{
+        WAITTING,           //等待中
+        RUNNING,            //运行中
+        FINISHED,           //已完成
+        PAUSED,             //已暂停
+        STOP                //停止
+    };
+
+public:
     explicit DownloadList(QWidget *parent = 0);
     ~DownloadList();
 
@@ -38,6 +47,7 @@ private:
 
     File *m_pFile;
     qint64 m_i64CurrentSize;
+    CurrentStatus m_eCurrentStatus;
 
     PictureLabel *m_pFileIco;
     QLabel *m_pFileName;
@@ -50,12 +60,14 @@ private:
 
 protected:
     void resizeEvent(QResizeEvent *e);
-    void updateTask_currentSize(qint64 currentSize);
 
 protected slots:
     void start_pauseButton();
     void pause_pauseButton();
     void stop_stopButton();
+
+public slots:
+    void updateTask_currentSize(qint64 currentSize);
 
 signals:
     void start(File *);
