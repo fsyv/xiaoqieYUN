@@ -17,7 +17,7 @@ include(network/network.pri)
 include(tools/tools.pri)
 include(thread/thread.pri)
 include(file/file.pri)
-include(manage/manage.pri)
+#include(manage/manage.pri)
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the

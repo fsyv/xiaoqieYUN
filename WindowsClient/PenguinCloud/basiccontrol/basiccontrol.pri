@@ -19,3 +19,6 @@ SOURCES += \
     $$PWD/pdfwidget.cpp \
     $$PWD/managewidget.cpp \
     $$PWD/uploadmanage.cpp
+
+RESOURCES += \
+    $$PWD/res.qrc

@@ -40,7 +40,7 @@ public:
     void replyFileLists(const QString &FolderPath);
 
 
-    void setPreviewWidget(FileType);
+    void setPreviewWidget(FileType, const QString&);
 
 
 
@@ -70,7 +70,7 @@ public slots:
     void pasteSelected();
     void errorHandle(ErrorMsg msg);                                         // 错误处理
     void preview(const QString &path);
-    void show_prview(PreviewArray previewMsg);
+    void show_prview(PreviewStatus previewStatus);
 
 private:
     void init();
@@ -108,6 +108,8 @@ private:
     bool isCopy; // true是复制， false是移动
 
     ThreadPool *m_pThreadPool;
+
+
 };
 
 #endif // MAINWIDGET_H

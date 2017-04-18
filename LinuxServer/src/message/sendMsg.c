@@ -76,14 +76,14 @@ int sendFileListMsg(int sockfd, FileListsMsg fileListsMsg)
     return ret;
 }
 //预览信息消息
-int sendPreviewMsg(int sockfd, PreviewMsg previewMsg)
+int sendPreviewMsg(int sockfd, PreviewStatus status)
 {
-    Msg *msg = (Msg *)malloc(sizeof(Msg) + sizeof(PreviewMsg));
-    bzero(msg, sizeof(Msg) + sizeof(PreviewMsg));
+    Msg *msg = (Msg *)malloc(sizeof(Msg) + sizeof(PreviewStatus));
+    bzero(msg, sizeof(Msg) + sizeof(PreviewStatus));
 
     msg->m_eMsgType = Get_Preview;
-    msg->m_iMsgLen = sizeof(PreviewMsg);
-    memcpy(msg->m_aMsgData, (void *)&previewMsg, msg->m_iMsgLen);
+    msg->m_iMsgLen = sizeof(PreviewStatus);
+    memcpy(msg->m_aMsgData, (void *)&status, msg->m_iMsgLen);
 
     int ret = sendMsg(sockfd, msg);
 

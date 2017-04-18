@@ -103,6 +103,13 @@ void recvMsg(int sockfd, Msg *msg)
 //#endif
 	    recvRegisterMsg(sockfd, msg);
 	    break;
+	case Put_Preview:
+//#ifdef Debug
+		fprintf(stdout, "Put_Preview\n");
+//#endif
+		recvPreviewMsg(sockfd, msg);
+		break;
+
 
     }
 }
@@ -320,3 +327,30 @@ void recvRegisterMsg(int sockfd, Msg *msg)
 	
 	printf("send Register Status\n");
 }
+
+void recvPreviewMsg(int sockfd, Msg *msg)
+{
+	int ret;
+
+	PreviewMsg previewMsg;
+	memset(&previewMsg, 0, sizeof(PreviewMsg));
+	memcpy(&previewMsg, msg->m_aMsgData, msg->m_iMsgLen);
+	
+	switch(previewMsg.fileType)
+	{
+	case Office:
+		// success return 1, else return -1
+		printf("start convert\n");
+		convertOfficeToPdf(sockfd, previewMsg.filepath);
+		break;
+	case Music:
+		break;
+
+	case Video:
+		break;
+	case Image:
+		break;
+
+	}
+}
+
