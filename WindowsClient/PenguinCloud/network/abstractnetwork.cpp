@@ -89,18 +89,18 @@ int AbstractNetwork::sendFileListMsg(FileListsMsg fileListsMsg)
 
 int AbstractNetwork::sendPreviewMsg(PreviewMsg previewMsg)
 {
-//    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(PreviewMsg) + 1];
-//    memset(msg, 0, m_iMsgStructLen + sizeof(PreviewMsg));
+    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(PreviewMsg) + 1];
+    memset(msg, 0, m_iMsgStructLen + sizeof(PreviewMsg));
 
-//    msg->m_eMsgType = Put_Preview;
-//    msg->m_iMsgLen = sizeof(PreviewMsg);
-//    memcpy(msg->m_aMsgData, (void *)&previewMsg, msg->m_iMsgLen);
+    msg->m_eMsgType = Put_Preview;
+    msg->m_iMsgLen = sizeof(PreviewMsg);
+    memcpy(msg->m_aMsgData, (void *)&previewMsg, msg->m_iMsgLen);
 
-//    int ret = sendMsg(msg);
+    int ret = sendMsg(msg);
 
-//    delete msg;
+    delete msg;
 
-//    return ret;
+    return ret;
 }
 
 int AbstractNetwork::sendDownloadMsg(DownloadMsg downloadMsg)
@@ -304,12 +304,6 @@ void AbstractNetwork::recvFileListMsg(Msg *msg)
     emit readyReadFileListMsg(byteArray);
 }
 
-void AbstractNetwork::recvPreviewMsg(Msg *msg)
-{
-    PreviewArray previewArray;
-    memcpy(&previewArray, msg->m_aMsgData, msg->m_iMsgLen);
-    emit readyReadPreviewMsg(previewArray);
-}
 
 void AbstractNetwork::recvDownloadMsg(Msg *msg)
 {
@@ -369,6 +363,14 @@ void AbstractNetwork::recvRegisterStatusMsg(Msg *msg)
 
     emit readyReadRegisterStatusMsg(registerStatus);
 }
+//预览响应消息
+void AbstractNetwork::recvPreviewStatusMsg(Msg *msg)
+{
+    PreviewStatus previewStatus;
+    memcpy(&previewStatus, msg->m_aMsgData, msg->m_iMsgLen);
+
+    emit readyReadPreviewStatusMsg(previewStatus);
+}
 
 void AbstractNetwork::recvExitMsg(Msg *msg)
 {
@@ -408,10 +410,6 @@ void AbstractNetwork::recvMsg(Msg *msg)
         //准备就绪
         recvFileListMsg(msg);
         break;
-    case Get_Preview:
-        //准备就绪
-        recvPreviewMsg(msg);
-        break;
     case Get_Download:
         //准备就绪
         recvDownloadMsg(msg);
@@ -442,6 +440,9 @@ void AbstractNetwork::recvMsg(Msg *msg)
         break;
     case Get_Register:
         recvRegisterStatusMsg(msg);
+        break;
+    case Get_Preview:
+        recvPreviewStatusMsg(msg);
         break;
     }
 }

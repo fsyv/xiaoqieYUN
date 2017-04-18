@@ -3,8 +3,6 @@
 #include "basicwidget/mymessagebox.h"
 RegisterWidget::RegisterWidget(QWidget *parent) : BasicWidget(parent)
 {
-//    setDroped(false);
-//    setTitle("注册");
     setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
     setWindowModality(Qt::WindowModal);
     setBackgroundColor(QColor("#1296db"));

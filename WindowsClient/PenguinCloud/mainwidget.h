@@ -1,7 +1,9 @@
 ﻿#ifndef MAINWIDGET_H
 #define MAINWIDGET_H
+
 #include<QMap>
 #include <QStack>
+
 #include "basicwidget/basicwidget.h"
 #include "network/msgtype.h"
 #include "tools/tools.h"
@@ -30,13 +32,17 @@ public:
     QString getUserName() const;
     QString getCurrentPath() const;
     QString getPrePath() const;
+
     void setUserName(const QString &UserName);
     void setPrePath(const QString &PrePath);
     void setCurrentPath(const QString &CurrentPath);
     void replyFileLists(const QString &FolderPath);
+    void setPreviewWidget(FileType, const QString&);
     void setPreviewWidget(FileType);
+
 protected:
     void paintEvent(QPaintEvent *event);
+
 signals:
     void paste(bool);
 public slots:
@@ -58,11 +64,14 @@ public slots:
     void errorHandle(ErrorMsg msg);                                         // 错误处理
     void preview(const QString &path);
     void show_prview(PreviewStatus previewStatus);
+
 private:
     void init();
     void setListViewItem();
     void setFileTable();
+
     ConnectToServer *m_pConnectToServer;
+
     QLabel *label; // 显示图标
     QPushButton *download;
     QPushButton *upload;
@@ -71,13 +80,22 @@ private:
     QPushButton *previous;
     QListView *listView;
     FileTableWidget *tableWidget;
+
     ManageWidget *m_pManageWidget;
+
+
     QLabel *sys_info;
     QPushButton *download_manage;
     QString m_stUserName;
+
     QStack<QString> path;// current dir
+
     QMap<QString, FileObject *> *m_pFileLists;
+
     QStringList wholeCopyPath; // 保存所有将要复制的文件的具体路径
     bool isCopy; // true是复制， false是移动
+
+    //ThreadPool *m_pThreadPool;
 };
-#endif
+
+#endif // MAINWIDGET_H
