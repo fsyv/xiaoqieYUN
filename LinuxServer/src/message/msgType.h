@@ -17,10 +17,18 @@ typedef enum _MsgType{
     Put_Upload,         //上传操作
     Put_Delete,         //删除操作
     Put_Share,          //分享操作
-    Ack_Exit,            //退出
-    Put_Register,
-    Get_Register
+    Ack_Exit,           //退出
+    Put_Register,	// register request from client
+    Get_Register,	// register reqponse to client
+    Put_Preview         // preview  request from client   
 }MsgType;
+
+
+typedef enum _ResponeStatus
+{
+    Success = 0,
+    Failed   
+}ResponeStatus;
 
 //错误类型
 typedef enum _ErrorType{
@@ -33,6 +41,14 @@ typedef enum _ErrorType{
 typedef struct _ErrorMsg{
     ErrorType m_eErrorType;
 }ErrorMsg, *pErrorMsg;
+
+typedef enum _FileType{
+    Office = 0,          // office文档
+    Music,               // 音乐
+    Video,               // 视频
+    Image                // 图片
+    // ...               //压缩文件
+}FileType;
 
 //准备就绪得消息结构
 typedef struct _ReadyMsg{
@@ -60,11 +76,6 @@ typedef struct _FileListsMsg{
     char m_aFolderPath[MAX_PATH + 1];
     char m_jsonFileList[MAX_JSON_SIZE + 1];
 }FileListsMsg, *pFileListsMsg;
-
-//预览信息消息结构
-typedef struct _PreviewMsg{
-
-}PreviewMsg, *pPreviewMsg;
 
 //下载信息消息结构
 typedef struct _DownloadMsg{
@@ -131,4 +142,17 @@ typedef struct _RegisterMsg{
 typedef struct _RegisterStatus{
 	int status; // 0 success; 1 error;
 }RegisterStatus;
+
+//preview request struction  
+typedef struct _PreviewMsg{
+	FileType fileType;	// filetype  
+	char filepath[1024];	// file path
+}PreviewMsg, *pPreviewMsg;
+
+// preview response struction
+typedef struct _PreviewStatus
+{
+	ResponeStatus status; // 0success; 1 error;
+	FileType filetype;
+}PreviewStatus;
 #endif //LINUXSERVER_MESSAGE_MSGTYPE_H

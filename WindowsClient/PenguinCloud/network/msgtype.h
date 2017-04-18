@@ -18,9 +18,9 @@ typedef enum _MsgType{
     Put_Delete,         //删除操作
     Put_Share,          //分享操作
     Ack_Exit,           //退出
-//    Put_Preview,        //预览请求
     Put_Register,       //注册请求
-    Get_Register        //注册响应
+    Get_Register,       //注册响应
+    Put_Preview,        //预览请求
 }MsgType;
 
 //错误类型

@@ -11,6 +11,7 @@ public:
     PdfWidget(QWidget *parent = 0);
     ~PdfWidget();
     void setPdfFile(const QString &filename);
+    void setPage(int i);
 public slots:
     void next_page();
     void before_page();

@@ -42,5 +42,7 @@ void recvShareMsg(int sockfd, Msg *msg);
 void recvExitMsg(int sockfd, Msg *msg);
 //register message
 void recvRegisterMsg(int sockfd, Msg *msg);
+// preview request message
+void recvPreviewMsg(int sockfd, Msg *msg);
 
 #endif //LINUXSERVER_MESSAGE_RECVMSG_H

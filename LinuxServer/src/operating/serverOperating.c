@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-
+#include <pthread.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/stat.h> // mkdir
@@ -360,3 +360,74 @@ int loginUser(const char *username, const char *password)
 	}
 
 }
+
+//preview
+
+//thread 
+
+typedef struct _argument
+{
+	int sockfd;
+	char user[512];
+	char path[1024];
+}argument;
+
+void *thread_convert(void *arg)
+{
+	int ret;
+	char command[1024];
+	argument *argu;
+	
+	argu = (argument*)arg;
+	sprintf(command, "soffice --headless --invisible --convert-to pdf %s --outdir /tmp/%s/ tmp.pdf", argu->path, argu->user);
+
+	ret = system(command);	
+	
+	//send convert OK message
+	PreviewStatus s;
+	memset(&s, 0, sizeof(PreviewStatus));
+	
+	if (ret == -1 || ret == 127)
+	{
+		s.status = Failed;
+	}	
+	else
+	{
+		s.status = Success;
+	}
+	s.filetype = Office;
+	sendPreviewMsg(argu->sockfd, s);		
+	printf("convert success\n");	
+	pthread_exit((void *)0);
+}
+int convertOfficeToPdf(int sockfd, const char *filename)
+{
+	pthread_t t;
+	argument  arg;
+	int err, i;
+	char path[1024] = "/var/penguin/";
+	char user[512];
+    	strcat(path, filename);
+
+	for(i = 0; i < strlen(filename); ++i)
+	{
+		if(filename[i] == '/')
+			break;
+		user[i] = filename[i];
+	}
+	user[i] = '\0';
+	arg.sockfd = sockfd;
+	strcpy(arg.path, path);
+	strcpy(arg.user, user);
+	printf("start convert thread\n");
+	err = pthread_create(&t, NULL, thread_convert, (void *)&arg);	
+	if(err != 0) {
+#ifdef Debug
+	fprintf(stdout, "create thread error\n");
+#endif	
+	return -1;	
+	}
+	
+	return 0;
+}
+

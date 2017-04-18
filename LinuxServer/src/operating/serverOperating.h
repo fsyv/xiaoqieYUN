@@ -27,4 +27,6 @@ int copySrcToDes(char *src, char *des);
 int loginUser(const char *username, const char *password);
 //register
 int registerUser(const char *username, const char *password);
+//preview
+int convertOfficeToPdf(int sockfd, const char *filename);
 #endif //LINUXSERVER_OPERATING_SERVEROPERATING_H

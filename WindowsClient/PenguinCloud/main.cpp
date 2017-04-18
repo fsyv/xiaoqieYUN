@@ -8,6 +8,9 @@
 #include "basiccontrol/pdfwidget.h"
 #include "basiccontrol/imagepreview.h"
 
+
+#include <QUrl>
+#include <QDebug>
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -22,13 +25,15 @@ int main(int argc, char *argv[])
 //    ImagePreView w;
     LoginWidget w;
 
-//    PdfWidget w;
-//    ManageWidget w;
+    //PdfWidget w;
+   // ManageWidget w;
 //    RegisterWidget w;
 //    MyMessageBox w;
+   // w.show();
+  //  MainWidget w;
     w.show();
-//    MainWidget w;s
-//    w.show();
+
+    qDebug() << QUrl::fromUserInput("10.64.2.10/1.pdf").fileName();
 
     return a.exec();
 }

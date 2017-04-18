@@ -1,7 +1,6 @@
 ﻿#ifndef REGISTERWIDGET_H
 #define REGISTERWIDGET_H
 
-#include <QtWidgets>
 #include "basiccontrol/lineedit.h"
 #include "basicwidget/basicwidget.h"
 #include "network/connecttoserver.h"

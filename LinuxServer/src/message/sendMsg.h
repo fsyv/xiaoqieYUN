@@ -15,7 +15,7 @@ int sendLoginMsg(int sockfd, LoginMsg loginMsg);
 //文件列表消息
 int sendFileListMsg(int sockfd, FileListsMsg fileListsMsg);
 //预览信息消息
-int sendPreviewMsg(int sockfd, PreviewMsg previewMsg);
+int sendPreviewMsg(int sockfd, PreviewStatus status);
 //下载信息消息
 int sendDownloadMsg(int sockfd, DownloadMsg downloadMsg);
 //移动消息
@@ -32,7 +32,6 @@ int sendShareMsg(int sockfd, ShareMsg shareMsg);
 int sendExitMsg(int sockfd, ExitMsg exitMsg);
 //send RegisterMsg
 int sendRegisterMsg(int sockfd, RegisterStatus status);
-
 
 //发送消息
 int sendMsg(int sockfd, Msg *msg);
