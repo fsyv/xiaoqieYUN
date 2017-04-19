@@ -6,6 +6,8 @@
 #include "../ManageListWidget/managelistwidget.h"
 #include "../ManageListWidget/downloadlist.h"
 
+#include "../file/file.h"
+
 DownloadWidget::DownloadWidget(QWidget *parent) :
     QWidget(parent),
     m_pTopWidget(nullptr),
@@ -17,8 +19,8 @@ DownloadWidget::DownloadWidget(QWidget *parent) :
     m_pListWidget = new ManageListWidget;
     m_pVBosLayout = new QVBoxLayout(this);
 
-    m_pRunningTask = new QList<File *>();
-    m_pWaittingTask = new QList<File *>();
+    m_pRunningTask = new QList<QWidget *>;
+    m_pWaittingTask = new QList<QWidget *>;
 
     m_pVBosLayout->addWidget(m_pTopWidget);
     m_pVBosLayout->addWidget(m_pListWidget);
@@ -50,20 +52,18 @@ DownloadWidget::~DownloadWidget()
 
 void DownloadWidget::addTask(File *file)
 {
-    if(!m_pWaittingTask->contains(file))
+    if(!contains(file))
     {
-        QListWidgetItem *item = new QListWidgetItem(m_pListWidget);
-        item->setSizeHint(QSize(1, 50));
+        DownloadList *downloadList = new DownloadList(m_pListWidget);
 
-        DownloadList *downloadList = new DownloadList();
+        connect(downloadList, SIGNAL(start(QListWidgetItem*)), this, SLOT(startTask(QListWidgetItem*)));
+        connect(downloadList, SIGNAL(pause(QListWidgetItem*)), this, SLOT(pauseTask(QListWidgetItem*)));
+        connect(downloadList, SIGNAL(stop(QListWidgetItem*)), this, SLOT(stopTask(QListWidgetItem*)));
+        connect(downloadList, SIGNAL(finished(QListWidgetItem*)), this, SLOT(finishedTask(QListWidgetItem*)));
 
-        connect(downloadList, SIGNAL(start(File*)), this, SLOT(startTask(File*)));
-        connect(downloadList, SIGNAL(finished(File*)), this, SLOT(finishedTask(File*)));
+        m_pListWidget->setItemWidget(downloadList->getListWidgetItem(), downloadList);
 
         downloadList->setFile(file);
-
-        m_pListWidget->setItemWidget(item, downloadList);
-        m_pWaittingTask->append(item);
     }
     else
     {
@@ -83,15 +83,76 @@ void DownloadWidget::setMaxTaskNumbers(int iMaxTaskNumbers)
     m_iMaxTaskNumbers = iMaxTaskNumbers;
 }
 
-void DownloadWidget::startTask(File *file)
+bool DownloadWidget::contains(File *file)
 {
-//    if(m_pExecutingTask->count() < m_iMaxTaskNumbers)
-//    {
 
-//    }
+    QListWidgetItem *item;
+    DownloadList *widget;
+    for(int i = 0; i < m_pListWidget->count(); ++i)
+    {
+        item = m_pListWidget->item(i);
+        widget = (DownloadList *)m_pListWidget->itemWidget(item);
+        if(widget->getFile() == file)
+            return true;
+    }
+    return false;
 }
 
-void DownloadWidget::finishedTask(File *file)
+
+void DownloadWidget::startTask(QListWidgetItem *item)
 {
-    emit finished(file);
+    DownloadList *widget = (DownloadList *)m_pListWidget->itemWidget(item);
+
+    if(m_pRunningTask->count() < m_iMaxTaskNumbers)
+    {
+        m_pRunningTask->append(widget);
+        widget->startDownload();
+    }
+    else
+        m_pWaittingTask->append(widget);
+
+}
+
+void DownloadWidget::pauseTask(QListWidgetItem *item)
+{
+    QWidget *widget = m_pListWidget->itemWidget(item);
+    if(m_pRunningTask->contains(widget))
+    {
+        m_pRunningTask->removeOne(widget);
+    }
+
+    if(m_pWaittingTask->contains(widget))
+    {
+        m_pWaittingTask->removeOne(widget);
+    }
+}
+
+void DownloadWidget::stopTask(QListWidgetItem *item)
+{
+    QWidget *widget = m_pListWidget->itemWidget(item);
+    if(m_pRunningTask->contains(widget))
+    {
+        m_pRunningTask->removeOne(widget);
+    }
+
+    if(m_pWaittingTask->contains(widget))
+    {
+        m_pWaittingTask->removeOne(widget);
+    }
+
+    m_pListWidget->removeItemWidget(item);
+}
+
+void DownloadWidget::finishedTask(QListWidgetItem *item)
+{
+    DownloadList *widget = (DownloadList *)m_pListWidget->itemWidget(item);
+    m_pRunningTask->removeOne(widget);
+
+    if(m_pWaittingTask->count())
+    {
+        widget = (DownloadList *)m_pWaittingTask->takeFirst();
+        widget->startDownload();
+    }
+
+    emit finished(widget->getFile());
 }

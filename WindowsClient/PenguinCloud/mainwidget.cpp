@@ -436,6 +436,7 @@ void MainWidget::setPreviewWidget(FileType type,  const QString& filename)
     switch(type)
     {
     case Office:
+    case Pdf:
     {
         http += filename.split('.').first();
         http += ".pdf";
@@ -444,11 +445,9 @@ void MainWidget::setPreviewWidget(FileType type,  const QString& filename)
         l->loadFileFormUrl(http);
         qDebug() << http;
         connect(l, &LoadFile::loadCompleted, this, [this,l](){
-            qDebug() << "setFile";
+            qDebug() <<l->getFilePath1();
             this->pdfWidget->setPdfFile(l->getFilePath1());}
         );
-
-
     }
         break;
     case Image:

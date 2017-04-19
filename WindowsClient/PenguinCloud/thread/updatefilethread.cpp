@@ -13,7 +13,7 @@ UpdateFileThread::UpdateFileThread(QString localPath, QString remotePath, QObjec
 
 UpdateFileThread::~UpdateFileThread()
 {
-
+    stopCheckCurrentProgressTimer();
 }
 
 void UpdateFileThread::start()

@@ -12,7 +12,7 @@ BasicWidget::BasicWidget(QWidget *parent)
 {
 //   setAttribute(Qt::WA_DeleteOnClose);
    setWindowFlags(Qt::FramelessWindowHint);
-
+   setAttribute(Qt::WA_TranslucentBackground, true);
    background_color = QColor(Qt::white); 
 
    close_buttonn = new QPushButton(this);

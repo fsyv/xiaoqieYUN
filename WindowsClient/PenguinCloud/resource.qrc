@@ -81,5 +81,11 @@
         <file>resource/manage/stop_enter_5.png</file>
         <file>resource/manage/stop_normal.png</file>
         <file>resource/manage/stop_press.png</file>
+        <file>resource/sound/finished.wav</file>
+        <file>resource/image/backward.png</file>
+        <file>resource/image/forward.png</file>
+        <file>resource/image/pause.png</file>
+        <file>resource/image/play.png</file>
+        <file>resource/image/volumn.png</file>
     </qresource>
 </RCC>

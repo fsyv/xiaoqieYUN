@@ -8,6 +8,8 @@
 #include "Child/downloadwidget.h"
 #include "Child/finishedwidget.h"
 
+#include "../file/file.h"
+
 ManageWidget::ManageWidget(QWidget *parent):
     QWidget(parent),
     m_pVBoxLayout(nullptr),
@@ -54,5 +56,6 @@ void ManageWidget::addFinishedTask(File *file)
 
 void ManageWidget::task_finished(File *file)
 {
+    QSound::play("://resource/sound/finished.wav");
     addFinishedTask(file);
 }
