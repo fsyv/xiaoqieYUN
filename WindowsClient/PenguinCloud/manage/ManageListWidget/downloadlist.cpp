@@ -220,7 +220,7 @@ void DownloadList::resizeEvent(QResizeEvent *e)
 
 void DownloadList::updateTask_currentSize(qint64 currentSize)
 {
-    qDebug() << "currentSize" << currentSize;
+    qDebug() << m_pFile->getRemoteName() << " " <<currentSize;
     setSpeed(currentSize - m_i64CurrentSize);
     m_i64CurrentSize = currentSize;
     setSize(m_i64CurrentSize, m_pFile->getSize());
@@ -282,4 +282,6 @@ void DownloadList::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg
 
     m_pDownloadThread->start();
     ThreadPool::getInstance()->addJob(m_pDownloadThread);
+
+    qDebug() << m_pFile->getLocalName();
 }

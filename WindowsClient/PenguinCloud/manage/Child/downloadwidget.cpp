@@ -107,6 +107,7 @@ void DownloadWidget::startTask(QListWidgetItem *item)
     {
         m_pRunningTask->append(widget);
         widget->startDownload();
+        qDebug() << "startTask" << widget->getFile()->getRemoteName();
     }
     else
         m_pWaittingTask->append(widget);

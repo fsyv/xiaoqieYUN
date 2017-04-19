@@ -7,6 +7,7 @@
 #include <QUrl>
 #include <QFile>
 #include <qDebug>
+#include <QMutex>
 
 #include "network/connecttofileserver.h"
 
@@ -59,6 +60,8 @@ protected:
     QString m_stRemotePath;
     //定时器ID
     int m_iTimerID;
+    //增加一个TimerID的锁
+    QMutex mutex;
     //服务器URL
     QUrl m_serverUrl;
 	QFile m_file;

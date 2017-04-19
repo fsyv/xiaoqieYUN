@@ -10,6 +10,8 @@
 
 #include <QMutex>
 
+#include <qDebug>
+
 #define MAX_CHANGE 10
 #define MIN_TIMER 1
 #define MAX_TIMER 1000

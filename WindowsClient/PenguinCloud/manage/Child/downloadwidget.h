@@ -5,6 +5,8 @@
 #include <QMap>
 #include <QList>
 
+#include <qDebug>
+
 #include "../network/msgtype.h"
 
 QT_BEGIN_NAMESPACE

@@ -13,7 +13,7 @@ UpdateFileThread::UpdateFileThread(QString localPath, QString remotePath, QObjec
 
 UpdateFileThread::~UpdateFileThread()
 {
-    stopCheckCurrentProgressTimer();
+
 }
 
 void UpdateFileThread::start()
@@ -122,15 +122,19 @@ void UpdateFileThread::startCheckCurrentProgressTimer()
 
     //一秒钟检测一次当前运行的状态
     m_iTimerID = startTimer(1000);
+    qDebug() << "m_iTimerID  start" << m_iTimerID;
 }
 
 void UpdateFileThread::stopCheckCurrentProgressTimer()
 {
+    mutex.lock();
     if(m_iTimerID)
     {
+        qDebug() << "m_iTimerID  end" << m_iTimerID;
         killTimer(m_iTimerID);
         m_iTimerID = 0;
     }
+    mutex.unlock();
 }
 
 void UpdateFileThread::stopCurrenTask()

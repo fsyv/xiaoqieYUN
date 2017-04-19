@@ -254,6 +254,8 @@ void ThreadPool::workerJob()
         --m_iWorking;
 
         taskQueueMutex.unlock();
+
+        qDebug() << " object size" << tasks.size();
     }
 
     serialMutex.lock();
