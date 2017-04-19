@@ -1,4 +1,4 @@
-#include "downloadwidget.h"
+﻿#include "downloadwidget.h"
 
 #include "../stable.h"
 
@@ -17,8 +17,8 @@ DownloadWidget::DownloadWidget(QWidget *parent) :
     m_pListWidget = new ManageListWidget;
     m_pVBosLayout = new QVBoxLayout(this);
 
-    m_pRunningTask = new QList<File *>;
-    m_pWaittingTask = new QList<File *>;
+    m_pRunningTask = new QList<File *>();
+    m_pWaittingTask = new QList<File *>();
 
     m_pVBosLayout->addWidget(m_pTopWidget);
     m_pVBosLayout->addWidget(m_pListWidget);
@@ -85,10 +85,10 @@ void DownloadWidget::setMaxTaskNumbers(int iMaxTaskNumbers)
 
 void DownloadWidget::startTask(File *file)
 {
-    if(m_pExecutingTask->count() < m_iMaxTaskNumbers)
-    {
+//    if(m_pExecutingTask->count() < m_iMaxTaskNumbers)
+//    {
 
-    }
+//    }
 }
 
 void DownloadWidget::finishedTask(File *file)

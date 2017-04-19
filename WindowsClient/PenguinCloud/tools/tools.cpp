@@ -55,7 +55,7 @@ FileType Tools::getFileType(const QString &filename)
      QStringList video;
      QStringList image;
 
-     office << "doc" << "docx" << "xls" << "ppt" << "xlsx" << "pptx" << "pdf";
+     office << "doc" << "docx" << "xls" << "ppt" << "xlsx" << "pptx";
      music << "wav" << "mp3";
      video << "mp4" << "3gp" << "rm" << "rmvb";
      image << "png" << "jpg" << "ico";
@@ -76,6 +76,10 @@ FileType Tools::getFileType(const QString &filename)
      else if (image.contains(format.toLower()))
      {
         return Image;
+     }
+     else if (QString("pdf").contains(format.toLower()))
+     {
+         return Pdf;
      }
 }
 
