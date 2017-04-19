@@ -21,6 +21,7 @@ class UpdateFileThread;
 class FileObject;
 class ManageWidget;
 class FileTableWidget;
+class PdfWidget;
 QT_END_NAMESPACE
 
 class MainWidget : public BasicWidget
@@ -82,12 +83,12 @@ private:
     FileTableWidget *tableWidget;
 
     ManageWidget *m_pManageWidget;
-
+    PdfWidget *pdfWidget;
 
     QLabel *sys_info;
     QPushButton *download_manage;
     QString m_stUserName;
-
+    QString previewFileName;
     QStack<QString> path;// current dir
 
     QMap<QString, FileObject *> *m_pFileLists;

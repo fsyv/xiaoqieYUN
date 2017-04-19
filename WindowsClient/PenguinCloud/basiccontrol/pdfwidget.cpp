@@ -44,7 +44,7 @@ void PdfWidget::setPage(int i)
     if(i >=0 && i < document->numPages())
     {
         Poppler::Page* pdfPage = document->page(i);
-        image = pdfPage->renderToImage(92.56, 92.56, 0, 0, 1024, pdfPage->pageSize().height() );
+        image = pdfPage->renderToImage(92.56, 92.56, 0, 0, pdfPage->pageSize().width(), pdfPage->pageSize().height() );
         view->setPixmap(QPixmap::fromImage(image)/*.scaled(600, 800, Qt::IgnoreAspectRatio, Qt::SmoothTransformation)*/);
         if(image.isNull())
         {

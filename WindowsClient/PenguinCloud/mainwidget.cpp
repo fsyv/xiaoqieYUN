@@ -409,7 +409,7 @@ void MainWidget::preview(const QString &_path)
     previewMsg.fileType = Tools::getFileType(_path);
     strcpy(previewMsg.filepath, wholepath.toUtf8().data());
     m_pConnectToServer->sendPreviewMsg(previewMsg);
-
+    previewFileName = _path;
 //    setPreviewWidget(Tools::getFileType(_path));
 }
 
@@ -417,7 +417,7 @@ void MainWidget::show_prview(PreviewStatus previewStatus)
 {
     if(previewStatus.status == Success)
     {
-        setPreviewWidget(previewStatus.filetype, "/1.pdf");
+        setPreviewWidget(previewStatus.filetype, previewFileName);
     }
     else if(previewStatus.status == Failed)
     {
@@ -425,26 +425,29 @@ void MainWidget::show_prview(PreviewStatus previewStatus)
         connect(m, &MyMessageBox::btn2, this, [m](){m->close();});
     }
 
+    pdfWidget = new PdfWidget();
+    pdfWidget->close();
 }
 
 void MainWidget::setPreviewWidget(FileType type,  const QString& filename)
 {
     QString http = "http://120.24.84.247/";
-    //http += getUserName();
+    http = http + getUserName() + "/";
     switch(type)
     {
     case Office:
     {
-        http += filename.split("/").last().split('.').first();
+        http += filename.split('.').first();
         http += ".pdf";
-        PdfWidget *pdfWidget = new PdfWidget();
+
         LoadFile *l = new LoadFile();
         l->loadFileFormUrl(http);
-        connect(l, &LoadFile::loadCompleted, this, [pdfWidget,l](){
+        qDebug() << http;
+        connect(l, &LoadFile::loadCompleted, this, [this,l](){
             qDebug() << "setFile";
-            pdfWidget->setPdfFile(l->getFilePath1());}
+            this->pdfWidget->setPdfFile(l->getFilePath1());}
         );
-        pdfWidget->close();
+
 
     }
         break;
