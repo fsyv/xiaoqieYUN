@@ -1,15 +1,16 @@
 #include "downloadlist.h"
 
-#include <QLabel>
-#include <QProgressBar>
-#include <QFileInfo>
+#include "../stable.h"
+
 #include "../BasisCtrl/picturelabel.h"
 #include "../BasisCtrl/pauselabel.h"
 #include "../BasisCtrl/stoplabel.h"
 #include "../file/file.h"
 #include "../tools/tools.h"
+#include "../thread/downloadthread.h"
+#include "../network/connecttoserver.h"
 
-DownloadList::DownloadList(QWidget *parent) :
+DownloadList::DownloadList(QListWidget *listWidget, QWidget *parent) :
     QWidget(parent),
     m_pFile(nullptr),
     m_i64CurrentSize(0LL),
@@ -20,11 +21,20 @@ DownloadList::DownloadList(QWidget *parent) :
     m_pProgressBar(nullptr),
     m_pCurrentSpeed(nullptr),
     m_pPauseButton(nullptr),
-    m_pStopButton(nullptr)
+    m_pStopButton(nullptr),
+    m_pDownloadThread(nullptr)
 {
     setFixedHeight(50);
     initWidget();
     setWidgetLayout();
+
+    m_eCurrentStatus = CurrentStatus::NOSTATUS;
+
+    m_pListWidgetItem = new QListWidgetItem(listWidget);
+    m_pListWidgetItem->setSizeHint(QSize(1, 50));
+
+    m_pConnectToServer = ConnectToServer::getInstance();
+    connect(m_pConnectToServer, SIGNAL(readyReadDownloadMsg(DownloadMsg)), this, SLOT(recvDownloadFile_readyReadDownloadMsg(DownloadMsg)));
 }
 
 DownloadList::~DownloadList()
@@ -52,6 +62,11 @@ void DownloadList::setFile(File *file)
     m_pPauseButton->startClick();
 }
 
+File *DownloadList::getFile() const
+{
+    return m_pFile;
+}
+
 PauseLabel *DownloadList::getPauseButton() const
 {
     return m_pPauseButton;
@@ -60,6 +75,20 @@ PauseLabel *DownloadList::getPauseButton() const
 StopLabel *DownloadList::getStopButton() const
 {
     return m_pStopButton;
+}
+
+QListWidgetItem *DownloadList::getListWidgetItem() const
+{
+    return m_pListWidgetItem;
+}
+
+void DownloadList::startDownload()
+{
+    DownloadMsg downloadMsg;
+    memset(&downloadMsg, 0, sizeof(DownloadMsg));
+    strcpy(downloadMsg.fileName, m_pFile->getRemoteName().toUtf8().data());
+
+    m_pConnectToServer->sendDownloadMsg(downloadMsg);
 }
 
 void DownloadList::initWidget()
@@ -196,19 +225,61 @@ void DownloadList::updateTask_currentSize(qint64 currentSize)
     m_i64CurrentSize = currentSize;
     setSize(m_i64CurrentSize, m_pFile->getSize());
     updateProgressBar(m_i64CurrentSize * 1.0 / m_pFile->getSize() * 100);
+
+    if(m_i64CurrentSize == m_pFile->getSize())
+    {
+        if(m_eCurrentStatus == CurrentStatus::RUNNING)
+        {
+            m_pDownloadThread->stop();
+            delete m_pDownloadThread;
+            m_pDownloadThread = nullptr;
+        }
+
+        m_eCurrentStatus = CurrentStatus::FINISHED;
+        emit finished(m_pListWidgetItem);
+    }
 }
 
 void DownloadList::start_pauseButton()
 {
-    emit start(m_pFile);
+    m_eCurrentStatus = CurrentStatus::WAITTING;
+    emit start(m_pListWidgetItem);
 }
 
 void DownloadList::pause_pauseButton()
 {
-    emit pause(m_pFile);
+    if(m_eCurrentStatus == CurrentStatus::RUNNING)
+    {
+        m_pDownloadThread->pause();
+        delete m_pDownloadThread;
+        m_pDownloadThread = nullptr;
+    }
+
+    m_eCurrentStatus = CurrentStatus::PAUSED;
+    emit pause(m_pListWidgetItem);
 }
 
 void DownloadList::stop_stopButton()
 {
-    emit stop(m_pFile);
+    if(m_eCurrentStatus == CurrentStatus::RUNNING)
+    {
+        m_pDownloadThread->stop();
+        delete m_pDownloadThread;
+        m_pDownloadThread = nullptr;
+    }
+
+    m_eCurrentStatus = CurrentStatus::STOP;
+    emit stop(m_pListWidgetItem);
+}
+
+void DownloadList::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg)
+{
+    m_eCurrentStatus = CurrentStatus::RUNNING;
+
+    m_pDownloadThread = new DownloadThread(m_pFile->getLocalName(), m_pFile->getRemoteName(), this);
+    connect(m_pDownloadThread, &UpdateFileThread::currentTaskProgress, this, &DownloadList::updateTask_currentSize);
+    m_pDownloadThread->setServerUrl(QString(SERVER_IP), downloadMsg.serverFilePort);
+
+    m_pDownloadThread->start();
+    ThreadPool::getInstance()->addJob(m_pDownloadThread);
 }

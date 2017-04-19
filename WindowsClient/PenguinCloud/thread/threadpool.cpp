@@ -4,6 +4,9 @@
 
 using namespace std;
 
+ThreadPool *ThreadPool::m_pInstance = nullptr;
+QMutex ThreadPool::mutex;
+
 ThreadPool::ThreadPool(int workerNumber, QObject *parent) :
     QObject(parent),
     m_iBossInspectionCycle(1000),
@@ -256,4 +259,19 @@ void ThreadPool::workerJob()
     serialMutex.lock();
     workersSerialNumber.erase(this_thread::get_id());
     serialMutex.unlock();
+}
+
+ThreadPool *ThreadPool::getInstance()
+{
+    if(!m_pInstance)
+    {
+        mutex.lock();
+        if(!m_pInstance)
+        {
+            m_pInstance = new ThreadPool();
+        }
+        mutex.unlock();
+    }
+
+    return m_pInstance;
 }

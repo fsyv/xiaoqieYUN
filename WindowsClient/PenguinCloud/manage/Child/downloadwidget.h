@@ -12,8 +12,8 @@ class QWidget;
 class TopWidget;
 class ManageListWidget;
 class QVBoxLayout;
-class File;
 class QListWidgetItem;
+class File;
 QT_END_NAMESPACE
 
 class DownloadWidget : public QWidget
@@ -29,19 +29,24 @@ public:
     void setMaxTaskNumbers(int iMaxTaskNumbers);
 
 private:
+    bool contains(File *file);
+
     TopWidget *m_pTopWidget;
     ManageListWidget *m_pListWidget;
     QVBoxLayout *m_pVBosLayout;
 
-    QList<QListWidgetItem *> *m_pRunningTask;
-    QList<QListWidgetItem *> *m_pWaittingTask;
+    //将具体的界面加到这个队列里
+    QList<QWidget *> *m_pRunningTask;
+    QList<QWidget *> *m_pWaittingTask;
 
     //最大任务数量
     int m_iMaxTaskNumbers;
 
 protected slots:
-    void startTask(File *file);
-    void finishedTask(File *file);
+    void startTask(QListWidgetItem *item);
+    void pauseTask(QListWidgetItem *item);
+    void stopTask(QListWidgetItem *item);
+    void finishedTask(QListWidgetItem *item);
 
 signals:
     void finished(File *);

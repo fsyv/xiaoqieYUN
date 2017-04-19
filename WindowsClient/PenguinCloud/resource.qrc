@@ -81,5 +81,6 @@
         <file>resource/manage/stop_enter_5.png</file>
         <file>resource/manage/stop_normal.png</file>
         <file>resource/manage/stop_press.png</file>
+        <file>resource/sound/finished.wav</file>
     </qresource>
 </RCC>

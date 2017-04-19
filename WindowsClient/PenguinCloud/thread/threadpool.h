@@ -8,7 +8,7 @@
 #include <queue>
 #include <map>
 
-#include<qDebug>
+#include <QMutex>
 
 #define MAX_CHANGE 10
 #define MIN_TIMER 1
@@ -91,5 +91,11 @@ private:
     //老板视察工作最大时间差
     //单位ms
     int m_iMaxTimer;
+
+public:
+    static ThreadPool *getInstance();
+private:
+    static ThreadPool *m_pInstance;
+    static QMutex mutex;
 };
 
