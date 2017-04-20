@@ -69,6 +69,16 @@
     <Filter Include="thread">
       <UniqueIdentifier>{56abdbe6-2c12-4224-b579-76e4c4ac1dc6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{a89cbe5a-ffd2-42b5-9b4e-27d026f72aa9}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{44b66476-51dd-45ac-bb60-6de1260d5631}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="basicwidget\basicwidget.cpp">
@@ -389,6 +399,21 @@
     <ClCompile Include="thread\uploadthread.cpp">
       <Filter>thread</Filter>
     </ClCompile>
+    <ClCompile Include="Debug\moc_uploadlist.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_uploadlist.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\ManageListWidget\uploadlist.cpp">
+      <Filter>manage\ManageListWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_uploadwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_uploadwidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="basicwidget\basicwidget.h">
@@ -495,6 +520,12 @@
     </CustomBuild>
     <CustomBuild Include="thread\uploadthread.h">
       <Filter>thread</Filter>
+    </CustomBuild>
+    <CustomBuild Include="manage\ManageListWidget\uploadlist.h">
+      <Filter>manage\ManageListWidget</Filter>
+    </CustomBuild>
+    <CustomBuild Include="manage\Child\uploadwidget.h">
+      <Filter>manage\Child</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -779,6 +810,10 @@
     <None Include="resource\image\DownLoadManage\??.png" />
     <None Include="resource\image\DownLoadManage\??.png" />
     <None Include="resource\image\DownLoadManage\??.png" />
+    <None Include="resource\image\DownLoadManage\??.png" />
+    <None Include="resource\image\DownLoadManage\??.png" />
+    <None Include="resource\image\DownLoadManage\??.png" />
+    <None Include="resource\image\DownLoadManage\??.png" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="manage\BasisCtrl\cleanlabel.h">
@@ -791,9 +826,6 @@
       <Filter>manage\BasisCtrl</Filter>
     </ClInclude>
     <ClInclude Include="manage\Child\finishedwidget.h">
-      <Filter>manage\Child</Filter>
-    </ClInclude>
-    <ClInclude Include="manage\Child\uploadwidget.h">
       <Filter>manage\Child</Filter>
     </ClInclude>
     <ClInclude Include="manage\ChildTopWidget\uploadtopwidget.h">

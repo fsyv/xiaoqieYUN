@@ -15,33 +15,30 @@ class PauseLabel;
 class StopLabel;
 class File;
 class ConnectToServer;
-class DownloadThread;
+class UploadThread;
 QT_END_NAMESPACE
-
-class DownloadList : public QWidget
+class UploadList : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
     enum class CurrentStatus{
-        NOSTATUS,           //没状态
-        WAITTING,           //等待中
-        RUNNING,            //运行中
-        FINISHED,           //已完成
-        PAUSED,             //已暂停
-        STOP                //停止
+		NOSTATUS,           //没状态
+		WAITTING,           //等待中
+		RUNNING,            //运行中
+		FINISHED,           //已完成
+		PAUSED,             //已暂停
+		STOP                //停止
     };
 
 public:
-    explicit DownloadList(QListWidget *listWidget, QWidget *parent = 0);
-    ~DownloadList();
-
+	explicit UploadList(QListWidget *listWidget, QWidget *parent = 0);
+	~UploadList();
     void setFile(File *file);
     File *getFile() const;
 
     QListWidgetItem *getListWidgetItem() const;
 
-    void startDownload();
-
+	void startUpload();
 private:
     void initWidget();
     void setWidgetLayout();
@@ -70,7 +67,7 @@ private:
     QListWidgetItem *m_pListWidgetItem;
 
     ConnectToServer *m_pConnectToServer;
-    DownloadThread *m_pDownloadThread;
+    UploadThread *m_pUploadThread;
 
 protected:
     void resizeEvent(QResizeEvent *e);
@@ -79,7 +76,7 @@ protected slots:
     void start_pauseButton();
     void pause_pauseButton();
     void stop_stopButton();
-    void recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg);
+	void recvUploadFile_readyReadUploadMsg(UploadMsg uploadMsg);
     void updateTask_currentSize(qint64 currentSize);
 
 signals:

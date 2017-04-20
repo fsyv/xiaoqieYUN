@@ -2,12 +2,9 @@
 #pragma execution_character_set("utf-8")
 
 #include <QWidget>
-#include <QMap>
 #include <QList>
 
 #include <qDebug>
-
-#include "../network/msgtype.h"
 
 QT_BEGIN_NAMESPACE
 class QWidget;

@@ -32,6 +32,7 @@ ManageWidget::ManageWidget(QWidget *parent):
     m_pVBoxLayout->addWidget(m_pTabWidget);
 
     connect(m_pDownloadWidget, &DownloadWidget::finished, this, &ManageWidget::task_finished);
+	connect(m_pUploadWidget, &UploadWidget::finished, this, &ManageWidget::task_finished);
 }
 
 ManageWidget::~ManageWidget()
@@ -41,7 +42,7 @@ ManageWidget::~ManageWidget()
 
 void ManageWidget::addUploadTask(File *file)
 {
-
+	m_pUploadWidget->addTask(file);
 }
 
 void ManageWidget::addDownloadTask(File *file)
