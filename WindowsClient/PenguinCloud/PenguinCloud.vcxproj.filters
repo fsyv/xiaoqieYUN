@@ -777,6 +777,8 @@
     <None Include="resource\image\DownLoadManage\??.png" />
     <None Include="resource\image\DownLoadManage\??.png" />
     <None Include="resource\image\DownLoadManage\??.png" />
+    <None Include="resource\image\DownLoadManage\??.png" />
+    <None Include="resource\image\DownLoadManage\??.png" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="manage\BasisCtrl\cleanlabel.h">

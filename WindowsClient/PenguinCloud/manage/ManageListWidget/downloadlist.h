@@ -1,5 +1,5 @@
-#ifndef DOWNLOADLIST_H
-#define DOWNLOADLIST_H
+#pragma once
+#pragma execution_character_set("utf-8")
 
 #include <QWidget>
 
@@ -32,7 +32,7 @@ public:
     };
 
 public:
-    explicit DownloadList(QListWidget *listWidget, QWidget *parent = 0);
+    explicit DownloadList(QWidget *parent = 0);
     ~DownloadList();
 
     void setFile(File *file);
@@ -92,4 +92,3 @@ signals:
     void finished(QListWidgetItem *);
 };
 
-#endif // DOWNLOADLIST_H

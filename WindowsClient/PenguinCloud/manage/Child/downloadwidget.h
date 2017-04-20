@@ -1,5 +1,5 @@
-﻿#ifndef DOWNLOADWIDGET_H
-#define DOWNLOADWIDGET_H
+﻿#pragma once
+#pragma execution_character_set("utf-8")
 
 #include <QWidget>
 #include <QMap>
@@ -54,4 +54,3 @@ signals:
     void finished(File *);
 };
 
-#endif // DOWNLOADWIDGET_H

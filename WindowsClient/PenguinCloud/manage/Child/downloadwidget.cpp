@@ -52,14 +52,21 @@ DownloadWidget::~DownloadWidget()
 
 void DownloadWidget::addTask(File *file)
 {
+	static int i = 0;
+
     if(!contains(file))
     {
-        DownloadList *downloadList = new DownloadList(m_pListWidget);
+        DownloadList *downloadList = new DownloadList();
 
-        connect(downloadList, SIGNAL(start(QListWidgetItem*)), this, SLOT(startTask(QListWidgetItem*)));
-        connect(downloadList, SIGNAL(pause(QListWidgetItem*)), this, SLOT(pauseTask(QListWidgetItem*)));
-        connect(downloadList, SIGNAL(stop(QListWidgetItem*)), this, SLOT(stopTask(QListWidgetItem*)));
-        connect(downloadList, SIGNAL(finished(QListWidgetItem*)), this, SLOT(finishedTask(QListWidgetItem*)));
+		if (!i)
+		{
+			connect(downloadList, SIGNAL(start(QListWidgetItem*)), this, SLOT(startTask(QListWidgetItem*)));
+			connect(downloadList, SIGNAL(pause(QListWidgetItem*)), this, SLOT(pauseTask(QListWidgetItem*)));
+			connect(downloadList, SIGNAL(stop(QListWidgetItem*)), this, SLOT(stopTask(QListWidgetItem*)));
+			connect(downloadList, SIGNAL(finished(QListWidgetItem*)), this, SLOT(finishedTask(QListWidgetItem*)));
+			++i;
+			qDebug() << "i == " << i;
+		}
 
         m_pListWidget->setItemWidget(downloadList->getListWidgetItem(), downloadList);
 
@@ -117,12 +124,12 @@ void DownloadWidget::startTask(QListWidgetItem *item)
 void DownloadWidget::pauseTask(QListWidgetItem *item)
 {
     QWidget *widget = m_pListWidget->itemWidget(item);
-    if(m_pRunningTask->contains(widget))
+	if (!m_pRunningTask->isEmpty() && m_pRunningTask->contains(widget))
     {
         m_pRunningTask->removeOne(widget);
     }
 
-    if(m_pWaittingTask->contains(widget))
+	if (!m_pWaittingTask->isEmpty() && m_pWaittingTask->contains(widget))
     {
         m_pWaittingTask->removeOne(widget);
     }
@@ -131,17 +138,19 @@ void DownloadWidget::pauseTask(QListWidgetItem *item)
 void DownloadWidget::stopTask(QListWidgetItem *item)
 {
     QWidget *widget = m_pListWidget->itemWidget(item);
-    if(m_pRunningTask->contains(widget))
+
+	if (!m_pRunningTask->isEmpty() && m_pRunningTask->contains(widget))
     {
         m_pRunningTask->removeOne(widget);
     }
 
-    if(m_pWaittingTask->contains(widget))
+	if (!m_pWaittingTask->isEmpty() && m_pWaittingTask->contains(widget))
     {
         m_pWaittingTask->removeOne(widget);
     }
 
-    m_pListWidget->removeItemWidget(item);
+
+    //m_pListWidget->removeItemWidget(item);
 }
 
 void DownloadWidget::finishedTask(QListWidgetItem *item)

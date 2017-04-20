@@ -1,5 +1,5 @@
-#ifndef FILEOBJECT_H
-#define FILEOBJECT_H
+#pragma once
+#pragma execution_character_set("utf-8")
 
 #include <QObject>
 #include <QDateTime>
@@ -28,4 +28,3 @@ protected:
     qint64 m_i64Size;
 };
 
-#endif // FILEOBJECT_H

@@ -10,7 +10,7 @@
 #include "../thread/downloadthread.h"
 #include "../network/connecttoserver.h"
 
-DownloadList::DownloadList(QListWidget *listWidget, QWidget *parent) :
+DownloadList::DownloadList(QWidget *parent) :
     QWidget(parent),
     m_pFile(nullptr),
     m_i64CurrentSize(0LL),
@@ -30,7 +30,7 @@ DownloadList::DownloadList(QListWidget *listWidget, QWidget *parent) :
 
     m_eCurrentStatus = CurrentStatus::NOSTATUS;
 
-    m_pListWidgetItem = new QListWidgetItem(listWidget);
+    m_pListWidgetItem = new QListWidgetItem();
     m_pListWidgetItem->setSizeHint(QSize(1, 50));
 
     m_pConnectToServer = ConnectToServer::getInstance();
@@ -89,6 +89,8 @@ void DownloadList::startDownload()
     strcpy(downloadMsg.fileName, m_pFile->getRemoteName().toUtf8().data());
 
     m_pConnectToServer->sendDownloadMsg(downloadMsg);
+	static int cc = 0;
+	qDebug() << QString("carrry ") << cc++;
 }
 
 void DownloadList::initWidget()
@@ -282,5 +284,6 @@ void DownloadList::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg
     m_pDownloadThread->start();
     ThreadPool::getInstance()->addJob(m_pDownloadThread);
 
-    qDebug() << m_pFile->getLocalName();
+	static int jj = 0;
+	qDebug() << "recvDownloadFile_readyReadDownloadMsg" << jj++;
 }
