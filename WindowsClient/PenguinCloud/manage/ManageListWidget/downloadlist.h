@@ -32,7 +32,7 @@ public:
     };
 
 public:
-    explicit DownloadList(QWidget *parent = 0);
+    explicit DownloadList(QListWidget *listWidget, QWidget *parent = 0);
     ~DownloadList();
 
     void setFile(File *file);

@@ -10,7 +10,7 @@
 #include "../thread/downloadthread.h"
 #include "../network/connecttoserver.h"
 
-DownloadList::DownloadList(QWidget *parent) :
+DownloadList::DownloadList(QListWidget *listWidget, QWidget *parent) :
     QWidget(parent),
     m_pFile(nullptr),
     m_i64CurrentSize(0LL),
@@ -30,7 +30,7 @@ DownloadList::DownloadList(QWidget *parent) :
 
     m_eCurrentStatus = CurrentStatus::NOSTATUS;
 
-    m_pListWidgetItem = new QListWidgetItem();
+    m_pListWidgetItem = new QListWidgetItem(listWidget);
     m_pListWidgetItem->setSizeHint(QSize(1, 50));
 
     m_pConnectToServer = ConnectToServer::getInstance();
@@ -275,6 +275,7 @@ void DownloadList::stop_stopButton()
 
 void DownloadList::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg)
 {
+	disconnect(m_pConnectToServer, SIGNAL(readyReadDownloadMsg(DownloadMsg)), this, SLOT(recvDownloadFile_readyReadDownloadMsg(DownloadMsg)));
     m_eCurrentStatus = CurrentStatus::RUNNING;
 
     m_pDownloadThread = new DownloadThread(m_pFile->getLocalName(), m_pFile->getRemoteName(), this);
