@@ -21,6 +21,7 @@ public:
     void hideCloseIcon();
     void setTitle(const QString &title);
     void setIcon(const QString &path);
+    void setTranslucentBackground(bool);
 protected:
     void mouseMoveEvent(QMouseEvent *e);
     void mousePressEvent(QMouseEvent *e);

@@ -40,8 +40,9 @@ typedef enum _FileType{
     Office = 0,          // office文档
     Music,               // 音乐
     Video,               // 视频
-    Image                // 图片
-    // ...               //压缩文件
+    Image,               // 图片
+    Pdf                  // PDF文档
+    // ...               // 压缩文件
 }FileType;
 
 

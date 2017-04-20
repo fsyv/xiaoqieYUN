@@ -1,4 +1,6 @@
-﻿#include <QApplication>
+﻿#pragma once
+#pragma execution_character_set("utf-8")
+#include <QApplication>
 #include <QFile>
 
 #include "mainwidget.h"
@@ -7,7 +9,7 @@
 #include "basicwidget/mymessagebox.h"
 #include "basiccontrol/pdfwidget.h"
 #include "basiccontrol/imagepreview.h"
-
+#include "basiccontrol/musicmainwidget.h"
 
 #include <QUrl>
 #include <QDebug>
@@ -25,12 +27,13 @@ int main(int argc, char *argv[])
 //    ImagePreView w;
     LoginWidget w;
 
-    //PdfWidget w;
-   // ManageWidget w;
+//    PdfWidget w;
+//    ManageWidget w;
 //    RegisterWidget w;
 //    MyMessageBox w;
-   // w.show();
-  //  MainWidget w;
+//    w.show();
+//    MainWidget w;
+//    MusicMainWidget w;
     w.show();
 
     qDebug() << QUrl::fromUserInput("10.64.2.10/1.pdf").fileName();

@@ -41,7 +41,13 @@ void BasicWidget::hideCloseIcon()
 {
     close_buttonn->hide();
 }
-
+void BasicWidget::setTranslucentBackground(bool flag)
+{
+    if(flag)
+    {
+         setAttribute(Qt::WA_TranslucentBackground, true);
+    }
+}
 
 void BasicWidget::setDroped(bool _drop)
 {

@@ -1,0 +1,810 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;moc;h;def;odl;idl;res;</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="manage">
+      <UniqueIdentifier>{827568b3-0b57-49b2-95bd-195601812ff8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="manage\BasisCtrl">
+      <UniqueIdentifier>{46cbfb19-4986-496e-9757-cb38a2491cc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="manage\Child">
+      <UniqueIdentifier>{5acad50f-fe15-4ebc-84ea-9e2bb7a44280}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="manage\ChildTopWidget">
+      <UniqueIdentifier>{4cf92ec6-da61-4445-a2e4-0d83c53a0786}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="manage\ManageListWidget">
+      <UniqueIdentifier>{7550a486-9166-4f57-b343-df4b4128256f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="manage\ManageTabWidget">
+      <UniqueIdentifier>{c60e8a62-c798-4dfb-a261-97101d70c150}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="manage\ChildTopWidget\Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;moc;h;def;odl;idl;res;</Extensions>
+    </Filter>
+    <Filter Include="manage\ChildTopWidget\Generated Files\Debug">
+      <UniqueIdentifier>{fd090814-4e59-4392-a3bf-13639d5364f8}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="manage\ChildTopWidget\Generated Files\Release">
+      <UniqueIdentifier>{6f3b29aa-1410-4b13-acb8-a67763e7b547}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="network">
+      <UniqueIdentifier>{6952f334-755e-41f5-b0f5-db621169b07f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="thread\ThreadObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="network\abstractnetwork.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="basicwidget\basicwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="basiccontrol\combobox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="network\connecttofileserver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="network\connecttoserver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\downloadthread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="file\file.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="file\fileobject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="basiccontrol\filetablewidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="file\folder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="basiccontrol\imagepreview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="basiccontrol\lineedit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="network\loadfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="loginwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="basiccontrol\musicbutton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="basiccontrol\musicmainwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="basicwidget\mymessagebox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="basiccontrol\pdfwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="registerwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="logic\rwfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\threadpool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tools\tools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\updatefilethread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\uploadthread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_ThreadObject.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_ThreadObject.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_abstractnetwork.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_abstractnetwork.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_basicwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_basicwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_combobox.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_combobox.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_connecttofileserver.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_connecttofileserver.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_connecttoserver.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_connecttoserver.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_downloadlist.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_downloadlist.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_downloadthread.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_downloadthread.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_downloadtopwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_downloadtopwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_downloadwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_downloadwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_file.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_file.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_fileobject.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_fileobject.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_filetablewidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_filetablewidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_folder.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_folder.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_imagepreview.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_imagepreview.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_lineedit.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_lineedit.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_loadfile.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_loadfile.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_loginwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_loginwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_mainwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_mainwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_managetabwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_managetabwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_managewidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_managewidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_musicmainwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_musicmainwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_mymessagebox.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_mymessagebox.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_pauselabel.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_pauselabel.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_registerwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_registerwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_stoplabel.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_stoplabel.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_threadpool.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_threadpool.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_topwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_topwidget.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_updatefilethread.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_updatefilethread.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_uploadthread.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_uploadthread.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_resource.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\managewidget.cpp">
+      <Filter>manage</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\BasisCtrl\cleanlabel.cpp">
+      <Filter>manage\BasisCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\BasisCtrl\openlabel.cpp">
+      <Filter>manage\BasisCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\BasisCtrl\pauselabel.cpp">
+      <Filter>manage\BasisCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\BasisCtrl\picturelabel.cpp">
+      <Filter>manage\BasisCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\BasisCtrl\stoplabel.cpp">
+      <Filter>manage\BasisCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\Child\downloadwidget.cpp">
+      <Filter>manage\Child</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\Child\finishedwidget.cpp">
+      <Filter>manage\Child</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\Child\uploadwidget.cpp">
+      <Filter>manage\Child</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\ChildTopWidget\downloadtopwidget.cpp">
+      <Filter>manage\ChildTopWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\ChildTopWidget\finishedtopwidget.cpp">
+      <Filter>manage\ChildTopWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\ChildTopWidget\topwidget.cpp">
+      <Filter>manage\ChildTopWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\ChildTopWidget\uploadtopwidget.cpp">
+      <Filter>manage\ChildTopWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\ManageListWidget\downloadlist.cpp">
+      <Filter>manage\ManageListWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\ManageListWidget\managelistwidget.cpp">
+      <Filter>manage\ManageListWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\ManageListWidget\managelistwidgetitem.cpp">
+      <Filter>manage\ManageListWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\ManageTabWidget\managetabwidget.cpp">
+      <Filter>manage\ManageTabWidget</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="thread\ThreadObject.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="network\abstractnetwork.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="basicwidget\basicwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="basiccontrol\combobox.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="network\connecttofileserver.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="network\connecttoserver.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="thread\downloadthread.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="file\file.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="file\fileobject.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="basiccontrol\filetablewidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="file\folder.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="basiccontrol\imagepreview.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="basiccontrol\lineedit.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="network\loadfile.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="loginwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <ClInclude Include="network\msgtype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="basiccontrol\musicbutton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <CustomBuild Include="basiccontrol\musicmainwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="basicwidget\mymessagebox.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <ClInclude Include="basiccontrol\pdfwidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <CustomBuild Include="registerwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <ClInclude Include="logic\rwfile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <CustomBuild Include="stable.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="thread\threadpool.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <ClInclude Include="tools\tools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <CustomBuild Include="thread\updatefilethread.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="thread\uploadthread.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="manage\managewidget.h">
+      <Filter>manage</Filter>
+    </CustomBuild>
+    <CustomBuild Include="manage\BasisCtrl\pauselabel.h">
+      <Filter>manage\BasisCtrl</Filter>
+    </CustomBuild>
+    <CustomBuild Include="manage\BasisCtrl\stoplabel.h">
+      <Filter>manage\BasisCtrl</Filter>
+    </CustomBuild>
+    <CustomBuild Include="manage\Child\downloadwidget.h">
+      <Filter>manage\Child</Filter>
+    </CustomBuild>
+    <CustomBuild Include="manage\ChildTopWidget\topwidget.h">
+      <Filter>manage\ChildTopWidget</Filter>
+    </CustomBuild>
+    <CustomBuild Include="manage\ChildTopWidget\downloadtopwidget.h">
+      <Filter>manage\ChildTopWidget</Filter>
+    </CustomBuild>
+    <CustomBuild Include="manage\ManageListWidget\downloadlist.h">
+      <Filter>manage\ManageListWidget</Filter>
+    </CustomBuild>
+    <CustomBuild Include="manage\ManageTabWidget\managetabwidget.h">
+      <Filter>manage\ManageTabWidget</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="debug\moc_predefs.h.cbt">
+      <Filter>manage\ChildTopWidget\Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="release\moc_predefs.h.cbt">
+      <Filter>manage\ChildTopWidget\Generated Files</Filter>
+    </CustomBuild>
+    <ClCompile Include="stable.h.cpp">
+      <Filter>manage\ChildTopWidget\Generated Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resource\image\ImageView\1491702897338.jpg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\DownLoadManage\??.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\MainWidget\allfile.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\backward.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\ImageView\before.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\ImageView\before_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\DownLoadManage\cancel.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\DownLoadManage\cancel_hover.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\checkbox\checkbox_hover.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\checkbox\checkbox_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\checkbox\checkbox_press.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\checkbox\checkbox_selected_hover.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\checkbox\checkbox_selected_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\checkbox\checkbox_selected_press.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\close.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\close_hover.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\comboboxitem_delete.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\MainWidget\copy.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\MainWidget\delete.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\MainWidget\doc.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\ImageView\download.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\MainWidget\download.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\MainWidget\download_manage.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\ImageView\download_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\ImageView\fd.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\ImageView\fd_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\MainWidget\film.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\sound\finished.wav">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\forward.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\DownLoadManage\jixu.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\DownLoadManage\jixu_hover.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\linux.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\ImageView\loading.gif">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\qss\login.qss">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\MainWidget\move.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\MainWidget\music.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\MainWidget\newfloder.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\ImageView\next.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\ImageView\next_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\manage\paly_enter.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\manage\paly_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\password.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="password.txt">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\MainWidget\paste.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\DownLoadManage\pause.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\pause.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\manage\pause_enter.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\DownLoadManage\pause_hover.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\manage\pause_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\penguin\penguin_linux_128px.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\penguin\penguin_linux_128px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\penguin\penguin_linux_16px.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\penguin\penguin_linux_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\penguin\penguin_linux_24px.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\penguin\penguin_linux_24px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\penguin\penguin_linux_32px.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\penguin\penguin_linux_32px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\penguin\penguin_linux_48px.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\penguin\penguin_linux_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\penguin\penguin_linux_64px.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\penguin\penguin_linux_64px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\penguin\penguin_linux_72px.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\penguin\penguin_linux_72px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\penguin\penguin_linux_96px.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\penguin\penguin_linux_96px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\MainWidget\photo.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\play.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\MainWidget\preview.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\MainWidget\refresh.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\register_bg.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\MainWidget\rename.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <CustomBuild Include="resource.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <None Include="resource\image\MainWidget\share.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\manage\stop_enter_1.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\manage\stop_enter_2.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\manage\stop_enter_3.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\manage\stop_enter_4.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\manage\stop_enter_5.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\manage\stop_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\manage\stop_press.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\qss\style.qss">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\ImageView\sx.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\ImageView\sx_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\title.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\widgets\undo_32.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\MainWidget\upload.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\username.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\volumn.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\image\DownLoadManage\??.png" />
+    <None Include="resource\image\DownLoadManage\??.png" />
+    <None Include="resource\image\DownLoadManage\??.png" />
+    <None Include="resource\image\DownLoadManage\??.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="manage\BasisCtrl\cleanlabel.h">
+      <Filter>manage\BasisCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="manage\BasisCtrl\openlabel.h">
+      <Filter>manage\BasisCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="manage\BasisCtrl\picturelabel.h">
+      <Filter>manage\BasisCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="manage\Child\finishedwidget.h">
+      <Filter>manage\Child</Filter>
+    </ClInclude>
+    <ClInclude Include="manage\Child\uploadwidget.h">
+      <Filter>manage\Child</Filter>
+    </ClInclude>
+    <ClInclude Include="manage\ChildTopWidget\uploadtopwidget.h">
+      <Filter>manage\ChildTopWidget</Filter>
+    </ClInclude>
+    <ClInclude Include="manage\ChildTopWidget\finishedtopwidget.h">
+      <Filter>manage\ChildTopWidget</Filter>
+    </ClInclude>
+    <ClInclude Include="manage\ManageListWidget\managelistwidget.h">
+      <Filter>manage\ManageListWidget</Filter>
+    </ClInclude>
+    <ClInclude Include="manage\ManageListWidget\managelistwidgetitem.h">
+      <Filter>manage\ManageListWidget</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

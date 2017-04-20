@@ -50,7 +50,7 @@ public slots:
     void recvFileLists(QByteArray byteArray);
     void getDir(QString dirname);
     void previousDir();
-    void uploadFile_upload() noexcept;
+    void uploadFile_upload();
     void doloadFile_download();
     void newFolder(const QString &folderName);
     void removeFileOrFolder(const QString &path);
@@ -63,7 +63,7 @@ public slots:
     void moveSelectFilesOrFolder(const QStringList &path);
     void pasteSelected();
     void errorHandle(ErrorMsg msg);                                         // 错误处理
-    void preview(const QString &path);
+    void preview(const QString path);
     void show_prview(PreviewStatus previewStatus);
 
 private:

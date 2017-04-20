@@ -1,4 +1,4 @@
-#include "downloadwidget.h"
+﻿#include "downloadwidget.h"
 
 #include "../stable.h"
 
@@ -85,13 +85,13 @@ void DownloadWidget::setMaxTaskNumbers(int iMaxTaskNumbers)
 
 bool DownloadWidget::contains(File *file)
 {
+
     QListWidgetItem *item;
     DownloadList *widget;
     for(int i = 0; i < m_pListWidget->count(); ++i)
     {
         item = m_pListWidget->item(i);
         widget = (DownloadList *)m_pListWidget->itemWidget(item);
-
         if(widget->getFile() == file)
             return true;
     }
@@ -111,6 +111,7 @@ void DownloadWidget::startTask(QListWidgetItem *item)
     }
     else
         m_pWaittingTask->append(widget);
+
 }
 
 void DownloadWidget::pauseTask(QListWidgetItem *item)
