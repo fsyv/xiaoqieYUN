@@ -230,7 +230,6 @@ void DownloadList::updateTask_currentSize(qint64 currentSize)
     {
         if(m_eCurrentStatus == CurrentStatus::RUNNING)
         {
-            m_pDownloadThread->stop();
             delete m_pDownloadThread;
             m_pDownloadThread = nullptr;
         }

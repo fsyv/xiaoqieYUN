@@ -104,10 +104,6 @@ void UpdateFileThread::timerEvent(QTimerEvent *event)
     {
         qint64 progress = getCurrentTaskProgress();
         emit currentTaskProgress(progress);
-
-        //当前任务完成就停止Timer
-        if(m_bFinished)
-            stopCheckCurrentProgressTimer();
     }
     else
     {

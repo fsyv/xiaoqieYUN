@@ -55,6 +55,7 @@ DownloadThread::DownloadThread(QString localPath, QString remotePath, QObject *p
 
 DownloadThread::~DownloadThread()
 {
+    m_bFinished = true;
     m_file.close();
 }
 
@@ -106,7 +107,7 @@ void DownloadThread::run()
 
     while(!m_bFinished && m_pSocket->isConnected())
     {
-        if(m_pSocket->waitForReadyRead())
+        if(m_pSocket->waitForReadyRead(1000))
             saveFileFromData(m_pSocket);
         else
         {
