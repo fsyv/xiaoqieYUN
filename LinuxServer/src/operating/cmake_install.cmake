@@ -1,4 +1,4 @@
-# Install script for directory: /home/liuzheng/YUNPAN/xiaoqieYUN/LinuxServer/src/operating
+# Install script for directory: /root/LinuxServer/src/operating
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -29,6 +29,6 @@ endif()
 
 # Install shared libraries without execute permission?
 if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
-  set(CMAKE_INSTALL_SO_NO_EXE "1")
+  set(CMAKE_INSTALL_SO_NO_EXE "0")
 endif()
 

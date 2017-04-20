@@ -11,9 +11,8 @@ MusicMainWidget::MusicMainWidget(QWidget *parent) : BasicWidget(parent)
   ,isPressed(false)
   ,player(Q_NULLPTR)
 {
-
+    setTranslucentBackground(true);
     setBackgroundColor(QColor(100, 100, 100, 100));
-
     init();
     layout();
 
@@ -45,18 +44,23 @@ QLabel{color:white;}\
     connect(backward, &MusicButton::clicked, this, [this]() {player->setPosition(player->position() - 5000);});
     connect(player, &QMediaPlayer::positionChanged,
             this, [this](qint64 n){
-                  if(!isSliderPressed)
-                      this->play_progress->setValue(n);
-                });
-    connect(play_progress, &QSlider::sliderReleased, this, [this](){player->setPosition(this->play_progress->value()); isSliderPressed = false;});
+                totleTime = convertTime(player->duration());
+				show_time->setText(convertTime(player->position()) + "/" + totleTime);
+				if (!isSliderPressed) 
+					this->play_progress->setValue(n);
+				});
+	connect(player, &QMediaPlayer::durationChanged, this, [this](qint64) {play_progress->setMaximum(player->duration()); qDebug() << player->duration(); });
+	connect(play_progress, &QSlider::sliderReleased, this, [this](){player->setPosition(this->play_progress->value()); isSliderPressed = false;});
     connect(play_progress, &QSlider::sliderPressed, this, [this](){this->isSliderPressed = true;});
     connect(play_progress, &QSlider::valueChanged,
             this, [this](){
-                show_time->setText(convertTime(play_progress->value()) + "/" + totleTime);
+				show_time->setText(convertTime(play_progress->value()) + "/" + totleTime);
                 play_progress->setToolTip(convertTime(play_progress->value()));
             });
 
-    connect(paly_volumn, &QSlider::valueChanged, this, [this](qint64){player->setVolume(paly_volumn->value());});
+    connect(play_volumn, &QSlider::valueChanged, this, [this](qint64){player->setVolume(play_volumn->value());
+                                                                      play_volumn->setToolTip(QString::number(play_volumn->value()));});
+	isSliderPressed = false;
 }
 
 void MusicMainWidget::init()
@@ -64,19 +68,19 @@ void MusicMainWidget::init()
     pause = new  MusicButton(this);
     forward = new  MusicButton(this);
     backward = new  MusicButton(this);
-    paly_volumn = new  QSlider(Qt::Horizontal, this);
+    play_volumn = new  QSlider(Qt::Horizontal, this);
     play_progress = new  QSlider(Qt::Horizontal, this);
     musicName = new  QLabel(this);
     volumn = new  QLabel(this);
     show_time = new QLabel(this);
     player = new QMediaPlayer(this);
-
 }
 
 void MusicMainWidget::setMusic(const QString &url)
 {
     player->setMedia(QUrl(url));
     musicName->setText(url.split('/').last());
+    player->play();
 }
 
 void MusicMainWidget::layout()
@@ -106,11 +110,12 @@ void MusicMainWidget::layout()
 
     show_time->move(185, 45);
     show_time->setText("00:00/00:00");
-    paly_volumn->setFixedWidth(100);
+    play_volumn->setFixedWidth(100);
 
-    paly_volumn->move(152, 57);
-    paly_volumn->setMaximum(100);
-    paly_volumn->setValue(50);
+    play_volumn->move(152, 57);
+    play_volumn->setMaximum(100);
+    play_volumn->setValue(50);
+
 }
 
 
@@ -121,15 +126,14 @@ void MusicMainWidget::music_pause()
         isPressed = false;
         pause->setIcon(QIcon(":/resource/image/pause.png"));
         player->play();
-        play_progress->setMaximum(player->duration());
-        totleTime = convertTime(player->duration());
+
     }
     else
     {
         isPressed = true;
         pause->setIcon(QIcon(":/resource/image/play.png"));
         player->pause();
-        setMusic("http://120.24.84.247/test/G.E.M.邓紫棋 - 画 (Live Piano Session II).mp3");
+
     }
 }
 

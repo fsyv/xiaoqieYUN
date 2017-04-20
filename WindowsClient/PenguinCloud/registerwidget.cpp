@@ -56,7 +56,7 @@ void RegisterWidget::init()
     connect(btn_register, &QPushButton::clicked, this, &RegisterWidget::regis);
     connect(btn_cannel, &QPushButton::clicked, this, &RegisterWidget::canncel);
     m_pConnectToServer = ConnectToServer::getInstance();
-    connect(m_pConnectToServer, &ConnectToServer::readyReadRegisterStatusMsg, this, RegisterWidget::showRegisterStatus);
+    connect(m_pConnectToServer, &ConnectToServer::readyReadRegisterStatusMsg, this, &RegisterWidget::showRegisterStatus);
 }
 
 void RegisterWidget::reset()

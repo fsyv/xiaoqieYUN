@@ -1,24 +1,29 @@
-﻿
+﻿#pragma once
+#pragma execution_character_set("utf-8")
 #include "mainwidget.h"
 #include <QDir>
 #include <QString>
 #include <QtWidgets>
 #include <QStatusBar>
-#include "tools/tools.h"
+
 #include "file/file.h"
 #include "file/folder.h"
+#include "tools/tools.h"
+#include "network/loadfile.h"
 #include "thread/ThreadPool.h"
+#include "manage/managewidget.h"
 #include "thread/uploadthread.h"
 #include "thread/downloadthread.h"
-#include "network/connecttoserver.h"
 #include "basiccontrol/pdfwidget.h"
+#include "basiccontrol/pdfwidget.h"
+#include "network/connecttoserver.h"
 #include "basicwidget/mymessagebox.h"
 #include "basiccontrol/imagepreview.h"
-#include "basiccontrol/pdfwidget.h"
 #include "basiccontrol/filetablewidget.h"
-#include "manage/managewidget.h"
-#include "network/loadfile.h"
 #include "basiccontrol/filetablewidget.h"
+#include "basiccontrol/musicmainwidget.h"
+
+
 MainWidget::MainWidget(QWidget *parent) :
     BasicWidget(parent),
     m_pConnectToServer(nullptr),
@@ -400,17 +405,27 @@ void MainWidget::errorHandle(ErrorMsg msg)
     }
 }
 
-void MainWidget::preview(const QString &_path)
+void MainWidget::preview(const QString _path)
 {
     PreviewMsg previewMsg;
     memset(&previewMsg, 0, sizeof(PreviewMsg));
-
+	
     QString wholepath = getUserName() + path.top() +  _path;
+	for (int i = 0; i < wholepath.length(); ++i)
+	{
+		if (wholepath[i] == " ")
+		{
+			wholepath.insert(i, '\\');
+			i += 1;
+
+		}
+	}
     previewMsg.fileType = Tools::getFileType(_path);
     strcpy(previewMsg.filepath, wholepath.toUtf8().data());
     m_pConnectToServer->sendPreviewMsg(previewMsg);
     previewFileName = _path;
-//    setPreviewWidget(Tools::getFileType(_path));
+
+    //将空格转义
 }
 
 void MainWidget::show_prview(PreviewStatus previewStatus)
@@ -425,8 +440,7 @@ void MainWidget::show_prview(PreviewStatus previewStatus)
         connect(m, &MyMessageBox::btn2, this, [m](){m->close();});
     }
 
-    pdfWidget = new PdfWidget();
-    pdfWidget->close();
+
 }
 
 void MainWidget::setPreviewWidget(FileType type,  const QString& filename)
@@ -438,7 +452,7 @@ void MainWidget::setPreviewWidget(FileType type,  const QString& filename)
     case Office:
     case Pdf:
     {
-        http += filename.split('.').first();
+       /* http += filename.split('.').first();
         http += ".pdf";
 
         LoadFile *l = new LoadFile();
@@ -447,13 +461,22 @@ void MainWidget::setPreviewWidget(FileType type,  const QString& filename)
         connect(l, &LoadFile::loadCompleted, this, [this,l](){
             qDebug() <<l->getFilePath1();
             this->pdfWidget->setPdfFile(l->getFilePath1());}
-        );
+        );*/
     }
         break;
     case Image:
     {
         ImagePreView *pre = new ImagePreView();
         pre->show();
+    }
+        break;
+    case Music:
+    {
+        MusicMainWidget *music = new MusicMainWidget();
+        qDebug() << "s" <<  http;
+        http += filename;
+        music->setMusic(http);
+        music->show();
     }
         break;
 

@@ -63,7 +63,7 @@ public slots:
     void moveSelectFilesOrFolder(const QStringList &path);
     void pasteSelected();
     void errorHandle(ErrorMsg msg);                                         // 错误处理
-    void preview(const QString &path);
+    void preview(const QString path);
     void show_prview(PreviewStatus previewStatus);
 
 private:

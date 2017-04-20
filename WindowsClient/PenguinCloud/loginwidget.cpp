@@ -1,4 +1,6 @@
-﻿#include "loginwidget.h"
+﻿#pragma once
+#pragma execution_character_set("utf-8")
+#include "loginwidget.h"
 #include <QComboBox>
 #include <QLabel>
 #include <QFile>

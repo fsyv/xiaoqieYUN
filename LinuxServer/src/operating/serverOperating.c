@@ -379,7 +379,7 @@ void *thread_convert(void *arg)
 	argument *argu;
 	
 	argu = (argument*)arg;
-	sprintf(command, "soffice --headless --invisible --convert-to pdf %s --outdir /tmp/%s/ tmp.pdf", argu->path, argu->user);
+	sprintf(command, "soffice --headless --invisible --convert-to pdf %s --outdir /tmp/%s ", argu->path, argu->user);
 
 	ret = system(command);	
 	
@@ -431,3 +431,76 @@ int convertOfficeToPdf(int sockfd, const char *filename)
 	return 0;
 }
 
+int previewPdf(int sockfd, const char *filename)
+{
+	int ret, i;
+        char path[1024] = "/var/penguin/";
+        char user[512] = "/XQEY/";
+        char command[512] = "";
+	strcat(path, filename);
+
+        for(i = 0; i < strlen(filename); ++i)
+        {
+                if(filename[i] == '/')
+                        break;
+                user[i+6] = filename[i];
+        }
+        user[i+6] = '\0';
+	
+	sprintf(command, "cp %s %s", path, user);
+	printf("%s\n", command);	
+	ret = system(command);
+
+	PreviewStatus s;
+        memset(&s, 0, sizeof(PreviewStatus));
+
+        if (ret == -1 || ret == 127)
+        {
+                s.status = Failed;
+        }
+        else
+        {
+                s.status = Success;
+        }
+        s.filetype = Pdf;
+        sendPreviewMsg(sockfd, s);
+        printf("copy success\n");
+	return 0;
+}
+
+int previewMusic(int sockfd, const char*filename)
+{
+	int ret, i;
+        char path[1024] = "/var/penguin/";
+        char user[512] = "/XQEY/";
+        char command[512] = "";
+        strcat(path, filename);
+
+        for(i = 0; i < strlen(filename); ++i)
+        {
+                if(filename[i] == '/')
+                        break;
+                user[i+6] = filename[i];
+        }
+        user[i+6] = '\0';
+
+        sprintf(command, "cp %s %s", path, user);
+        printf("%s\n", command);
+        ret = system(command);
+
+        PreviewStatus s;
+        memset(&s, 0, sizeof(PreviewStatus));
+
+        if (ret == -1 || ret == 127)
+        {
+                s.status = Failed;
+        }
+        else
+        {
+                s.status = Success;
+        }
+        s.filetype = Music;
+        sendPreviewMsg(sockfd, s);
+        printf("copy success\n");	
+	return 0;
+}

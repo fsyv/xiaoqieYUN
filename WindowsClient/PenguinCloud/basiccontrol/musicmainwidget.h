@@ -15,7 +15,7 @@ class MusicMainWidget : public BasicWidget
     Q_OBJECT
 public:
     explicit MusicMainWidget(QWidget *parent = 0);
-
+    void setMusic(const QString &);
 signals:
 
 public slots:
@@ -24,14 +24,13 @@ public slots:
 private:
     void init();
     void layout();
-    void setMusic(const QString &);
 
     QString convertTime(qint64);
 
     MusicButton *pause;          //播放暂停按钮
     MusicButton *forward;        //快进
     MusicButton *backward;       //快退
-    QSlider *paly_volumn;        //声音调节
+    QSlider *play_volumn;        //声音调节
     QSlider *play_progress;      //播放进度
     QLabel *musicName;           //显示歌名
     QLabel *volumn;              //声音指示

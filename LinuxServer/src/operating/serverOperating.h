@@ -28,5 +28,10 @@ int loginUser(const char *username, const char *password);
 //register
 int registerUser(const char *username, const char *password);
 //preview
+//office
 int convertOfficeToPdf(int sockfd, const char *filename);
+//pdf
+int previewPdf(int sockfd, const char *filename);
+//music
+int previewMusic(int sockfd, const char*filename);
 #endif //LINUXSERVER_OPERATING_SERVEROPERATING_H
