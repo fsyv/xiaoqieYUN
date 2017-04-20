@@ -50,7 +50,7 @@ public slots:
     void recvFileLists(QByteArray byteArray);
     void getDir(QString dirname);
     void previousDir();
-    void uploadFile_upload() noexcept;
+    void uploadFile_upload();
     void doloadFile_download();
     void newFolder(const QString &folderName);
     void removeFileOrFolder(const QString &path);

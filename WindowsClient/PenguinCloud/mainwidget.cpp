@@ -242,7 +242,7 @@ void MainWidget::refresh()
 {
     replyFileLists(path.top());
 }
-void MainWidget::uploadFile_upload() noexcept
+void MainWidget::uploadFile_upload()
 {
     QStringList fileList = QFileDialog::getOpenFileNames(
                 this,
