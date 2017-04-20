@@ -66,27 +66,15 @@
     <Filter Include="network">
       <UniqueIdentifier>{6952f334-755e-41f5-b0f5-db621169b07f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="thread">
+      <UniqueIdentifier>{56abdbe6-2c12-4224-b579-76e4c4ac1dc6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="thread\ThreadObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="network\abstractnetwork.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="basicwidget\basicwidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="basiccontrol\combobox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="network\connecttofileserver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="network\connecttoserver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="thread\downloadthread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="file\file.cpp">
@@ -140,16 +128,7 @@
     <ClCompile Include="stable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="thread\threadpool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="tools\tools.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="thread\updatefilethread.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="thread\uploadthread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Debug\moc_ThreadObject.cpp">
@@ -386,27 +365,36 @@
     <ClCompile Include="manage\ManageTabWidget\managetabwidget.cpp">
       <Filter>manage\ManageTabWidget</Filter>
     </ClCompile>
+    <ClCompile Include="network\abstractnetwork.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="network\connecttofileserver.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="network\connecttoserver.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\downloadthread.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\ThreadObject.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\threadpool.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\updatefilethread.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\uploadthread.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="thread\ThreadObject.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="network\abstractnetwork.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="basicwidget\basicwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="basiccontrol\combobox.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="network\connecttofileserver.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="network\connecttoserver.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="thread\downloadthread.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="file\file.h">
@@ -436,9 +424,6 @@
     <CustomBuild Include="mainwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <ClInclude Include="network\msgtype.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="basiccontrol\musicbutton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -460,18 +445,9 @@
     <CustomBuild Include="stable.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="thread\threadpool.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <ClInclude Include="tools\tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <CustomBuild Include="thread\updatefilethread.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="thread\uploadthread.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="manage\managewidget.h">
       <Filter>manage</Filter>
     </CustomBuild>
@@ -495,6 +471,30 @@
     </CustomBuild>
     <CustomBuild Include="manage\ManageTabWidget\managetabwidget.h">
       <Filter>manage\ManageTabWidget</Filter>
+    </CustomBuild>
+    <CustomBuild Include="network\abstractnetwork.h">
+      <Filter>network</Filter>
+    </CustomBuild>
+    <CustomBuild Include="network\connecttofileserver.h">
+      <Filter>network</Filter>
+    </CustomBuild>
+    <CustomBuild Include="network\connecttoserver.h">
+      <Filter>network</Filter>
+    </CustomBuild>
+    <CustomBuild Include="thread\downloadthread.h">
+      <Filter>thread</Filter>
+    </CustomBuild>
+    <CustomBuild Include="thread\ThreadObject.h">
+      <Filter>thread</Filter>
+    </CustomBuild>
+    <CustomBuild Include="thread\threadpool.h">
+      <Filter>thread</Filter>
+    </CustomBuild>
+    <CustomBuild Include="thread\updatefilethread.h">
+      <Filter>thread</Filter>
+    </CustomBuild>
+    <CustomBuild Include="thread\uploadthread.h">
+      <Filter>thread</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -807,6 +807,9 @@
     </ClInclude>
     <ClInclude Include="manage\ManageListWidget\managelistwidgetitem.h">
       <Filter>manage\ManageListWidget</Filter>
+    </ClInclude>
+    <ClInclude Include="network\msgtype.h">
+      <Filter>network</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -52,14 +52,14 @@ void UploadThread::loadDataFromFile(ConnectToFileServer *server, const UploadMsg
     QDataStream dataStream(&m_file);
     dataStream.setVersion(QDataStream::Qt_5_6);
 
-    char *sendBuf = new char[MAX_READ_BUF + 1];
-    memset(sendBuf, 0, MAX_READ_BUF);
+	char *sendBuf = new char[FILE_SEND + 1];
+	memset(sendBuf, 0, FILE_SEND);
 
     int ret = 0;
 
     while(!dataStream.atEnd() && !m_bFinished)
     {
-        ret = dataStream.readRawData(sendBuf, MAX_READ_BUF);
+		ret = dataStream.readRawData(sendBuf, FILE_SEND);
 
         qDebug() << m_i64CurrentSize;
 

@@ -87,13 +87,16 @@ void DownloadWidget::setMaxTaskNumbers(int iMaxTaskNumbers)
 
 bool DownloadWidget::contains(File *file)
 {
-
 	QListWidgetItem *item;
 	DownloadList *widget;
 	for (int i = 0; i < m_pListWidget->count(); ++i)
 	{
 		item = m_pListWidget->item(i);
 		widget = (DownloadList *)m_pListWidget->itemWidget(item);
+
+		if (!widget)
+			continue;
+
 		if (widget->getFile() == file)
 			return true;
 	}
@@ -109,7 +112,6 @@ void DownloadWidget::startTask(QListWidgetItem *item)
 	{
 		m_pRunningTask->append(widget);
 		widget->startDownload();
-		qDebug() << "startTask" << widget->getFile()->getRemoteName();
 	}
 	else
 		m_pWaittingTask->append(widget);
@@ -145,7 +147,7 @@ void DownloadWidget::stopTask(QListWidgetItem *item)
 	}
 
 
-	//m_pListWidget->removeItemWidget(item);
+	m_pListWidget->removeItemWidget(item);
 }
 
 void DownloadWidget::finishedTask(QListWidgetItem *item)
@@ -160,4 +162,18 @@ void DownloadWidget::finishedTask(QListWidgetItem *item)
 	}
 
 	emit finished(widget->getFile());
+
+	int index = m_pListWidget->findItem(item);
+
+	if (index >= 0)
+	{
+		m_pListWidget->removeItemWidget(item);
+		m_pListWidget->takeItem(index);
+
+		delete widget;
+		widget = nullptr;
+
+		delete item;
+		item = nullptr;
+	}
 }

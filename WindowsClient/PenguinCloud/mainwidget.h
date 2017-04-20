@@ -1,5 +1,5 @@
-﻿#ifndef MAINWIDGET_H
-#define MAINWIDGET_H
+﻿#pragma once
+#pragma execution_character_set("utf-8")
 
 #include<QMap>
 #include <QStack>
@@ -99,4 +99,3 @@ private:
     //ThreadPool *m_pThreadPool;
 };
 
-#endif // MAINWIDGET_H

@@ -89,8 +89,6 @@ void DownloadList::startDownload()
     strcpy(downloadMsg.fileName, m_pFile->getRemoteName().toUtf8().data());
 
     m_pConnectToServer->sendDownloadMsg(downloadMsg);
-	static int cc = 0;
-	qDebug() << QString("carrry ") << cc++;
 }
 
 void DownloadList::initWidget()
@@ -222,7 +220,6 @@ void DownloadList::resizeEvent(QResizeEvent *e)
 
 void DownloadList::updateTask_currentSize(qint64 currentSize)
 {
-    qDebug() << m_pFile->getRemoteName() << " " <<currentSize;
     setSpeed(currentSize - m_i64CurrentSize);
     m_i64CurrentSize = currentSize;
     setSize(m_i64CurrentSize, m_pFile->getSize());
@@ -276,15 +273,16 @@ void DownloadList::stop_stopButton()
 void DownloadList::recvDownloadFile_readyReadDownloadMsg(DownloadMsg downloadMsg)
 {
 	disconnect(m_pConnectToServer, SIGNAL(readyReadDownloadMsg(DownloadMsg)), this, SLOT(recvDownloadFile_readyReadDownloadMsg(DownloadMsg)));
-    m_eCurrentStatus = CurrentStatus::RUNNING;
 
-    m_pDownloadThread = new DownloadThread(m_pFile->getLocalName(), m_pFile->getRemoteName(), this);
-    connect(m_pDownloadThread, &UpdateFileThread::currentTaskProgress, this, &DownloadList::updateTask_currentSize);
-    m_pDownloadThread->setServerUrl(QString(SERVER_IP), downloadMsg.serverFilePort);
+	if (m_eCurrentStatus == CurrentStatus::WAITTING)
+	{
+		m_eCurrentStatus = CurrentStatus::RUNNING;
 
-    m_pDownloadThread->start();
-    ThreadPool::getInstance()->addJob(m_pDownloadThread);
+		m_pDownloadThread = new DownloadThread(m_pFile->getLocalName(), m_pFile->getRemoteName(), this);
+		connect(m_pDownloadThread, &UpdateFileThread::currentTaskProgress, this, &DownloadList::updateTask_currentSize);
+		m_pDownloadThread->setServerUrl(QString(SERVER_IP), downloadMsg.serverFilePort);
 
-	static int jj = 0;
-	qDebug() << "recvDownloadFile_readyReadDownloadMsg" << jj++;
+		m_pDownloadThread->start();
+		ThreadPool::getInstance()->addJob(m_pDownloadThread);
+	}
 }

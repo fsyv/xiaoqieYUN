@@ -1,5 +1,5 @@
-#ifndef MANAGETABWIDGET_H
-#define MANAGETABWIDGET_H
+#pragma once
+#pragma execution_character_set("utf-8")
 
 #include <QTabWidget>
 
@@ -20,4 +20,3 @@ protected:
     void resizeEvent(QResizeEvent *e);
 };
 
-#endif // MANAGETABWIDGET_H

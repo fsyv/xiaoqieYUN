@@ -13,6 +13,7 @@
 
 #define MAX_SEND_BUF (64 * 1024)
 #define MAX_READ_BUF MAX_SEND_BUF
+#define FILE_SEND 1024
 
 typedef struct _Msg{
     unsigned int m_uiCheckCrc;              //消息校验 0xAFAFAFAF

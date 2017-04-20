@@ -191,6 +191,9 @@ void ThreadPool::bossJob()
         }
         bossMutex.unlock();
 
+
+		qDebug() << "Task Number" << tasks.size();
+
         //得出理论工作量
         //这里没有处理线程同步，是一个瞬时值
         //在雇佣或者解雇人的时候时候会根据事件情况为依据
@@ -254,8 +257,6 @@ void ThreadPool::workerJob()
         --m_iWorking;
 
         taskQueueMutex.unlock();
-
-        qDebug() << " object size" << tasks.size();
     }
 
     serialMutex.lock();
