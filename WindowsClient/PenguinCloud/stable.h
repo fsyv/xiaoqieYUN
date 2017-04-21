@@ -6,14 +6,20 @@
 *************************************
 */
 
+#include <QUrl>
+#include <QDir>
+#include <QFile>
+#include <QLabel>
+#include <QSound>
+#include <QFileInfo>
 #include <QVBoxLayout>
 #include <QPushButton>
-#include <QLabel>
-#include <QProgressBar>
-#include <QFileInfo>
 #include <QListWidget>
+#include <QTimerEvent>
+#include <QDataStream>
+#include <QProgressBar>
 #include <QListWidgetItem>
-#include <QSound>
+
 
 /************************************
 ****          很少变动的           ****

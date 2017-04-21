@@ -1,5 +1,10 @@
 #include "updatefilethread.h"
 
+#include "stable.h"
+
+#include "network/connecttofileserver.h"
+
+
 UpdateFileThread::UpdateFileThread(QString localPath, QString remotePath, QObject *parent):
     ThreadObject(parent),
     m_pSocket(nullptr),

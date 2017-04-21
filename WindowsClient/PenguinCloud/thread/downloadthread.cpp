@@ -1,8 +1,8 @@
 #include "downloadthread.h"
 
-#include <thread>
+#include "../stable.h"
 
-#include <QDir>
+#include "../network/connecttofileserver.h"
 
 DownloadThread::DownloadThread(QString localPath, QString remotePath, QObject *parent):
     UpdateFileThread(localPath, remotePath, parent)
