@@ -97,18 +97,18 @@ void recvMsg(int sockfd, Msg *msg)
 #endif
             recvCopyMsg(sockfd, msg);
             break;
-    	case Put_Register:
+        case Put_Register:
 //#ifdef Debug
-	    fprintf(stdout, "Put_Register\n");
+            fprintf(stdout, "Put_Register\n");
 //#endif
-	    recvRegisterMsg(sockfd, msg);
-	    break;
-	case Put_Preview:
+            recvRegisterMsg(sockfd, msg);
+            break;
+        case Put_Preview:
 //#ifdef Debug
-		fprintf(stdout, "Put_Preview\n");
+            fprintf(stdout, "Put_Preview\n");
 //#endif
-		recvPreviewMsg(sockfd, msg);
-		break;
+            recvPreviewMsg(sockfd, msg);
+            break;
 
 
     }
@@ -147,7 +147,8 @@ void recvLoginMsg(int sockfd, Msg *msg)
     if (ret == MYSQL_LOGIN_SUCCESS)
         loginMsg.m_iLoginStatus = LOGIN_SUCCESS;
     else
-	loginMsg.m_iLoginStatus = LOGIN_FAILED;
+        loginMsg.m_iLoginStatus = LOGIN_FAILED;
+
     sendLoginMsg(sockfd, loginMsg);
 }
 //文件列表消息
@@ -244,7 +245,7 @@ void recvRenameMsg(int sockfd, Msg *msg)
     memcpy(&renameMsg, msg->m_aMsgData, msg->m_iMsgLen);
 
     ret = renameFileOrFolder(renameMsg.oldName, renameMsg.newName);
-    
+
     printf("sendRenameError\n");
 
     if(ret == -1)
@@ -300,61 +301,61 @@ void recvCopyMsg(int sockfd, Msg *msg)
 
 void recvRegisterMsg(int sockfd, Msg *msg)
 {
-    	int ret;
-	char path[1024] = "/var/penguin/";
-	RegisterMsg registerMsg;
-	memset(&registerMsg, 0, sizeof(RegisterMsg));
-	memcpy(&registerMsg, msg->m_aMsgData, msg->m_iMsgLen);
+    int ret;
+    char path[1024] = "/var/penguin/";
+    RegisterMsg registerMsg;
+    memset(&registerMsg, 0, sizeof(RegisterMsg));
+    memcpy(&registerMsg, msg->m_aMsgData, msg->m_iMsgLen);
 
-	ret = registerUser(registerMsg.username, registerMsg.password);
+    ret = registerUser(registerMsg.username, registerMsg.password);
 
-	RegisterStatus rs;
-	
-	if (ret == 0)
-	{
-		//success
-		memset(&rs, 0, sizeof(RegisterStatus));
-		rs.status = 0;
-		strcat(path, registerMsg.username);
-		mkdir(path);	
-	}
-    	else if (ret == -1)
-	{
-		memset(&rs, 0, sizeof(RegisterStatus));
-                rs.status = 1;
-	}
-	sendRegisterMsg(sockfd, rs);
-	
-	printf("send Register Status\n");
+    RegisterStatus rs;
+
+    if (ret == 0)
+    {
+        //success
+        memset(&rs, 0, sizeof(RegisterStatus));
+        rs.status = 0;
+        strcat(path, registerMsg.username);
+        mkdir(path);
+    }
+    else if (ret == -1)
+    {
+        memset(&rs, 0, sizeof(RegisterStatus));
+        rs.status = 1;
+    }
+    sendRegisterMsg(sockfd, rs);
+
+    printf("send Register Status\n");
 }
 
 void recvPreviewMsg(int sockfd, Msg *msg)
 {
-	int ret;
+    int ret;
 
-	PreviewMsg previewMsg;
-	memset(&previewMsg, 0, sizeof(PreviewMsg));
-	memcpy(&previewMsg, msg->m_aMsgData, msg->m_iMsgLen);
-	
-	switch(previewMsg.fileType)
-	{
-	case Office:
-		// success return 1, else return -1
-		printf("start convert\n");
-		convertOfficeToPdf(sockfd, previewMsg.filepath);
-		break;
-	case Music:
-		preview(sockfd, previewMsg.filepath, Music);
-		break;
-	case Video:
-		preview(sockfd, previewMsg.filepath, Video);
-		break;
-	case Image:
-		preview(sockfd, previewMsg.filepath, Image);
-		break;
-	case Pdf:
-		preview(sockfd, previewMsg.filepath, Pdf);
-		break;
-	}
+    PreviewMsg previewMsg;
+    memset(&previewMsg, 0, sizeof(PreviewMsg));
+    memcpy(&previewMsg, msg->m_aMsgData, msg->m_iMsgLen);
+
+    switch(previewMsg.fileType)
+    {
+        case Office:
+            // success return 1, else return -1
+            printf("start convert\n");
+            convertOfficeToPdf(sockfd, previewMsg.filepath);
+            break;
+        case Music:
+            preview(sockfd, previewMsg.filepath, Music);
+            break;
+        case Video:
+            preview(sockfd, previewMsg.filepath, Video);
+            break;
+        case Image:
+            preview(sockfd, previewMsg.filepath, Image);
+            break;
+        case Pdf:
+            preview(sockfd, previewMsg.filepath, Pdf);
+            break;
+    }
 }
 

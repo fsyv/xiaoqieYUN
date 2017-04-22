@@ -60,8 +60,7 @@ void setnblocking(int sockfd)
         close(sockfd);
         exit(-1);
     }
-
-    printf("opts = %d\n", opts);
+    
     if(fcntl(sockfd,F_SETFL,opts)<0)
     {
 #ifdef Debug
