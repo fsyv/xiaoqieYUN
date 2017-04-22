@@ -36,7 +36,7 @@ MainWidget::MainWidget(QWidget *parent) :
     setFileTable();
     m_pManageWidget = new ManageWidget(this);
     m_pManageWidget->move(1, 80);
-    m_pManageWidget->setFixedSize(800, 480);
+    m_pManageWidget->setFixedSize(797, 489);
     m_pManageWidget->hide();
     this->setBackgroundColor(Qt::white);
     path.push("/");
@@ -317,6 +317,7 @@ void MainWidget::show_manage()
     if(m_pManageWidget->isHidden())
     {
         m_pManageWidget->show();
+
     }
     else
     {

@@ -1,4 +1,4 @@
-#include "uploadwidget.h"
+﻿#include "uploadwidget.h"
 
 #include "../stable.h"
 
@@ -17,6 +17,8 @@ UploadWidget::UploadWidget(QWidget *parent) :
     m_pTopWidget = new UploadTopWidget;
     m_pListWidget = new ManageListWidget;
     m_pVBosLayout = new QVBoxLayout(this);
+    m_pVBosLayout->setContentsMargins(0, 0, 0, 0);
+    m_pVBosLayout->setSpacing(0);
 
 	m_pRunningTask = new QList<QWidget *>;
 	m_pWaittingTask = new QList<QWidget *>;
