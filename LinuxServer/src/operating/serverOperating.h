@@ -30,8 +30,12 @@ int registerUser(const char *username, const char *password);
 //preview
 //office
 int convertOfficeToPdf(int sockfd, const char *filename);
+
+int preview(int sockfd, const char *filename, FileType type);
 //pdf
-int previewPdf(int sockfd, const char *filename);
+//int previewPdf(int sockfd, const char *filename);
 //music
-int previewMusic(int sockfd, const char*filename);
+//int previewMusic(int sockfd, const char*filename);
+//video
+//int previewVideo(int sockfd, const char *filename);
 #endif //LINUXSERVER_OPERATING_SERVEROPERATING_H
