@@ -10,7 +10,7 @@
 #include "basiccontrol/pdfwidget.h"
 #include "basiccontrol/imagepreview.h"
 #include "basiccontrol/musicmainwidget.h"
-
+#include "basiccontrol/VideoMainWidget.h"
 #include <QUrl>
 #include <QDebug>
 int main(int argc, char *argv[])
@@ -23,10 +23,10 @@ int main(int argc, char *argv[])
         a.setStyleSheet(file.readAll());
     }
 
-
-//    ImagePreView w;
     LoginWidget w;
-
+//    ImagePreView w;
+//    VideoMainWidget w;
+//    w.setVideoUrl("http://120.24.84.247/test/1.mp4");
 //    PdfWidget w;
 //    ManageWidget w;
 //    RegisterWidget w;

@@ -34,6 +34,7 @@ LoginWidget::LoginWidget(QWidget *parent) :
     m_pConnectToServer = ConnectToServer::getInstance();
 
     connect(m_pConnectToServer, SIGNAL(readyReadLoginMsg(LoginMsg)), this, SLOT(login_success(LoginMsg)));
+    connect(m_pConnectToServer, &ConnectToServer::stateChanged, this, &login_error);
 }
 
 LoginWidget::~LoginWidget()
@@ -133,4 +134,15 @@ void LoginWidget::login_success(LoginMsg loginMsg)
         connect(m, &MyMessageBox::btn2, this, [m, this](){m->close(); this->close();});
     }
 
+}
+
+void LoginWidget::login_error(QAbstractSocket::SocketState socketState)
+{
+    if(socketState == QAbstractSocket::UnconnectedState)
+    {
+        MyMessageBox *m = MyMessageBox::showMessageBox(this, "网络连接错误，请稍后再试！", "重试", "退出", Warn);
+        login_button->setText("登录");
+        connect(m, &MyMessageBox::btn1, this, [m](){m->close();});
+        connect(m, &MyMessageBox::btn2, this, [m, this](){m->close(); this->close();});
+    }
 }

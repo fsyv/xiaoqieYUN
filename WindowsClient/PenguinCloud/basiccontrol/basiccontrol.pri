@@ -7,7 +7,9 @@ HEADERS += \
     $$PWD/imagepreview.h \
     $$PWD/pdfwidget.h \
     $$PWD/musicbutton.h \
-    $$PWD/musicmainwidget.h
+    $$PWD/musicmainwidget.h \
+    $$PWD/VideoMainWidget.h \
+    $$PWD/VideoWidget.h
 
 SOURCES += \
     $$PWD/combobox.cpp \
@@ -16,4 +18,6 @@ SOURCES += \
     $$PWD/imagepreview.cpp \
     $$PWD/pdfwidget.cpp \
     $$PWD/musicbutton.cpp \
-    $$PWD/musicmainwidget.cpp
+    $$PWD/musicmainwidget.cpp \
+    $$PWD/VideoMainWidget.cpp \
+    $$PWD/VideoWidget.cpp

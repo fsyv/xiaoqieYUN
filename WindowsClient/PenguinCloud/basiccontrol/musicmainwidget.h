@@ -16,6 +16,7 @@ class MusicMainWidget : public BasicWidget
 public:
     explicit MusicMainWidget(QWidget *parent = 0);
     void setMusic(const QString &);
+    static QString convertTime(qint64);
 signals:
 
 public slots:
@@ -25,7 +26,7 @@ private:
     void init();
     void layout();
 
-    QString convertTime(qint64);
+
 
     MusicButton *pause;          //播放暂停按钮
     MusicButton *forward;        //快进

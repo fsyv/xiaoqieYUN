@@ -87,5 +87,8 @@
         <file>resource/image/pause.png</file>
         <file>resource/image/play.png</file>
         <file>resource/image/volumn.png</file>
+        <file>resource/image/error.png</file>
+        <file>resource/image/ok.png</file>
+        <file>resource/image/warn.png</file>
     </qresource>
 </RCC>

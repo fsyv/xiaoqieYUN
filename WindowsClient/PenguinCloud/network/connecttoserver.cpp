@@ -1,4 +1,4 @@
-#include "connecttoserver.h"
+﻿#include "connecttoserver.h"
 #include <QDebug>
 
 #include "tools/tools.h"
@@ -168,7 +168,7 @@ stickyPackageLoop:
 
 void ConnectToServer::displayState(QAbstractSocket::SocketState)
 {
-    qDebug() << state();
+
 }
 
 void ConnectToServer::displayError(QAbstractSocket::SocketError)

@@ -3,7 +3,7 @@
 #include "basicwidget/basicwidget.h"
 #include "basiccontrol/lineedit.h"
 #include "network/msgtype.h"
-
+#include "network/abstractnetwork.h"
 //前置类声明
 
 class QPushButton;
@@ -27,6 +27,7 @@ public slots:
     void conn();
     void login_success(LoginMsg loginMsg);
     void registerwidget();
+    void login_error(QAbstractSocket::SocketState socketState);
 private:
     void init();                 // 设置窗口属性以及变量的初始化
     void setStyleSheetFromFile(const QString &filename);

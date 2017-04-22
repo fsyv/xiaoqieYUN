@@ -22,6 +22,7 @@
 #include "basiccontrol/filetablewidget.h"
 #include "basiccontrol/filetablewidget.h"
 #include "basiccontrol/musicmainwidget.h"
+#include "basiccontrol/VideoMainWidget.h"
 
 
 MainWidget::MainWidget(QWidget *parent) :
@@ -449,24 +450,34 @@ void MainWidget::setPreviewWidget(FileType type,  const QString& filename)
     http = http + getUserName() + "/";
     switch(type)
     {
-    case Office:
-    case Pdf:
-    {
-       /* http += filename.split('.').first();
-        http += ".pdf";
+//    case Office:
+//    case Pdf:
+//    {
+//        http += filename.split('.').first();
+//        http += ".pdf";
 
-        LoadFile *l = new LoadFile();
-        l->loadFileFormUrl(http);
-        qDebug() << http;
-        connect(l, &LoadFile::loadCompleted, this, [this,l](){
-            qDebug() <<l->getFilePath1();
-            this->pdfWidget->setPdfFile(l->getFilePath1());}
-        );*/
-    }
-        break;
+//        LoadFile *l = new LoadFile();
+//        l->loadFileFormUrl(http);
+//        connect(l, &LoadFile::loadCompleted, this, [this,l](){
+//            qDebug() <<l->getFilePath1();
+//            this->pdfWidget->setPdfFile(l->getFilePath1());}
+//        );
+//    }
+//        break;
     case Image:
     {
         ImagePreView *pre = new ImagePreView();
+
+        http += filename;
+        LoadFile *l = new LoadFile();
+        l->loadFileFormUrl(http);
+
+        connect(l, &LoadFile::loadCompleted, this, [pre,l](){
+            QPixmap p(l->getFilePath1());
+            pre->setPixmap(p);
+        }
+        );
+
         pre->show();
     }
         break;
@@ -479,7 +490,12 @@ void MainWidget::setPreviewWidget(FileType type,  const QString& filename)
         music->show();
     }
         break;
-
+	case Video:
+		VideoMainWidget *video = new VideoMainWidget();
+		qDebug() << "收到视屏预览消息" << http;
+		http += filename;
+		video->setVideoUrl(http);
+		video->show();
         //音乐啥的处理
 
     }
