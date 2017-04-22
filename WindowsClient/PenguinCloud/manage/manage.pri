@@ -15,7 +15,8 @@ HEADERS += \
     $$PWD/ManageListWidget/downloadlist.h \
     $$PWD/ManageListWidget/managelistwidget.h \
     $$PWD/ManageListWidget/managelistwidgetitem.h \
-    $$PWD/ManageTabWidget/managetabwidget.h
+    $$PWD/ManageTabWidget/managetabwidget.h \
+    $$PWD/ManageListWidget/uploadlist.h
 
 SOURCES += \
     $$PWD/BasisCtrl/cleanlabel.cpp \
@@ -34,6 +35,7 @@ SOURCES += \
     $$PWD/ManageListWidget/downloadlist.cpp \
     $$PWD/ManageListWidget/managelistwidget.cpp \
     $$PWD/ManageListWidget/managelistwidgetitem.cpp \
-    $$PWD/ManageTabWidget/managetabwidget.cpp
+    $$PWD/ManageTabWidget/managetabwidget.cpp \
+    $$PWD/ManageListWidget/uploadlist.cpp
 
 RESOURCES +=

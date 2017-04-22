@@ -34,7 +34,7 @@ LoginWidget::LoginWidget(QWidget *parent) :
     m_pConnectToServer = ConnectToServer::getInstance();
 
     connect(m_pConnectToServer, SIGNAL(readyReadLoginMsg(LoginMsg)), this, SLOT(login_success(LoginMsg)));
-    connect(m_pConnectToServer, &ConnectToServer::stateChanged, this, &login_error);
+	connect(m_pConnectToServer, &ConnectToServer::stateChanged, this, &LoginWidget::login_error);
 }
 
 LoginWidget::~LoginWidget()
