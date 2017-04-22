@@ -23,11 +23,7 @@ int main(int argc, char *argv[])
         a.setStyleSheet(file.readAll());
     }
 
-<<<<<<< .mine
     LoginWidget w;
-=======
-
->>>>>>> .theirs
 //    ImagePreView w;
 //    VideoMainWidget w;
 //    w.setVideoUrl("http://120.24.84.247/test/1.mp4");

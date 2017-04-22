@@ -165,3 +165,33 @@ QLabel#message
 {
     font-size:14px;
 }
+
+/****************下载管理**********************/
+QTabWidget::pane {
+    border-top: 0px solid #C2C7CB;
+    position: absolute;
+}
+
+QTabWidget::tab-bar {
+    alignment: center;
+}
+QTabBar::tab {
+    background:rgb(242, 246, 250);
+    border-bottom: 1px solid #C4C4C3;
+    color:rgb(60, 104, 137);
+    min-width: 260px;
+    min-height:38px;
+    padding: 2px;
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+    color: rgb(80, 149, 224);
+}
+
+QTabBar::tab:selected {
+    background:white;
+    border-left: 1px solid #C4C4C3;
+    border-right: 1px solid #C4C4C3;
+    border-bottom: 0px;
+    border-bottom-color: #C2C7CB;
+}
