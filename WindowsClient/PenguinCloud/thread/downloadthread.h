@@ -1,9 +1,7 @@
 #ifndef DOWNLOADTHREAD_H
 #define DOWNLOADTHREAD_H
 
-#include <QFileInfo>
 #include <QDataStream>
-#include <QUrl>
 
 #include "updatefilethread.h"
 

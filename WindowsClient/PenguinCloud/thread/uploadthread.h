@@ -1,10 +1,6 @@
 #ifndef UPLOADTHREAD_H
 #define UPLOADTHREAD_H
 
-#include <QFileInfo>
-#include <QDataStream>
-#include <QUrl>
-
 #include "updatefilethread.h"
 
 class UploadThread : public UpdateFileThread
@@ -19,7 +15,7 @@ public:
     //暂停当前任务
     void pauseCurrenTask() override;
     //上传文件
-    void loadDataFromFile(ConnectToFileServer *server, const UploadMsg &uploadMsg);
+    void loadDataFromFile(ConnectToFileServer *server, qint64 currentSize);
 
     void run();
 };

@@ -24,14 +24,15 @@ ManageWidget::ManageWidget(QWidget *parent):
     m_pDownloadWidget = new DownloadWidget;
     m_pFinishedWidget = new FinishedWidget;
 
-    m_pTabWidget->addTab(m_pUploadWidget, QString("上传"));
-    m_pTabWidget->addTab(m_pDownloadWidget, QString("下载"));
-    m_pTabWidget->addTab(m_pFinishedWidget, QString("完成"));
+    m_pTabWidget->addTab(m_pUploadWidget, "上传");
+    m_pTabWidget->addTab(m_pDownloadWidget, "下载");
+    m_pTabWidget->addTab(m_pFinishedWidget, "完成");
 
     m_pVBoxLayout = new QVBoxLayout(this);
     m_pVBoxLayout->addWidget(m_pTabWidget);
 
     connect(m_pDownloadWidget, &DownloadWidget::finished, this, &ManageWidget::task_finished);
+	connect(m_pUploadWidget, &UploadWidget::finished, this, &ManageWidget::task_finished);
 }
 
 ManageWidget::~ManageWidget()
@@ -41,7 +42,7 @@ ManageWidget::~ManageWidget()
 
 void ManageWidget::addUploadTask(File *file)
 {
-
+	m_pUploadWidget->addTask(file);
 }
 
 void ManageWidget::addDownloadTask(File *file)

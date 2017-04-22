@@ -1,5 +1,10 @@
 #include "updatefilethread.h"
 
+#include "stable.h"
+
+#include "network/connecttofileserver.h"
+
+
 UpdateFileThread::UpdateFileThread(QString localPath, QString remotePath, QObject *parent):
     ThreadObject(parent),
     m_pSocket(nullptr),
@@ -13,7 +18,7 @@ UpdateFileThread::UpdateFileThread(QString localPath, QString remotePath, QObjec
 
 UpdateFileThread::~UpdateFileThread()
 {
-    stopCheckCurrentProgressTimer();
+
 }
 
 void UpdateFileThread::start()
@@ -104,10 +109,6 @@ void UpdateFileThread::timerEvent(QTimerEvent *event)
     {
         qint64 progress = getCurrentTaskProgress();
         emit currentTaskProgress(progress);
-
-        //当前任务完成就停止Timer
-        if(m_bFinished)
-            stopCheckCurrentProgressTimer();
     }
     else
     {
@@ -122,15 +123,19 @@ void UpdateFileThread::startCheckCurrentProgressTimer()
 
     //一秒钟检测一次当前运行的状态
     m_iTimerID = startTimer(1000);
+    qDebug() << "m_iTimerID  start" << m_iTimerID;
 }
 
 void UpdateFileThread::stopCheckCurrentProgressTimer()
 {
+    mutex.lock();
     if(m_iTimerID)
     {
+        qDebug() << "m_iTimerID  end" << m_iTimerID;
         killTimer(m_iTimerID);
         m_iTimerID = 0;
     }
+    mutex.unlock();
 }
 
 void UpdateFileThread::stopCurrenTask()

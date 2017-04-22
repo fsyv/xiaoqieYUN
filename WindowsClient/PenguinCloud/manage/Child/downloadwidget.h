@@ -1,11 +1,10 @@
-﻿#ifndef DOWNLOADWIDGET_H
-#define DOWNLOADWIDGET_H
+﻿#pragma once
+#pragma execution_character_set("utf-8")
 
 #include <QWidget>
-#include <QMap>
 #include <QList>
 
-#include "../network/msgtype.h"
+#include <qDebug>
 
 QT_BEGIN_NAMESPACE
 class QWidget;
@@ -52,4 +51,3 @@ signals:
     void finished(File *);
 };
 
-#endif // DOWNLOADWIDGET_H

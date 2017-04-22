@@ -1,5 +1,5 @@
-﻿#ifndef MAINWIDGET_H
-#define MAINWIDGET_H
+﻿#pragma once
+#pragma execution_character_set("utf-8")
 
 #include<QMap>
 #include <QStack>
@@ -50,7 +50,7 @@ public slots:
     void recvFileLists(QByteArray byteArray);
     void getDir(QString dirname);
     void previousDir();
-    void uploadFile_upload() noexcept;
+    void uploadFile_upload();
     void doloadFile_download();
     void newFolder(const QString &folderName);
     void removeFileOrFolder(const QString &path);
@@ -99,4 +99,3 @@ private:
     //ThreadPool *m_pThreadPool;
 };
 
-#endif // MAINWIDGET_H

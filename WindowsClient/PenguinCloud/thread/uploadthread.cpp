@@ -1,5 +1,8 @@
 #include "uploadthread.h"
 
+#include "../stable.h"
+
+#include "network/connecttofileserver.h"
 
 UploadThread::UploadThread(QString localPath, QString remotePath, QObject *parent):
     UpdateFileThread(localPath, remotePath, parent)
@@ -28,7 +31,7 @@ UploadThread::UploadThread(QString localPath, QString remotePath, QObject *paren
 
 UploadThread::~UploadThread()
 {
-
+	m_file.close();
 }
 
 void UploadThread::stopCurrenTask()
@@ -44,7 +47,7 @@ void UploadThread::pauseCurrenTask()
 
 }
 
-void UploadThread::loadDataFromFile(ConnectToFileServer *server, const UploadMsg &uploadMsg)
+void UploadThread::loadDataFromFile(ConnectToFileServer *server, qint64 currentSize)
 {
     //文件偏移到当前位置
     m_file.seek(m_i64CurrentSize);
@@ -52,14 +55,14 @@ void UploadThread::loadDataFromFile(ConnectToFileServer *server, const UploadMsg
     QDataStream dataStream(&m_file);
     dataStream.setVersion(QDataStream::Qt_5_6);
 
-    char *sendBuf = new char[MAX_READ_BUF + 1];
-    memset(sendBuf, 0, MAX_READ_BUF);
+	char *sendBuf = new char[FILE_SEND + 1];
+	memset(sendBuf, 0, FILE_SEND);
 
     int ret = 0;
 
     while(!dataStream.atEnd() && !m_bFinished)
     {
-        ret = dataStream.readRawData(sendBuf, MAX_READ_BUF);
+		ret = dataStream.readRawData(sendBuf, FILE_SEND);
 
         qDebug() << m_i64CurrentSize;
 
@@ -68,6 +71,8 @@ void UploadThread::loadDataFromFile(ConnectToFileServer *server, const UploadMsg
         server->write(sendBuf, ret);
 
         memset(sendBuf, 0, ret);
+
+		server->waitForReadyRead(50);
     }
 
     server->waitForReadyRead();
@@ -89,10 +94,9 @@ void UploadThread::run()
 
     m_pSocket->sendUploadMsg(uploadMsg);
 
-
     while(!m_bFinished && m_pSocket->isConnected())
     {
-        if(m_pSocket->waitForReadyRead())
+        if(m_pSocket->waitForReadyRead(1000))
         {
             QByteArray byteArray = m_pSocket->readAll();
             //翻译buf
@@ -101,7 +105,7 @@ void UploadThread::run()
             UploadMsg uploadMsg;
             memcpy(&uploadMsg, msg->m_aMsgData, msg->m_iMsgLen);
 
-            loadDataFromFile(m_pSocket, uploadMsg);
+			loadDataFromFile(m_pSocket, msg->m_iMsgLen);
         }
         else
         {

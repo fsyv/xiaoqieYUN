@@ -1,3 +1,5 @@
+#pragma once
+#pragma execution_character_set("utf-8")
 #include "managelistwidget.h"
 
 ManageListWidget::ManageListWidget(QWidget *parent) :
@@ -9,4 +11,14 @@ ManageListWidget::ManageListWidget(QWidget *parent) :
 ManageListWidget::~ManageListWidget()
 {
 
+}
+
+int ManageListWidget::findItem(QListWidgetItem *item)
+{
+	for (int i = 0; i < count(); ++i)
+	{
+		if (this->item(i) == item)
+			return i;
+	}
+	return -1;
 }

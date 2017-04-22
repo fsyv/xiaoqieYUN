@@ -116,6 +116,8 @@ void *uploadFileThread(int sockfd, void *arg)
 //    long long currentFileSeek = fseek(fp, 0, SEEK_END);
 //    printf("currentFileSeek = %lld\n", currentFileSeek);
 
+    long long currentFileSeek = 0LL;
+
     char *recvBuf = (char *)malloc(MAX_RECV_BUF + 1);
     memset(recvBuf, 0, MAX_RECV_BUF);
 
@@ -128,10 +130,13 @@ void *uploadFileThread(int sockfd, void *arg)
     printf("waitting \n");
     while((ret = recv(sockfd, recvBuf, MAX_RECV_BUF, 0)) > 0)
     {
-        //currentFileSeek += ret;
+        currentFileSeek += ret;
         printf("ret = %d\n", ret);
         fwrite(recvBuf, sizeof(char), ret, fp);
         memset(recvBuf, 0, ret);
+
+        uploadMsg.m_llCurrentSize = currentFileSeek;
+        sendUploadMsg(sockfd, uploadMsg);
     }
 
     printf("stop \n");

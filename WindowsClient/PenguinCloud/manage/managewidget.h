@@ -1,5 +1,5 @@
-#ifndef MANAGEWIDGET_H
-#define MANAGEWIDGET_H
+#pragma once
+#pragma execution_character_set("utf-8")
 
 #include <QWidget>
 
@@ -42,4 +42,3 @@ protected slots:
     void task_finished(File *file);
 };
 
-#endif // MANAGEWIDGET_H
