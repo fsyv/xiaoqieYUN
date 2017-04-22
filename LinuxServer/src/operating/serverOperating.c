@@ -116,8 +116,6 @@ void *uploadFileThread(int sockfd, void *arg)
 //    long long currentFileSeek = fseek(fp, 0, SEEK_END);
 //    printf("currentFileSeek = %lld\n", currentFileSeek);
 
-    long long currentFileSeek = 0LL;
-
     char *recvBuf = (char *)malloc(MAX_RECV_BUF + 1);
     memset(recvBuf, 0, MAX_RECV_BUF);
 
@@ -130,13 +128,10 @@ void *uploadFileThread(int sockfd, void *arg)
     printf("waitting \n");
     while((ret = recv(sockfd, recvBuf, MAX_RECV_BUF, 0)) > 0)
     {
-        currentFileSeek += ret;
+        //currentFileSeek += ret;
         printf("ret = %d\n", ret);
         fwrite(recvBuf, sizeof(char), ret, fp);
         memset(recvBuf, 0, ret);
-
-        uploadMsg.m_llCurrentSize = currentFileSeek;
-        sendUploadMsg(sockfd, uploadMsg);
     }
 
     printf("stop \n");
@@ -436,6 +431,7 @@ int convertOfficeToPdf(int sockfd, const char *filename)
 	return 0;
 }
 
+/*
 int previewPdf(int sockfd, const char *filename)
 {
 	int ret, i;
@@ -509,3 +505,79 @@ int previewMusic(int sockfd, const char*filename)
         printf("copy success\n");	
 	return 0;
 }
+
+int previewVideo(int sockfd, const char *filename)
+{
+	int ret, i;
+        char path[1024] = "/var/penguin/";
+        char user[512] = "/XQEY/";
+        char command[512] = "";
+        strcat(path, filename);
+
+        for(i = 0; i < strlen(filename); ++i)
+        {
+                if(filename[i] == '/')
+                        break;
+                user[i+6] = filename[i];
+        }
+        user[i+6] = '\0';
+
+        sprintf(command, "cp %s %s", path, user);
+        printf("%s\n", command);
+        ret = system(command);
+
+        PreviewStatus s;
+        memset(&s, 0, sizeof(PreviewStatus));
+
+        if (ret == -1 || ret == 127)
+        {
+                s.status = Failed;
+        }
+        else
+        {
+                s.status = Success;
+        }
+        s.filetype = Video;
+        sendPreviewMsg(sockfd, s);
+        printf("copy success\n");
+        return 0;
+}*/
+
+int preview(int sockfd, const char *filename, FileType type)
+{
+	int ret, i;
+        char path[1024] = "/var/penguin/";
+        char user[512] = "/XQEY/";
+        char command[512] = "";
+        strcat(path, filename);
+
+        for(i = 0; i < strlen(filename); ++i)
+        {
+                if(filename[i] == '/')
+                        break;
+                user[i+6] = filename[i];
+        }
+        user[i+6] = '\0';
+
+        sprintf(command, "cp %s %s", path, user);
+        printf("%s\n", command);
+        ret = system(command);
+
+        PreviewStatus s;
+        memset(&s, 0, sizeof(PreviewStatus));
+
+        if (ret == -1 || ret == 127)
+        {
+                s.status = Failed;
+        }
+        else
+        {
+                s.status = Success;
+        }
+        s.filetype = type;
+        sendPreviewMsg(sockfd, s);
+        printf("copy success\n");
+        return 0;
+
+}
+

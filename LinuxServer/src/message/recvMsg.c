@@ -344,14 +344,16 @@ void recvPreviewMsg(int sockfd, Msg *msg)
 		convertOfficeToPdf(sockfd, previewMsg.filepath);
 		break;
 	case Music:
-		previewMusic(sockfd, previewMsg.filepath);
+		preview(sockfd, previewMsg.filepath, Music);
 		break;
 	case Video:
+		preview(sockfd, previewMsg.filepath, Video);
 		break;
 	case Image:
+		preview(sockfd, previewMsg.filepath, Image);
 		break;
 	case Pdf:
-		previewPdf(sockfd, previewMsg.filepath);
+		preview(sockfd, previewMsg.filepath, Pdf);
 		break;
 	}
 }
