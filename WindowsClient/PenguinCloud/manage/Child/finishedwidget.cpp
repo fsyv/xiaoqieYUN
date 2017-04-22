@@ -1,4 +1,4 @@
-#include "finishedwidget.h"
+﻿#include "finishedwidget.h"
 
 #include <QVBoxLayout>
 
@@ -14,7 +14,8 @@ FinishedWidget::FinishedWidget(QWidget *parent) :
     m_pTopWidget = new FinishedTopWidget;
     m_pListWidget = new ManageListWidget;
     m_pVBosLayout = new QVBoxLayout(this);
-
+    m_pVBosLayout->setContentsMargins(0, 0, 0, 0);
+    m_pVBosLayout->setSpacing(0);
     m_pVBosLayout->addWidget(m_pTopWidget);
     m_pVBosLayout->addWidget(m_pListWidget);
 

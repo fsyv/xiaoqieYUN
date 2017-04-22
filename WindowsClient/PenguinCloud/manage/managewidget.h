@@ -1,7 +1,7 @@
-#pragma once
+﻿#pragma once
 #pragma execution_character_set("utf-8")
 
-#include <QWidget>
+#include "basicwidget/basicwidget.h"
 
 #include <qDebug>
 
@@ -14,7 +14,7 @@ class FinishedWidget;
 class File;
 QT_END_NAMESPACE
 
-class ManageWidget : public QWidget
+class ManageWidget : public BasicWidget
 {
     Q_OBJECT
 public:
