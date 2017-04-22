@@ -11,6 +11,7 @@
 #include <QFile>
 #include <QLabel>
 #include <QSound>
+#include <QDateTime>
 #include <QFileInfo>
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -19,6 +20,9 @@
 #include <QDataStream>
 #include <QProgressBar>
 #include <QListWidgetItem>
+#include <QCryptographicHash>
+
+
 
 
 /************************************

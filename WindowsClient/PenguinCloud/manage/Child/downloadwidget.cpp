@@ -52,8 +52,6 @@ DownloadWidget::~DownloadWidget()
 
 void DownloadWidget::addTask(File *file)
 {
-	static int i = 0;
-
 	if (!contains(file))
 	{
 		DownloadList *downloadList = new DownloadList(m_pListWidget);

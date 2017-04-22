@@ -48,6 +48,8 @@ void UploadList::setFile(File *file)
 
     QFileInfo fileInfo(file->getRemoteName());
 
+    m_pFile->updateMD5();
+
     //加载文件Ico
 
     setIco();
@@ -91,9 +93,9 @@ void UploadList::initWidget()
     m_pCurrentSpeed = new QLabel(this);
     m_pPauseButton = new PauseLabel(this);
     m_pStopButton = new StopLabel(this);
-    connect(m_pPauseButton, SIGNAL(start()), this, SLOT(start_pauseButton()));
-    connect(m_pPauseButton, SIGNAL(pause()), this, SLOT(pause_pauseButton()));
-    connect(m_pStopButton, SIGNAL(stop()), this, SLOT(stop_stopButton()));
+	connect(m_pPauseButton, &PauseLabel::start, this, &UploadList::start_pauseButton);
+	connect(m_pPauseButton, &PauseLabel::pause, this, &UploadList::pause_pauseButton);
+	connect(m_pStopButton, &StopLabel::stop, this, &UploadList::stop_stopButton);
 }
 
 void UploadList::setWidgetLayout()

@@ -55,27 +55,49 @@ void UploadThread::loadDataFromFile(ConnectToFileServer *server, qint64 currentS
     QDataStream dataStream(&m_file);
     dataStream.setVersion(QDataStream::Qt_5_6);
 
-	char *sendBuf = new char[FILE_SEND + 1];
-	memset(sendBuf, 0, FILE_SEND);
+    char *sendBuf = new char[FILE_SEND + 1];
+    memset(sendBuf, 0, FILE_SEND);
 
     int ret = 0;
 
     while(!dataStream.atEnd() && !m_bFinished)
     {
-		ret = dataStream.readRawData(sendBuf, FILE_SEND);
+        ret = dataStream.readRawData(sendBuf, FILE_SEND);
 
-        qDebug() << m_i64CurrentSize;
-
-        m_i64CurrentSize += qint64(ret);
+        m_i64CurrentSize += ret;
 
         server->write(sendBuf, ret);
+        server->flush();
 
         memset(sendBuf, 0, ret);
 
-		server->waitForReadyRead(50);
+        server->waitForReadyRead(50);
+
+//        int recv = 0;
+
+//        while(recv < ret)
+//        {
+//            if(server->waitForReadyRead(1000))
+//            {
+//                QByteArray byteArray = m_pSocket->readAll();
+//                //翻译buf
+//                Msg *msg = (Msg *)byteArray.data();
+
+//                UploadMsg uploadMsg;
+//                memcpy(&uploadMsg, msg->m_aMsgData, msg->m_iMsgLen);
+
+//                m_i64CurrentSize += uploadMsg.m_llCurrentSize;
+//                recv += uploadMsg.m_llCurrentSize;
+//            }
+//            else
+//            {
+//                m_bFinished = true;
+//                break;
+//            }
+//        }
     }
 
-    server->waitForReadyRead();
+    server->waitForReadyRead(50);
 
     delete []sendBuf;
     m_bFinished = true;
@@ -105,7 +127,7 @@ void UploadThread::run()
             UploadMsg uploadMsg;
             memcpy(&uploadMsg, msg->m_aMsgData, msg->m_iMsgLen);
 
-			loadDataFromFile(m_pSocket, msg->m_iMsgLen);
+            loadDataFromFile(m_pSocket, uploadMsg.m_llCurrentSize);
         }
         else
         {

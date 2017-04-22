@@ -191,14 +191,11 @@ void ThreadPool::bossJob()
         }
         bossMutex.unlock();
 
-
-		qDebug() << "Task Number" << tasks.size();
-
         //得出理论工作量
         //这里没有处理线程同步，是一个瞬时值
         //在雇佣或者解雇人的时候时候会根据事件情况为依据
         //这里只是老板给出的一个参考
-        m_iTheoryWorking = int(m_iTaskNumber * m_dWWScale);
+		m_iTheoryWorking = int((m_iTaskNumber + m_iWorking) * m_dWWScale);
         if (m_iMaxWorker < m_iTheoryWorking)
         {
             //实际工作量小于理论工作量

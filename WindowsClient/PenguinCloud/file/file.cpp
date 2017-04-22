@@ -1,8 +1,6 @@
 #include "file.h"
 
-#include <QCryptographicHash>
-#include <QDateTime>
-#include <QFile>
+#include "../stable.h"
 
 
 File::File(QString localName, QString remoteName, qint64 size, QDateTime dateTime) :
@@ -85,13 +83,21 @@ void File::updateMD5()
 
         if(file.open(QIODevice::ReadOnly))
         {
-            MD5 = QCryptographicHash::hash(file.readAll(), QCryptographicHash::Md5);
+            QCryptographicHash md5(QCryptographicHash::Md5);
+
+            setSize(file.size());
+
+            qint64 loadSize = 64 * 1024;
+
+            while(!file.atEnd())
+                md5.addData(file.read(loadSize));
+
+            MD5 = md5.result();
         }
         else
         {
             //打开文件失败
             MD5 = QDateTime::currentDateTime().toString("yyyy-MM-dd.hh:mm:ss:zzz").toUtf8();
         }
-
     }
 }

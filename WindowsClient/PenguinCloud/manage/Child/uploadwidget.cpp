@@ -49,8 +49,6 @@ UploadWidget::~UploadWidget()
 
 void UploadWidget::addTask(File *file)
 {
-	static int i = 0;
-
 	if (!contains(file))
 	{
 		UploadList *uploadList = new UploadList(m_pListWidget);
