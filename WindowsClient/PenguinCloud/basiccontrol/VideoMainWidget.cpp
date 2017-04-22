@@ -1,38 +1,41 @@
-﻿#include "stable.h"
-#include "VideoMainWidget.h"
+﻿#include "VideoMainWidget.h"
+
+#include "stable.h"
 #include "basiccontrol/musicbutton.h"
 #include "basiccontrol/musicmainwidget.h"
 #include "VideoWidget.h"
 #include <QSlider>
 #include <QMediaPlayer>
+
+
 VideoMainWidget::VideoMainWidget(QWidget *parent) : BasicWidget(parent)
 {
 	resize(800, 600);
 	setBackgroundColor("#1296db");
-	
+
 	init();
 	setLayout();
 	connects();
 
 	setStyleSheet("QSlider::groove:horizontal {\
-                  height: 4px;\
-            background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 rgb(124, 124, 124), stop: 1.0 rgb(72, 71, 71));\
-}\
-QSlider::handle:horizontal {\
-                    width: 12px;\
-height:12px;\
-background: rgb(255, 254, 161);\
-margin: -4px 0px -4px 0px;\
-border-radius: 6px;\
-}\
-QSlider::add-page:horizontal {\
-                      background: white;\
-}\
-QSlider::sub-page:horizontal {\
-                      background: rgb(255, 254, 161);\
-}\
-QLabel{color:white;}\
-");
+				                    height: 4px;\
+									            background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 rgb(124, 124, 124), stop: 1.0 rgb(72, 71, 71));\
+												}\
+												QSlider::handle:horizontal {\
+												                    width: 12px;\
+																	height:12px;\
+																	background: rgb(255, 254, 161);\
+																	margin: -4px 0px -4px 0px;\
+																	border-radius: 6px;\
+																	}\
+																	QSlider::add-page:horizontal {\
+																	                      background: white;\
+																						  }\
+																						  QSlider::sub-page:horizontal {\
+																						                        background: rgb(255, 254, 161);\
+																												}\
+																												QLabel{color:white;}\
+																												");
 
 	setTitle("1.MP4");
 
@@ -42,7 +45,7 @@ QLabel{color:white;}\
 
 VideoMainWidget::~VideoMainWidget()
 {
-    delete player;
+	delete player;
 }
 void VideoMainWidget::setVideoUrl(const QString url)
 {
@@ -69,7 +72,7 @@ void  VideoMainWidget::init()
 
 	playProgessBar = new QSlider(Qt::Horizontal, this);
 	playProgessBar->setFixedWidth(500);
-	
+
 	volumeProgressBar = new QSlider(Qt::Horizontal, this);
 	volumeProgressBar->setFixedWidth(100);
 	volumeProgressBar->setValue(50);
@@ -77,7 +80,7 @@ void  VideoMainWidget::init()
 
 	showTime = new QLabel(this);
 	showTime->setText("00:00/00:00");
-	
+
 }
 
 void VideoMainWidget::setLayout()
@@ -100,7 +103,7 @@ void  VideoMainWidget::connects()
 			play->setIcon(QIcon(":/resource/image/pause.png"));
 			player->play();
 		}
-		else if(player->state() == QMediaPlayer::PlayingState)
+		else if (player->state() == QMediaPlayer::PlayingState)
 		{
 			play->setIcon(QIcon(":/resource/image/play.png"));
 			player->pause();
@@ -121,7 +124,7 @@ void  VideoMainWidget::connects()
 	connect(playProgessBar, &QSlider::valueChanged,
 		this, [this]() {
 		showTime->setText(MusicMainWidget::convertTime(playProgessBar->value()) + "/" + totleTime);
-		
+
 	});
 
 	connect(volumeProgressBar, &QSlider::valueChanged, this, [this](qint64) {player->setVolume(volumeProgressBar->value());
@@ -145,5 +148,5 @@ void  VideoMainWidget::connects()
 
 void VideoMainWidget::closeEvent(QCloseEvent *event)
 {
-    player->stop();
+	player->stop();
 }
