@@ -17,6 +17,9 @@
 #include <QPushButton>
 #include <QListWidget>
 #include <QTimerEvent>
+#include <QMouseEvent>
+#include <QEnterEvent>
+#include <QHoverEvent>
 #include <QDataStream>
 #include <QProgressBar>
 #include <QListWidgetItem>

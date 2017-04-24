@@ -60,7 +60,7 @@ void ManageWidget::addDownloadTask(File *file)
 
 void ManageWidget::addFinishedTask(File *file)
 {
-
+    m_pFinishedWidget->addTask(file);
 }
 
 void ManageWidget::task_finished(File *file)

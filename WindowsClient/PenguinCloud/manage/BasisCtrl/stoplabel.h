@@ -2,10 +2,7 @@
 #define STOPLABEL_H
 
 #include <QLabel>
-#include <QMouseEvent>
-#include <QEnterEvent>
-#include <QHoverEvent>
-#include <qDebug>
+
 
 class StopLabel : public QLabel
 {
