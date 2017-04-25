@@ -90,5 +90,6 @@
         <file>resource/image/error.png</file>
         <file>resource/image/ok.png</file>
         <file>resource/image/warn.png</file>
+        <file>resource/manage/clear.png</file>
     </qresource>
 </RCC>

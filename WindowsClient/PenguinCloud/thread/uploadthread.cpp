@@ -111,8 +111,6 @@ void UploadThread::run()
 
     memset(&uploadMsg, 0, sizeof(UploadMsg));
     strcpy(uploadMsg.fileName, m_stRemotePath.toUtf8().data());
-    QFileInfo fileInfo(m_stLocalPath);
-    strcat(uploadMsg.fileName, fileInfo.fileName().toUtf8().data());
 
     m_pSocket->sendUploadMsg(uploadMsg);
 

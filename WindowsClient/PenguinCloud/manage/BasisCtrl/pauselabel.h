@@ -2,10 +2,7 @@
 #define PAUSELABEL_H
 
 #include <QLabel>
-#include <QMouseEvent>
-#include <QEnterEvent>
-#include <QHoverEvent>
-#include <qDebug>
+
 class PauseLabel : public QLabel
 {
     Q_OBJECT

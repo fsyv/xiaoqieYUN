@@ -1,4 +1,5 @@
 #include "pauselabel.h"
+#include "../stable.h"
 
 PauseLabel::PauseLabel(QWidget *parent):
     QLabel(parent)
