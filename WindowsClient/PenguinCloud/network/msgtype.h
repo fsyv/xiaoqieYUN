@@ -21,6 +21,7 @@ typedef enum _MsgType{
     Put_Register,       //注册请求
     Get_Register,       //注册响应
     Put_Preview,        //预览请求
+    Get_TypeFile        //获取指定类型的文件
 }MsgType;
 
 typedef enum _ResponeStatus
@@ -45,6 +46,13 @@ typedef enum _FileType{
     // ...               // 压缩文件
 }FileType;
 
+//文件类型， 针对ListView
+typedef enum _TreeFileType {
+        DOCUMENT = 0,           //文档
+        MUSIC,                  //音乐
+        VIDEO,                  //视频
+        IMAGE                   //图片
+}TreeFileType;
 
 
 //发生了错误

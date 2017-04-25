@@ -65,6 +65,7 @@ public:
     virtual int sendRegisterMsg(RegisterMsg registerMsg);
 
 
+
     //收到消息
     //确定成功消息
     virtual void recvAckOkMsg(Msg *msg);
