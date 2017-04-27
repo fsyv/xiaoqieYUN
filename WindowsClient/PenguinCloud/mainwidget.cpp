@@ -15,7 +15,6 @@
 #include "thread/uploadthread.h"
 #include "thread/downloadthread.h"
 #include "basiccontrol/pdfwidget.h"
-#include "basiccontrol/pdfwidget.h"
 #include "network/connecttoserver.h"
 #include "basicwidget/mymessagebox.h"
 #include "basiccontrol/imagepreview.h"
@@ -451,20 +450,20 @@ void MainWidget::setPreviewWidget(FileType type,  const QString& filename)
     http = http + getUserName() + "/";
     switch(type)
     {
-//    case Office:
-//    case Pdf:
-//    {
-//        http += filename.split('.').first();
-//        http += ".pdf";
+    case Office:
+    case Pdf:
+    {
+        http += filename.split('.').first();
+        http += ".pdf";
 
-//        LoadFile *l = new LoadFile();
-//        l->loadFileFormUrl(http);
-//        connect(l, &LoadFile::loadCompleted, this, [this,l](){
-//            qDebug() <<l->getFilePath1();
-//            this->pdfWidget->setPdfFile(l->getFilePath1());}
-//        );
-//    }
-//        break;
+        LoadFile *l = new LoadFile();
+        l->loadFileFormUrl(http);
+        connect(l, &LoadFile::loadCompleted, this, [this,l](){
+            qDebug() <<l->getFilePath1();
+            this->pdfWidget->setPdfFile(l->getFilePath1());}
+        );
+    }
+        break;
     case Image:
     {
         ImagePreView *pre = new ImagePreView();

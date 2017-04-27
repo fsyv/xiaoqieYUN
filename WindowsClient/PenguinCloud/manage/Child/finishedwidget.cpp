@@ -45,5 +45,14 @@ void FinishedWidget::addTask(File *file)
 
 void FinishedWidget::cleanTask(QListWidgetItem *item)
 {
-    m_pListWidget->removeItemWidget(item);
+    int index = m_pListWidget->findItem(item);
+
+    if (index >= 0)
+    {
+        m_pListWidget->removeItemWidget(item);
+        m_pListWidget->takeItem(index);
+
+        delete item;
+        item = nullptr;
+    }
 }

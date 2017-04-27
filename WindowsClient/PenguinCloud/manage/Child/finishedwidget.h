@@ -14,6 +14,7 @@ QT_END_NAMESPACE
 
 class FinishedWidget : public QWidget
 {
+    Q_OBJECT
 public:
     FinishedWidget(QWidget *parent = nullptr);
     ~FinishedWidget();
