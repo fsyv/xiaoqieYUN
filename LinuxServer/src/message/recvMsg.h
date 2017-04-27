@@ -44,5 +44,6 @@ void recvExitMsg(int sockfd, Msg *msg);
 void recvRegisterMsg(int sockfd, Msg *msg);
 // preview request message
 void recvPreviewMsg(int sockfd, Msg *msg);
-
+//同一类型的文件列表
+void recvTypeFileMsg(int sockfd, Msg *msg);
 #endif //LINUXSERVER_MESSAGE_RECVMSG_H

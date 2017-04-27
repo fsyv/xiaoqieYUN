@@ -20,7 +20,9 @@ typedef enum _MsgType{
     Ack_Exit,           //退出
     Put_Register,	// register request from client
     Get_Register,	// register reqponse to client
-    Put_Preview         // preview  request from client   
+    Put_Preview,        // preview  request from client   
+    Put_TypeFile,
+    Get_TypeFile   
 }MsgType;
 
 
@@ -41,6 +43,16 @@ typedef enum _ErrorType{
 typedef struct _ErrorMsg{
     ErrorType m_eErrorType;
 }ErrorMsg, *pErrorMsg;
+
+//文件类型， 针对ListView
+typedef enum _TreeFileType {
+	ALL = 0,		//全部文件
+	DOCUMENT = 1,           //文档
+        MUSIC,                  //音乐
+       	VIDEO,                  //视频
+        IMAGE                   //图片
+}TreeFileType;
+                               
 
 typedef enum _FileType{
     Office = 0,          // office文档
@@ -156,4 +168,14 @@ typedef struct _PreviewStatus
 	ResponeStatus status; // 0success; 1 error;
 	FileType filetype;
 }PreviewStatus;
+
+//申请的文件列表类型
+typedef struct _FileTypeListMsg {
+    char username[64];
+    TreeFileType filetype;
+}FileTypeListMsg;
+
+typedef struct _FileTypeListResponse {
+	char json[2048];
+}FileTypeListResponse;
 #endif //LINUXSERVER_MESSAGE_MSGTYPE_H

@@ -109,7 +109,10 @@ void recvMsg(int sockfd, Msg *msg)
 //#endif
             recvPreviewMsg(sockfd, msg);
             break;
-
+	case Put_TypeFile:
+	    printf("收到消息\n");
+	    recvTypeFileMsg(sockfd, msg);
+	    break;
 
     }
 }
@@ -229,6 +232,8 @@ void recvDeleteMsg(int sockfd, Msg *msg)
     DeleteMsg deleteMsg;
     memset(&deleteMsg, 0, sizeof(DeleteMsg));
     memcpy(&deleteMsg, msg->m_aMsgData, msg->m_iMsgLen);
+
+    
 
     if(removeFolder(deleteMsg.path) == -1)
     {
@@ -359,3 +364,35 @@ void recvPreviewMsg(int sockfd, Msg *msg)
     }
 }
 
+void recvTypeFileMsg(int sockfd, Msg *msg)
+{
+ 	int ret;
+//	char *fileListsJson;
+	FileTypeListMsg filetypelist;
+        FileTypeListResponse  response; 
+	
+	memset(&filetypelist, 0, sizeof(FileTypeListMsg));
+        memcpy(&filetypelist, msg->m_aMsgData, msg->m_iMsgLen);
+
+	//在这里获取json
+	printf("用户名:%s\n", filetypelist.username);
+
+  	char *fileListsJson = selFileFromDtatbase(filetypelist.username, filetypelist.filetype);
+	
+	printf("获取文件列表成功\n");   
+ 
+	if(fileListsJson)
+	{
+		memset(&response, 0, sizeof(FileTypeListResponse));
+        	strcpy(response.json, fileListsJson);
+        	sendFileTypeListResponse(sockfd, response);
+        	free(fileListsJson);
+    	}
+    	else
+    	{
+        	ErrorMsg errorMsg;
+        	errorMsg.m_eErrorType = NoSuchFileOrDirectory;
+        	sendAckErrorMsg(sockfd, errorMsg);
+    	}
+	
+}

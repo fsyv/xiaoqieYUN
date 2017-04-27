@@ -14,6 +14,7 @@ int sendReadyMsg(int sockfd);
 int sendLoginMsg(int sockfd, LoginMsg loginMsg);
 //文件列表消息
 int sendFileListMsg(int sockfd, FileListsMsg fileListsMsg);
+int sendFileTypeListResponse(int sockfd, FileTypeListResponse response);
 //预览信息消息
 int sendPreviewMsg(int sockfd, PreviewStatus status);
 //下载信息消息

@@ -89,8 +89,10 @@ char *getDirFileLists(char *userDir)
 //文件上传的线程
 void *uploadFileThread(int sockfd, void *arg)
 {
+    char username[64]; 
+    int i = 0;
     Msg *msg = (Msg *)arg;
-
+  
     UploadMsg uploadMsg;
     memset(&uploadMsg, 0, sizeof(UploadMsg));
 
@@ -98,9 +100,18 @@ void *uploadFileThread(int sockfd, void *arg)
 
     char file[1024] = "/var/penguin/";
     strcat(file, uploadMsg.fileName);
-
+	
     printf("fileName %s\n", uploadMsg.fileName);
-    printf("file %s\n", file);
+ 
+//  获取用户名
+    for (; ;++i)
+    {
+	if(uploadMsg.fileName[i] == '/')
+	    break;
+	username[i] = uploadMsg.fileName[i];
+    }
+//  在这里放入数据库
+    addFileToDatabase(username, file);
 
     //二进制可写方式追加
     FILE *fp = fopen(file, "wb");
@@ -252,14 +263,16 @@ void get_file_path(const char *path, const char *file_name,  char *file_path)
 }
 
 //递归删除
-int delete_file(const char *path)
+int delete_file(const char *username, const char *path)
 {
     DIR *dir;
     struct dirent *dir_info;
     char file_path[PATH_MAX];
     if(is_file(path))
     {
-        remove(path);
+    
+	delFileFromDatabase(username, path);
+    	remove(path);
         return 0;
     }
     if(is_dir(path))
@@ -271,7 +284,7 @@ int delete_file(const char *path)
             get_file_path(path, dir_info->d_name, file_path);
             if(is_special_dir(dir_info->d_name))
                 continue;
-            delete_file(file_path);
+            delete_file(username, file_path);
             rmdir(file_path);
         }
     }
@@ -284,8 +297,18 @@ int delete_file(const char *path)
 int removeFolder(char *path)
 {
     char sysDir[1024] = "/var/penguin/";
+    char username[64];
+    int i = 0;
+//  获取用户名
+    
+    for (; ;++i)
+    {
+	if(path[i] == '/')
+		 break;
+	username[i] = path[i];
+    }                                         
     strcat(sysDir, path);
-    return delete_file(sysDir);
+    return delete_file(username, sysDir);
 }
 
 
@@ -586,4 +609,3 @@ int preview(int sockfd, const char *filename, FileType type)
         return 0;
 
 }
-

@@ -75,6 +75,22 @@ int sendFileListMsg(int sockfd, FileListsMsg fileListsMsg)
     free(msg);
     return ret;
 }
+int sendFileTypeListResponse(int sockfd, FileTypeListResponse response)
+{
+    Msg *msg = (Msg *)malloc(sizeof(Msg) + sizeof(FileTypeListResponse));
+    bzero(msg, sizeof(Msg) + sizeof(FileTypeListResponse));
+
+    msg->m_eMsgType = Get_TypeFile;
+    msg->m_iMsgLen = sizeof(FileTypeListResponse);
+    memcpy(msg->m_aMsgData, (void *)&response, msg->m_iMsgLen);
+
+    int ret = sendMsg(sockfd, msg);
+
+    free(msg);
+    return ret;
+
+}
+
 //预览信息消息
 int sendPreviewMsg(int sockfd, PreviewStatus status)
 {
