@@ -36,12 +36,12 @@
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{f18afcc2-eeb5-4b0e-be0b-f3b76e199cad}</UniqueIdentifier>
+      <UniqueIdentifier>{b541852b-9655-4a2f-b627-2be06e347941}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{49892474-5956-4112-8e6d-019b597c4141}</UniqueIdentifier>
+      <UniqueIdentifier>{5918c993-a30e-4749-86ea-083e1d9b6d08}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
@@ -93,6 +93,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="basiccontrol\filetablewidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="manage\ManageListWidget\finishedlist.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="manage\ChildTopWidget\finishedtopwidget.cpp">
@@ -221,6 +224,12 @@
     <ClCompile Include="Release\moc_basicwidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="Debug\moc_cleanlabel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_cleanlabel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
     <ClCompile Include="Debug\moc_combobox.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -279,6 +288,18 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_filetablewidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_finishedlist.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_finishedlist.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_finishedwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_finishedwidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Debug\moc_folder.cpp">
@@ -345,6 +366,12 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_pauselabel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_pdfwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_pdfwidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Debug\moc_registerwidget.cpp">
@@ -415,9 +442,9 @@
     <CustomBuild Include="basicwidget\basicwidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <ClInclude Include="manage\BasisCtrl\cleanlabel.h">
+    <CustomBuild Include="manage\BasisCtrl\cleanlabel.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
+    </CustomBuild>
     <CustomBuild Include="basiccontrol\combobox.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -448,12 +475,15 @@
     <CustomBuild Include="basiccontrol\filetablewidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="manage\ManageListWidget\finishedlist.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
     <ClInclude Include="manage\ChildTopWidget\finishedtopwidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="manage\Child\finishedwidget.h">
+    <CustomBuild Include="manage\Child\finishedwidget.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
+    </CustomBuild>
     <CustomBuild Include="file\folder.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -502,9 +532,9 @@
     <CustomBuild Include="manage\BasisCtrl\pauselabel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <ClInclude Include="basiccontrol\pdfwidget.h">
+    <CustomBuild Include="basiccontrol\pdfwidget.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
+    </CustomBuild>
     <ClInclude Include="manage\BasisCtrl\picturelabel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -597,6 +627,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="resource\image\checkbox\checkbox_selected_press.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\manage\clear.png">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="resource\image\close.png">
