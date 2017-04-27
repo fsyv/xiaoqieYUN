@@ -44,8 +44,12 @@ HEADERS  += \
 
 FORMS    +=
 
+
+RC_FILE += PenguinCloud.rc
+
 RESOURCES += \
     resource.qrc
+
 
 SUBDIRS += \
     network/network.pro
