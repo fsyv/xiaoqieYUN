@@ -53,7 +53,7 @@ SUBDIRS += \
 CONFIG+=precompile_header
 PRECOMPILED_HEADER=stable.h
 
-#INCLUDEPATH += $$PWD/poppler
-#win32: LIBS += -L$$PWD/poppler -llibpoppler
-#win32: LIBS += -L$$PWD/poppler -llibpoppler-qt5
+INCLUDEPATH += $$PWD/poppler
+win32: LIBS += -L$$PWD/poppler -llibpoppler
+win32: LIBS += -L$$PWD/poppler -llibpoppler-qt5
 

@@ -65,7 +65,7 @@ public slots:
     void errorHandle(ErrorMsg msg);                                         // 错误处理
     void preview(const QString path);
     void show_prview(PreviewStatus previewStatus);
-
+   // void ftl_response(QByteArray);
 private:
     void init();
     void setListViewItem();

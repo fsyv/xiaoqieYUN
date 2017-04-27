@@ -266,6 +266,21 @@ int AbstractNetwork::sendRegisterMsg(RegisterMsg registerMsg)
     return ret;
 }
 
+int AbstractNetwork::sendFileTypeMsg(FileTypeListMsg fileTypeListMsg)
+{
+    Msg *msg = (Msg *)new char[m_iMsgStructLen + sizeof(FileTypeListMsg) + 1];
+    memset(msg, 0,  m_iMsgStructLen + sizeof(FileTypeListMsg));
+
+    msg->m_eMsgType = Put_TypeFile;
+    msg->m_iMsgLen = sizeof(FileTypeListMsg);
+    memcpy(msg->m_aMsgData, (void*)&fileTypeListMsg, msg->m_iMsgLen);
+
+    int ret = sendMsg(msg);
+
+    delete msg;
+
+    return ret;
+}
 
 //收到的消息
 void AbstractNetwork::recvAckOkMsg(Msg *msg)
@@ -372,12 +387,24 @@ void AbstractNetwork::recvPreviewStatusMsg(Msg *msg)
     emit readyReadPreviewStatusMsg(previewStatus);
 }
 
+
+void AbstractNetwork::recvFileTypeListReponse(Msg *msg)
+{
+    FileTypeListResponse ftlp;
+    memcpy(&ftlp, msg->m_aMsgData, msg->m_iMsgLen);
+    QByteArray byteArray(ftlp.json);
+    emit readyReadFileTypeListResponse(byteArray);
+}
+
+
 void AbstractNetwork::recvExitMsg(Msg *msg)
 {
     ExitMsg exitMsg;
     memcpy(&exitMsg, msg->m_aMsgData, msg->m_iMsgLen);
     emit readyReadExitMsg(exitMsg);
 }
+
+
 
 int AbstractNetwork::sendMsg(Msg *msg)
 {
@@ -386,6 +413,8 @@ int AbstractNetwork::sendMsg(Msg *msg)
     flush();
     return ret;
 }
+
+
 
 void AbstractNetwork::recvMsg(Msg *msg)
 {
@@ -443,6 +472,9 @@ void AbstractNetwork::recvMsg(Msg *msg)
         break;
     case Get_Preview:
         recvPreviewStatusMsg(msg);
+        break;
+    case Get_TypeFile:
+        recvFileTypeListReponse(msg);
         break;
     }
 }

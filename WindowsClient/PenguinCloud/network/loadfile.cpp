@@ -54,7 +54,6 @@ void LoadFile::httpReadyRead()
 {
     if(file)
         file->write(reply->readAll());
-    qDebug() << "s";
 }
 
 QString LoadFile::getFilePath1()

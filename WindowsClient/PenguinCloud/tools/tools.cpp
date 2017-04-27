@@ -17,6 +17,9 @@ void *Tools::memstr(const void *src, memlen_t src_len, const void *des)
 QVector<QStringList> Tools::getTableRow(QByteArray &byteArray)
 {
     QVector<QStringList> vec;
+    if(byteArray.size() == 2)
+        return vec;
+
     QJsonParseError json_error;
     QJsonDocument parse_doucment = QJsonDocument::fromJson(byteArray, &json_error);
     if(json_error.error == QJsonParseError::NoError)

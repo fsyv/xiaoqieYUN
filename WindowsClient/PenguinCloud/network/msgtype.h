@@ -21,6 +21,7 @@ typedef enum _MsgType{
     Put_Register,       //注册请求
     Get_Register,       //注册响应
     Put_Preview,        //预览请求
+    Put_TypeFile,
     Get_TypeFile        //获取指定类型的文件
 }MsgType;
 
@@ -48,7 +49,8 @@ typedef enum _FileType{
 
 //文件类型， 针对ListView
 typedef enum _TreeFileType {
-        DOCUMENT = 0,           //文档
+        ALL = 0,
+        DOCUMENT = 1,           //文档
         MUSIC,                  //音乐
         VIDEO,                  //视频
         IMAGE                   //图片
@@ -158,10 +160,20 @@ typedef struct _PreviewMsg{
         FileType fileType;      //  请求的文件类型
         char filepath[1024];    //  文件路径
 }PreviewMsg, *pPreviewMsg;
-//返回预览图片数组
+//返回预览信息
 typedef struct _PreviewStatus{
     ResponeStatus status;
     FileType filetype;
 }PreviewStatus, *pPreviewStatus;
+
+//申请的文件列表类型
+typedef struct _FileTypeListMsg {
+    char username[64];
+    TreeFileType filetype;
+}FileTypeListMsg;
+//响应
+typedef struct _FileTypeListResponse {
+        char json[2048];
+}FileTypeListResponse;
 
 #endif // MSGTYPE_H

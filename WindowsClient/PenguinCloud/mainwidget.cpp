@@ -5,7 +5,7 @@
 #include <QString>
 #include <QtWidgets>
 #include <QStatusBar>
-
+#include <QItemSelectionModel>
 #include "file/file.h"
 #include "file/folder.h"
 #include "tools/tools.h"
@@ -15,11 +15,9 @@
 #include "thread/uploadthread.h"
 #include "thread/downloadthread.h"
 #include "basiccontrol/pdfwidget.h"
-#include "basiccontrol/pdfwidget.h"
 #include "network/connecttoserver.h"
 #include "basicwidget/mymessagebox.h"
 #include "basiccontrol/imagepreview.h"
-#include "basiccontrol/filetablewidget.h"
 #include "basiccontrol/filetablewidget.h"
 #include "basiccontrol/musicmainwidget.h"
 #include "basiccontrol/VideoMainWidget.h"
@@ -44,7 +42,7 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(m_pConnectToServer, SIGNAL(readyReadFileListMsg(QByteArray)), this, SLOT(recvFileLists(QByteArray)));
     connect(m_pConnectToServer, &ConnectToServer::readyReadAckErrorMsg, this, &MainWidget::errorHandle);
     connect(m_pConnectToServer, &ConnectToServer::readyReadPreviewStatusMsg, this, &MainWidget::show_prview);
-
+    connect(m_pConnectToServer, &ConnectToServer::readyReadFileTypeListResponse, this, &MainWidget::recvFileLists);
 
     connect(tableWidget, &FileTableWidget::requestDir, this, &MainWidget::getDir);
     connect(tableWidget, &FileTableWidget::requestNewfolder, this, &MainWidget::newFolder);
@@ -79,7 +77,8 @@ void MainWidget::setListViewItem()
     QStringList itemsicon, itemsname;
     itemsicon << ":/resource/image/MainWidget/allfile.png" << ":/resource/image/MainWidget/photo.png" <<
                  ":/resource/image/MainWidget/doc.png"<< ":/resource/image/MainWidget/film.png" << ":/resource/image/MainWidget/music.png";
-    itemsname << "全部文件" << "图片" << "文档" << "视频" << "音乐";
+    itemsname << "全部文件" << "文档" << "音乐" << "视频" << "图片";
+
     for(int i = 0; i < itemsname.size(); ++i)
     {
         QStandardItem *item = new QStandardItem(QIcon(itemsicon[i]), itemsname[i]);
@@ -90,6 +89,21 @@ void MainWidget::setListViewItem()
     listView->setModel(model);
     listView->move(1, 120);
     listView->resize(150, 449);
+
+    //item的顺序和枚举的顺序对应了
+    connect(listView, &QListView::clicked, this, [this](const QModelIndex &index){
+        if(index.row() == 0)
+        {
+            refresh();
+        }
+        else
+        {
+            FileTypeListMsg fileTypeListMsg;
+            strcpy(fileTypeListMsg.username, getUserName().toUtf8().data());
+            fileTypeListMsg.filetype = (TreeFileType)index.row();
+            m_pConnectToServer->sendFileTypeMsg(fileTypeListMsg);
+        }
+    });
 }
 void MainWidget::init()
 {
@@ -227,6 +241,9 @@ void MainWidget::recvFileLists(QByteArray byteArray)
         }
     }
 }
+
+
+
 void MainWidget::getDir(QString dirname)
 {
     setCurrentPath(getCurrentPath() + dirname + "/");
@@ -302,12 +319,28 @@ void MainWidget::rename(const QString &newName, const QString &oldName)
 }
 void MainWidget::removeFileOrFolder(const QString &_path)
 {
-    QString wholepath = m_stUserName + path.top() + _path;
-    DeleteMsg deleteMsg;
-    memset(&deleteMsg, 0, sizeof(DeleteMsg));
-    strcpy(deleteMsg.path, wholepath.toUtf8().data());
-    m_pConnectToServer->sendDeleteMsg(deleteMsg);
-    replyFileLists(path.top());
+
+    if(listView->selectionModel()->selectedIndexes().size() > 0 && listView->selectionModel()->selectedIndexes().at(0).row() > 0)
+    {
+        DeleteMsg deleteMsg;
+        memset(&deleteMsg, 0, sizeof(DeleteMsg));
+        strcpy(deleteMsg.path, QString(_path).remove(0, 13).toUtf8().data());
+        m_pConnectToServer->sendDeleteMsg(deleteMsg);
+
+        FileTypeListMsg fileTypeListMsg;
+        strcpy(fileTypeListMsg.username, getUserName().toUtf8().data());
+        fileTypeListMsg.filetype = (TreeFileType)listView->selectionModel()->selectedIndexes().at(0).row();
+        m_pConnectToServer->sendFileTypeMsg(fileTypeListMsg);
+
+    }else
+    {
+        QString wholepath = m_stUserName + path.top() + _path;
+        DeleteMsg deleteMsg;
+        memset(&deleteMsg, 0, sizeof(DeleteMsg));
+        strcpy(deleteMsg.path, wholepath.toUtf8().data());
+        m_pConnectToServer->sendDeleteMsg(deleteMsg);
+        replyFileLists(path.top());
+    }
 }
 void MainWidget::renameError(RenameMsg r){
     qDebug() << "Rename Error";
@@ -411,17 +444,26 @@ void MainWidget::preview(const QString _path)
 {
     PreviewMsg previewMsg;
     memset(&previewMsg, 0, sizeof(PreviewMsg));
-	
-    QString wholepath = getUserName() + path.top() +  _path;
-	for (int i = 0; i < wholepath.length(); ++i)
-	{
-		if (wholepath[i] == " ")
-		{
-			wholepath.insert(i, '\\');
-			i += 1;
 
-		}
-	}
+    QString wholepath = getUserName() + path.top() +  _path;
+    for (int i = 0; i < wholepath.length(); ++i)
+    {
+        if (wholepath[i] == " ")
+        {
+            wholepath.insert(i, '\\');
+            i += 1;
+
+        }else if(wholepath[i] == "(")
+        {
+            wholepath.insert(i, '\(');
+            i += 1;
+        }
+        else if(wholepath[i] == ")")
+        {
+            wholepath.insert(i, '\)');
+            i += 1;
+        }
+    }
     previewMsg.fileType = Tools::getFileType(_path);
     strcpy(previewMsg.filepath, wholepath.toUtf8().data());
     m_pConnectToServer->sendPreviewMsg(previewMsg);
@@ -441,8 +483,6 @@ void MainWidget::show_prview(PreviewStatus previewStatus)
         MyMessageBox *m = MyMessageBox::showMessageBox(this, "该文件不支持预览", "", "确定",  Error);
         connect(m, &MyMessageBox::btn2, this, [m](){m->close();});
     }
-
-
 }
 
 void MainWidget::setPreviewWidget(FileType type,  const QString& filename)
@@ -451,20 +491,21 @@ void MainWidget::setPreviewWidget(FileType type,  const QString& filename)
     http = http + getUserName() + "/";
     switch(type)
     {
-//    case Office:
-//    case Pdf:
-//    {
-//        http += filename.split('.').first();
-//        http += ".pdf";
-
-//        LoadFile *l = new LoadFile();
-//        l->loadFileFormUrl(http);
-//        connect(l, &LoadFile::loadCompleted, this, [this,l](){
-//            qDebug() <<l->getFilePath1();
-//            this->pdfWidget->setPdfFile(l->getFilePath1());}
-//        );
-//    }
-//        break;
+    case Office:
+    case Pdf:
+    {
+        http += filename.split('.').first();
+        http += ".pdf";
+        pdfWidget = new PdfWidget();
+        LoadFile *l = new LoadFile();
+        l->loadFileFormUrl(http);
+        qDebug() << http;
+        connect(l, &LoadFile::loadCompleted, this, [this,l](){
+            qDebug() <<l->getFilePath1();
+            this->pdfWidget->setPdfFile(l->getFilePath1());}
+        );
+    }
+        break;
     case Image:
     {
         ImagePreView *pre = new ImagePreView();
@@ -491,14 +532,13 @@ void MainWidget::setPreviewWidget(FileType type,  const QString& filename)
         music->show();
     }
         break;
-	case Video:
-		VideoMainWidget *video = new VideoMainWidget();
-		qDebug() << "收到视屏预览消息" << http;
-		http += filename;
-		video->setVideoUrl(http);
-		video->show();
+    case Video:
+        VideoMainWidget *video = new VideoMainWidget();
+        http += filename;
+        qDebug() << "收到视屏预览消息" << http;
+        video->setVideoUrl(http);
+        video->show();
         //音乐啥的处理
-
     }
 }
 

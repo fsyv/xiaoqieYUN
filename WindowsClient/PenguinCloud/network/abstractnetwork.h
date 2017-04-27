@@ -7,9 +7,9 @@
 
 
 //#define SERVER_IP "182.254.219.254"
-#define SERVER_IP "192.168.1.155"
+//#define SERVER_IP "192.168.1.155"
 //#define SERVER_IP "192.168.89.129"
-//#define SERVER_IP "120.24.84.247"
+#define SERVER_IP "120.24.84.247"
 
 #define MAX_SEND_BUF (64 * 1024)
 #define MAX_READ_BUF MAX_SEND_BUF
@@ -63,8 +63,8 @@ public:
     virtual int sendExitMsg(ExitMsg exitMsg);
     //发送注册信息
     virtual int sendRegisterMsg(RegisterMsg registerMsg);
-
-
+    //发送类型文件 消息
+    virtual int sendFileTypeMsg(FileTypeListMsg fileTypeListMsg);
 
     //收到消息
     //确定成功消息
@@ -98,6 +98,7 @@ public:
     //预览响应详细
     virtual void recvPreviewStatusMsg(Msg *msg);
 
+    virtual void recvFileTypeListReponse(Msg *msg);
 signals:
     //消息信号
     void readyReadAckOKMsg();
@@ -115,6 +116,7 @@ signals:
     void readyReadExitMsg(ExitMsg);
     void readyReadRegisterStatusMsg(RegisterStatus);
     void readyReadPreviewStatusMsg(PreviewStatus);
+    void readyReadFileTypeListResponse(QByteArray);
 protected:
     //sendMsg是纯虚函数，需要在子类中实现
     virtual int sendMsg(Msg *msg);

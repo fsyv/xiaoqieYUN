@@ -1,4 +1,4 @@
-#include "uploadthread.h"
+﻿#include "uploadthread.h"
 
 #include "../stable.h"
 
