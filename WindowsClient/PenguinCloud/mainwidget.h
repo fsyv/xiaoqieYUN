@@ -89,13 +89,14 @@ private:
     QPushButton *download_manage;
     QString m_stUserName;
     QString previewFileName;
-    QStack<QString> path;// current dir
+    QStack<QString> path;                       // current dir
 
     QMap<QString, FileObject *> *m_pFileLists;
+    QVector<QStringList> filelist;              // 显示正常分类文件列表
+    QVector<QStringList> filelist2;             //保留原始的文件路径
+    QStringList wholeCopyPath;                  // 保存所有将要复制的文件的具体路径
+    bool isCopy;                                // true是复制， false是移动
 
-    QStringList wholeCopyPath; // 保存所有将要复制的文件的具体路径
-    bool isCopy; // true是复制， false是移动
 
-    //ThreadPool *m_pThreadPool;
 };
 

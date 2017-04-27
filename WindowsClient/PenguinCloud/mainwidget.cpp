@@ -206,43 +206,28 @@ void MainWidget::setFileTable()
 }
 void MainWidget::recvFileLists(QByteArray byteArray)
 {
-    tableWidget->setTableRow(Tools::getTableRow(byteArray));
-    QJsonParseError json_error;
-    QJsonDocument parse_doucment = QJsonDocument::fromJson(byteArray, &json_error);
-    if(json_error.error == QJsonParseError::NoError)
+    if(listView->selectionModel()->selectedIndexes().size() > 0 && listView->selectionModel()->selectedIndexes().at(0).row() > 0)
     {
-        if(parse_doucment.isObject())
+        filelist.clear();
+        filelist = filelist2 = Tools::getTableRow(byteArray);
+        for(int i = 0; i < filelist.size(); ++i)
         {
-            QJsonObject object = parse_doucment.object();
-            QJsonValue value =  object.value(object.keys().at(0));
-            QJsonArray array = value.toArray();
-            QString path = object.keys().at(0);
-            m_pFileLists->clear();
-            for(int i = 0; i < array.size(); ++i)
+            int j;
+            for(j = filelist[i][0].size() - 1; j >= 0; --j)
             {
-                if(array.at(i).toObject().value("type") == QString("folder"))
-                {
-                    //文件夹
-                    QDateTime dateTime = QDateTime::fromTime_t(array.at(i).toObject()
-                                                               .value("lastmodifytime").toInt());
-                    QString name = array.at(i).toObject().value("name").toString();
-                    m_pFileLists->insert(path + name, new Folder(name, dateTime));
-                }
-                else if(array.at(i).toObject().value("type") == QString("file"))
-                {
-                    //文件
-                    QDateTime dateTime = QDateTime::fromTime_t(array.at(i).toObject()
-                                                               .value("lastmodifytime").toInt());
-                    QString name = array.at(i).toObject().value("name").toString();
-                    qint64 size = array.at(i).toObject().value("size").toVariant().toLongLong();
-                    m_pFileLists->insert(path + name, new File(QString(""), path + name, size, dateTime));
-                }
+                if(filelist[i][0][j] =='/')
+                    break;
             }
+            QString str = filelist[i].at(0);
+            str.remove(0, j+1);
+            filelist[i].replace(0, str);
+            qDebug() << filelist[i].at(0);
         }
+        tableWidget->setTableRow(filelist);
     }
+    else
+        tableWidget->setTableRow(Tools::getTableRow(byteArray));
 }
-
-
 
 void MainWidget::getDir(QString dirname)
 {
@@ -324,7 +309,8 @@ void MainWidget::removeFileOrFolder(const QString &_path)
     {
         DeleteMsg deleteMsg;
         memset(&deleteMsg, 0, sizeof(DeleteMsg));
-        strcpy(deleteMsg.path, QString(_path).remove(0, 13).toUtf8().data());
+        QString str = filelist2[tableWidget->selectedItems().at(0)->row()].at(0);
+        strcpy(deleteMsg.path, str.remove(0, 13).toUtf8().data());
         m_pConnectToServer->sendDeleteMsg(deleteMsg);
 
         FileTypeListMsg fileTypeListMsg;
