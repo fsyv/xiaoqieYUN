@@ -227,6 +227,41 @@ void MainWidget::recvFileLists(QByteArray byteArray)
     }
     else
         tableWidget->setTableRow(Tools::getTableRow(byteArray));
+
+    QJsonParseError json_error;
+    QJsonDocument parse_doucment = QJsonDocument::fromJson(byteArray, &json_error);
+    if(json_error.error == QJsonParseError::NoError)
+    {
+        if(parse_doucment.isObject())
+        {
+            QJsonObject object = parse_doucment.object();
+            QJsonValue value =  object.value(object.keys().at(0));
+            QJsonArray array = value.toArray();
+            QString path = object.keys().at(0);
+            m_pFileLists->clear();
+            for(int i = 0; i < array.size(); ++i)
+            {
+                if(array.at(i).toObject().value("type") == QString("folder"))
+                {
+                    //文件夹
+                    QDateTime dateTime = QDateTime::fromTime_t(array.at(i).toObject()
+                                                               .value("lastmodifytime").toInt());
+                    QString name = array.at(i).toObject().value("name").toString();
+                    m_pFileLists->insert(path + name, new Folder(name, dateTime));
+                }
+                else if(array.at(i).toObject().value("type") == QString("file"))
+                {
+                    //文件
+                    QDateTime dateTime = QDateTime::fromTime_t(array.at(i).toObject()
+                                                               .value("lastmodifytime").toInt());
+                    QString name = array.at(i).toObject().value("name").toString();
+                    qint64 size = array.at(i).toObject().value("size").toVariant().toLongLong();
+                    m_pFileLists->insert(path + name, new File(QString(""), path + name, size, dateTime));
+                }
+            }
+        }
+    }
+
 }
 
 void MainWidget::getDir(QString dirname)

@@ -71,7 +71,7 @@ void UploadThread::loadDataFromFile(ConnectToFileServer *server, qint64 currentS
 
         memset(sendBuf, 0, ret);
 
-        server->waitForReadyRead(50);
+        server->waitForReadyRead(10);
 
 //        int recv = 0;
 
